@@ -72,14 +72,14 @@ Then run:
 
     pkg update && pkg upgrade -y
     pkg install nodejs git -y
-    git clone https://github.com/YOUR-USERNAME/nika-osint.git
+    git clone https://github.com/god-kiwi/nika-osint.git
     cd nika-osint
     bash install-termux.sh
     ./osint-menu-termux.sh
 
 **Linux / macOS**
 
-    git clone https://github.com/YOUR-USERNAME/nika-osint.git
+    git clone https://github.com/god-kiwi/nika-osint.git
     cd nika-osint
     npm install
     chmod +x osint-ultra-max.js
