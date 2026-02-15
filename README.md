@@ -9,7 +9,7 @@
 
 **Advanced OSINT Intelligence Gathering Toolkit**
 
-by kiwi & 777
+by 777 & Kiwi
 
 ---
 
