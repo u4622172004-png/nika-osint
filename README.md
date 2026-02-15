@@ -75,7 +75,7 @@ Then run:
     git clone https://github.com/YOUR-USERNAME/nika-osint.git
     cd nika-osint
     bash install-termux.sh
-    kiwiosint
+    ./osint-menu-termux.sh
 
 **Linux / macOS**
 
@@ -92,7 +92,7 @@ Then run:
 
 **Interactive Menu**
 
-    kiwiosint
+    ./osint-menu-termux.sh
 
 **Direct Command Line**
 
