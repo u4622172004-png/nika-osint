@@ -1,0 +1,100 @@
+{
+  "domain": {
+    "MX": [
+      {
+        "exchange": "romagnosi-it.mail.protection.outlook.com",
+        "priority": 10,
+        "type": "MX"
+      }
+    ],
+    "NS": [
+      "dns.tol.it",
+      "dns2.tol.it"
+    ],
+    "TXT": [
+      [
+        "v=spf1 include:spf.protection.outlook.com ~all"
+      ],
+      [
+        "MS=ms97897988"
+      ],
+      [
+        "google-site-verification=w2UqHRuJMS0f4b2J3lhRFFuhioo_LcYVtejRbaSIA28"
+      ]
+    ],
+    "whois": {
+      "additionalInformationCanBeVisualizedAt": "*",
+      "domain": "romagnosi.it",
+      "status": "ok",
+      "signed": "no",
+      "created": "2001-12-18 00:00:00 2007-03-01 10:39:50 2001-12-19 00:00:00 2007-02-16 00:00:00",
+      "lastUpdate": "2026-01-03 00:40:51 2016-01-12 17:03:11 2016-01-12 17:03:11 2020-10-26 15:10:05",
+      "expireDate": "2026-12-18",
+      "organization": "Istituto Statale ITC G. D. Romagnosi - I.P.S.C.T. A. Casali Aruba Business s.r.l.",
+      "address": "Via Cavour,45 Via Cavour,45 Via Gulinelli 21/A",
+      "name": "Pierangelo Torlaschi gTLD Contact WIDE-REG",
+      "web": "https://www.arubabusiness.it",
+      "dnssec": "yes"
+    },
+    "spf": {
+      "valid": true,
+      "strict": false
+    },
+    "dmarc": {
+      "valid": true,
+      "policy": "none"
+    },
+    "headers": {},
+    "securityHeaders": {
+      "hsts": false,
+      "csp": false,
+      "xframe": false,
+      "xcontent": false,
+      "xss": false,
+      "referrer": false,
+      "permissions": false,
+      "expectCT": false
+    },
+    "tls": null,
+    "dnssec": false,
+    "riskScore": 55
+  },
+  "subdomains": [
+    {
+      "subdomain": "www.romagnosi.it",
+      "found": true,
+      "ips": [
+        "217.27.72.228"
+      ]
+    },
+    {
+      "subdomain": "mail.romagnosi.it",
+      "found": true,
+      "ips": [
+        "62.149.157.151"
+      ]
+    },
+    {
+      "subdomain": "webmail.romagnosi.it",
+      "found": true,
+      "ips": [
+        "62.149.157.158"
+      ]
+    },
+    {
+      "subdomain": "smtp.romagnosi.it",
+      "found": true,
+      "ips": [
+        "62.149.157.154"
+      ]
+    },
+    {
+      "subdomain": "www.romagnosi.it",
+      "source": "crt.sh"
+    }
+  ],
+  "risk": {
+    "score": 55,
+    "level": "HIGH"
+  }
+}

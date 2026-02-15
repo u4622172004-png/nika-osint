@@ -1,0 +1,40 @@
+{
+  "name": "osint-ultra-max",
+  "version": "1.0.0",
+  "description": "Advanced OSINT toolkit for domain, email, username, and phone intelligence",
+  "main": "osint-ultra-max.js",
+  "scripts": {
+    "start": "node osint-ultra-max.js",
+    "test": "node osint-ultra-max.js --domain example.com"
+  },
+  "bin": {
+    "osint-ultra-max": "./osint-ultra-max.js"
+  },
+  "keywords": [
+    "osint",
+    "reconnaissance",
+    "security",
+    "information-gathering",
+    "penetration-testing",
+    "dns",
+    "whois",
+    "email",
+    "phone"
+  ],
+  "author": "OSINT Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "whois-json": "^2.0.4",
+    "libphonenumber-js": "^1.10.50",
+    "p-limit": "^3.1.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/osint-ultra-max"
+  }
+}
