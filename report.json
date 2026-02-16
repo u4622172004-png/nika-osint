@@ -1,39 +1,36 @@
 {
   "domain": {
+    "A": [
+      "45.137.235.95"
+    ],
     "MX": [
       {
-        "exchange": "romagnosi-it.mail.protection.outlook.com",
+        "exchange": "mail.register.it",
         "priority": 10,
         "type": "MX"
       }
     ],
     "NS": [
-      "dns.tol.it",
-      "dns2.tol.it"
+      "ns2.register.it",
+      "ns1.register.it"
     ],
     "TXT": [
       [
-        "v=spf1 include:spf.protection.outlook.com ~all"
-      ],
-      [
-        "MS=ms97897988"
-      ],
-      [
-        "google-site-verification=w2UqHRuJMS0f4b2J3lhRFFuhioo_LcYVtejRbaSIA28"
+        "v=spf1 include:spf.webapps.net ~all"
       ]
     ],
     "whois": {
       "additionalInformationCanBeVisualizedAt": "*",
-      "domain": "romagnosi.it",
+      "domain": "chatunity.it",
       "status": "ok",
       "signed": "no",
-      "created": "2001-12-18 00:00:00 2007-03-01 10:39:50 2001-12-19 00:00:00 2007-02-16 00:00:00",
-      "lastUpdate": "2026-01-03 00:40:51 2016-01-12 17:03:11 2016-01-12 17:03:11 2020-10-26 15:10:05",
-      "expireDate": "2026-12-18",
-      "organization": "Istituto Statale ITC G. D. Romagnosi - I.P.S.C.T. A. Casali Aruba Business s.r.l.",
-      "address": "Via Cavour,45 Via Cavour,45 Via Gulinelli 21/A",
-      "name": "Pierangelo Torlaschi gTLD Contact WIDE-REG",
-      "web": "https://www.arubabusiness.it",
+      "created": "2025-10-20 17:02:34 2025-10-20 17:02:33 2025-10-20 17:02:33 2009-09-28 11:01:09",
+      "lastUpdate": "2026-02-03 21:34:54 2025-10-20 17:02:33 2025-10-20 17:02:33 2024-06-12 12:09:06",
+      "expireDate": "2026-10-20",
+      "organization": "Francesco Caravello Francesco Caravello Register SpA Register S.p.a.",
+      "address": "via claudio asello via claudio asello Viale Giulio Cesare, 29",
+      "name": "Francesco Caravello Technical Support REGISTER-REG",
+      "web": "https://www.register.it",
       "dnssec": "yes"
     },
     "spf": {
@@ -41,10 +38,18 @@
       "strict": false
     },
     "dmarc": {
-      "valid": true,
-      "policy": "none"
+      "valid": false
     },
-    "headers": {},
+    "headers": {
+      "server": "nginx/1.22.1",
+      "date": "Sun, 15 Feb 2026 21:30:27 GMT",
+      "content-type": "text/html",
+      "content-length": "2535",
+      "last-modified": "Sun, 15 Feb 2026 21:30:13 GMT",
+      "connection": "keep-alive",
+      "etag": "\"69923ae5-9e7\"",
+      "accept-ranges": "bytes"
+    },
     "securityHeaders": {
       "hsts": false,
       "csp": false,
@@ -55,46 +60,66 @@
       "permissions": false,
       "expectCT": false
     },
-    "tls": null,
+    "tls": {
+      "issuer": {
+        "C": "US",
+        "O": "Let's Encrypt",
+        "CN": "E7"
+      },
+      "subject": {
+        "CN": "chatunity.it"
+      },
+      "valid_from": "Feb  4 14:48:18 2026 GMT",
+      "valid_to": "May  5 14:48:17 2026 GMT",
+      "daysRemaining": 78
+    },
     "dnssec": false,
-    "riskScore": 55
+    "riskScore": 70
   },
   "subdomains": [
     {
-      "subdomain": "www.romagnosi.it",
+      "subdomain": "www.chatunity.it",
       "found": true,
       "ips": [
-        "217.27.72.228"
+        "45.137.235.95"
       ]
     },
     {
-      "subdomain": "mail.romagnosi.it",
+      "subdomain": "ftp.chatunity.it",
       "found": true,
       "ips": [
-        "62.149.157.151"
+        "45.137.235.95"
       ]
     },
     {
-      "subdomain": "webmail.romagnosi.it",
+      "subdomain": "pop.chatunity.it",
       "found": true,
       "ips": [
-        "62.149.157.158"
+        "195.110.124.132"
       ]
     },
     {
-      "subdomain": "smtp.romagnosi.it",
-      "found": true,
-      "ips": [
-        "62.149.157.154"
-      ]
+      "subdomain": "chatunity.it\nwww.chatunity.it",
+      "source": "crt.sh"
     },
     {
-      "subdomain": "www.romagnosi.it",
+      "subdomain": "*.chatunity.it\nchatunity.it",
       "source": "crt.sh"
     }
   ],
+  "ipInfo": {
+    "ip": "45.137.235.95",
+    "city": "Rome",
+    "region": "Lazio",
+    "country": "IT",
+    "loc": "41.8919,12.5113",
+    "org": "AS202870 Dimensione S.r.l.",
+    "postal": "00118",
+    "timezone": "Europe/Rome",
+    "readme": "https://ipinfo.io/missingauth"
+  },
   "risk": {
-    "score": 55,
+    "score": 70,
     "level": "HIGH"
   }
 }
