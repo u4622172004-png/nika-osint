@@ -21,7 +21,17 @@ async function runDomain(domain){
   try{ data.MX = await dns.resolveMx(domain); }catch{}
   try{ data.NS = await dns.resolveNs(domain); }catch{}
   try{ data.TXT = await dns.resolveTxt(domain); }catch{}
-  try{ data.whois = await whois(domain); }catch{}
+  
+  try{ 
+    data.whois = await whois(domain);
+    if(!data.whois.registrant && typeof data.whois === 'object') {
+      data.whois = parseWhoisRaw(data.whois);
+    }
+  }catch{
+    console.log('\x1b[33m[!] WHOIS data unavailable or privacy protected\x1b[0m');
+    data.whois = null;
+  }
+
   data.spf = analyzeSPF(data.TXT);
   data.dmarc = await analyzeDMARC(domain);
   if(!data.spf.valid) risk += 15;
@@ -41,6 +51,66 @@ async function runDomain(domain){
   if(data.tls && data.tls.daysRemaining < 30) risk += 15;
   data.riskScore = risk;
   return data;
+}
+
+function parseWhoisRaw(whoisData) {
+  let rawText = '';
+  if(typeof whoisData === 'string') {
+    rawText = whoisData;
+  } else if(whoisData.data || whoisData.rawData) {
+    rawText = whoisData.data || whoisData.rawData;
+  } else {
+    rawText = JSON.stringify(whoisData);
+  }
+  
+  const parsed = {
+    registrant: {},
+    admin: {},
+    tech: {},
+    registrar: {},
+    nameServers: []
+  };
+  
+  const nameMatch = rawText.match(/Registrant Name:\s*(.+)/i);
+  if(nameMatch) parsed.registrant.name = nameMatch[1].trim();
+  
+  const orgMatch = rawText.match(/Registrant Organization:\s*(.+)/i);
+  if(orgMatch) parsed.registrant.organization = orgMatch[1].trim();
+  
+  const emailMatch = rawText.match(/Registrant Email:\s*(.+)/i);
+  if(emailMatch) parsed.registrant.email = emailMatch[1].trim();
+  
+  const streetMatch = rawText.match(/Registrant Street:\s*(.+)/i);
+  if(streetMatch) parsed.registrant.street = streetMatch[1].trim();
+  
+  const cityMatch = rawText.match(/Registrant City:\s*(.+)/i);
+  if(cityMatch) parsed.registrant.city = cityMatch[1].trim();
+  
+  const stateMatch = rawText.match(/Registrant State\/Province:\s*(.+)/i);
+  if(stateMatch) parsed.registrant.state = stateMatch[1].trim();
+  
+  const postalMatch = rawText.match(/Registrant Postal Code:\s*(.+)/i);
+  if(postalMatch) parsed.registrant.postalCode = postalMatch[1].trim();
+  
+  const countryMatch = rawText.match(/Registrant Country:\s*(.+)/i);
+  if(countryMatch) parsed.registrant.country = countryMatch[1].trim();
+  
+  const phoneMatch = rawText.match(/Registrant Phone:\s*(.+)/i);
+  if(phoneMatch) parsed.registrant.phone = phoneMatch[1].trim();
+  
+  const createdMatch = rawText.match(/Creation Date:\s*(.+)/i);
+  if(createdMatch) parsed.creationDate = createdMatch[1].trim();
+  
+  const updatedMatch = rawText.match(/Updated Date:\s*(.+)/i);
+  if(updatedMatch) parsed.updatedDate = updatedMatch[1].trim();
+  
+  const expiresMatch = rawText.match(/Registry Expiry Date:\s*(.+)/i);
+  if(expiresMatch) parsed.expirationDate = expiresMatch[1].trim();
+  
+  const registrarMatch = rawText.match(/Registrar:\s*(.+)/i);
+  if(registrarMatch) parsed.registrar.name = registrarMatch[1].trim();
+  
+  return parsed;
 }
 
 function getHeaders(domain){
@@ -228,110 +298,196 @@ function calculateRisk(results){
   return {score:total,level:"CRITICAL"};
 }
 
-function generateReport(data){
-  fs.writeFileSync("report.json",JSON.stringify(data,null,2));
-  const html = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>NIKA OSINT Report</title>
-<style>body{background:#0d1117;color:#58a6ff;font-family:monospace;padding:20px}
-h1{color:#7ee787;text-align:center}h2{color:#58a6ff;border-bottom:2px solid #58a6ff}
-.section{background:#161b22;margin:20px 0;padding:20px;border-radius:6px}
-.risk-LOW{background:#238636;color:#fff;padding:10px;border-radius:6px;display:inline-block}
-.risk-MEDIUM{background:#d29922;color:#fff;padding:10px;border-radius:6px;display:inline-block}
-.risk-HIGH{background:#da3633;color:#fff;padding:10px;border-radius:6px;display:inline-block}
-.risk-CRITICAL{background:#8b0000;color:#fff;padding:10px;border-radius:6px;display:inline-block}
-table{width:100%;border-collapse:collapse}td,th{border:1px solid #30363d;padding:10px}
-th{background:#21262d;color:#7ee787}.good{color:#7ee787}.bad{color:#f85149}
-.footer{text-align:center;margin-top:30px;color:#7ee787;font-size:1.2em}</style></head><body>
-<h1>🔍 NIKA OSINT Report</h1>
-<div class="section" style="text-align:center">
-<h2>Risk Assessment</h2>
-<div class="risk-${data.risk.level}">${data.risk.level} RISK</div>
-<p>Risk Score: <strong>${data.risk.score}/100</strong></p></div>
-${data.domain ? `<div class="section"><h2>🌐 Domain</h2><table>
-<tr><td>IP</td><td>${data.domain.A ? data.domain.A.join(', ') : 'N/A'}</td></tr>
-<tr><td>MX</td><td>${data.domain.MX ? data.domain.MX.map(m=>m.exchange).join(', ') : 'N/A'}</td></tr>
-<tr><td>SPF</td><td class="${data.domain.spf.valid?'good':'bad'}">${data.domain.spf.valid?'✓':'✗'}</td></tr>
-<tr><td>DMARC</td><td class="${data.domain.dmarc.valid?'good':'bad'}">${data.domain.dmarc.valid?'✓':'✗'}</td></tr>
-<tr><td>DNSSEC</td><td class="${data.domain.dnssec?'good':'bad'}">${data.domain.dnssec?'✓':'✗'}</td></tr>
-<tr><td>HSTS</td><td class="${data.domain.securityHeaders.hsts?'good':'bad'}">${data.domain.securityHeaders.hsts?'✓':'✗'}</td></tr>
-</table></div>` : ''}
-${data.subdomains && data.subdomains.length > 0 ? `<div class="section"><h2>🔍 Subdomains (${data.subdomains.length})</h2><ul>
-${data.subdomains.slice(0,20).map(s=>`<li>${s.subdomain}</li>`).join('')}</ul></div>` : ''}
-${data.email ? `<div class="section"><h2>📧 Email</h2><table>
-<tr><td>Valid</td><td class="${data.email.valid?'good':'bad'}">${data.email.valid?'✓':'✗'}</td></tr>
-<tr><td>MX Records</td><td class="${data.email.mx?.length>0?'good':'bad'}">${data.email.mx?.length>0?'✓':'✗'}</td></tr>
-</table></div>` : ''}
-${data.username && data.username.length > 0 ? `<div class="section"><h2>👤 Username (${data.username.length})</h2><ul>
-${data.username.map(u=>`<li><a href="${u.url}" style="color:#58a6ff">${u.platform.replace('https://','').split('/')[0]}</a></li>`).join('')}
-</ul></div>` : ''}
-${data.phone ? `<div class="section"><h2>📱 Phone</h2><table>
-<tr><td>Valid</td><td class="${data.phone.valid?'good':'bad'}">${data.phone.valid?'✓':'✗'}</td></tr>
-${data.phone.country ? `<tr><td>Country</td><td>${data.phone.country}</td></tr>` : ''}
-${data.phone.type ? `<tr><td>Type</td><td>${data.phone.type}</td></tr>` : ''}
-</table></div>` : ''}
-${data.ipInfo ? `<div class="section"><h2>🌍 IP Info</h2><table>
-<tr><td>Location</td><td>${data.ipInfo.city}, ${data.ipInfo.country}</td></tr>
-<tr><td>ISP</td><td>${data.ipInfo.org || 'Unknown'}</td></tr>
-</table></div>` : ''}
-<div class="footer">
-███╗   ██╗██╗██╗  ██╗ █████╗<br>
-████╗  ██║██║██║ ██╔╝██╔══██╗<br>
-██╔██╗ ██║██║█████╔╝ ███████║<br>
-██║╚██╗██║██║██╔═██╗ ██╔══██║<br>
-██║ ╚████║██║██║  ██╗██║  ██║<br>
-╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝<br>
-🥝 by kiwi & 777
-</div>
-</body></html>`;
-  fs.writeFileSync("report.html",html);
-}
-
 function displayResults(results){
   console.log("\n╔════════════════════════════════════════════════════════╗");
-  console.log("║                  RISULTATI SCAN                        ║");
+  console.log("║                  RISULTATI COMPLETI                    ║");
   console.log("╚════════════════════════════════════════════════════════╝\n");
+  
   const riskColor = {'LOW':'\x1b[32m','MEDIUM':'\x1b[33m','HIGH':'\x1b[31m','CRITICAL':'\x1b[35m'};
   const color = riskColor[results.risk.level] || '\x1b[0m';
   console.log(`🎯 RISK: ${color}${results.risk.level}\x1b[0m (${results.risk.score}/100)\n`);
+  
   if(results.domain){
-    console.log("\x1b[36m🌐 DOMAIN:\x1b[0m");
-    console.log(`   IP: ${results.domain.A ? results.domain.A.join(', ') : 'N/A'}`);
-    console.log(`   MX: ${results.domain.MX ? results.domain.MX.map(m=>m.exchange).join(', ') : 'N/A'}`);
-    console.log(`   SPF: ${results.domain.spf.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`   DMARC: ${results.domain.dmarc.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`   DNSSEC: ${results.domain.dnssec ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`   HSTS: ${results.domain.securityHeaders.hsts ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    if(results.domain.tls) console.log(`   TLS: ${results.domain.tls.daysRemaining} days`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m🌐 DOMAIN INTELLIGENCE\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log("📍 DNS Records:");
+    console.log(`   A Records: ${results.domain.A ? results.domain.A.join(', ') : 'N/A'}`);
+    console.log(`   AAAA Records: ${results.domain.AAAA ? results.domain.AAAA.join(', ') : 'N/A'}`);
+    console.log(`   MX Records: ${results.domain.MX ? results.domain.MX.map(m=>m.exchange + ' (priority: ' + m.priority + ')').join(', ') : 'N/A'}`);
+    console.log(`   NS Records: ${results.domain.NS ? results.domain.NS.join(', ') : 'N/A'}`);
+    
+    if(results.domain.whois) {
+      console.log("\n👤 WHOIS Information:");
+      
+      if(results.domain.whois.registrant && Object.keys(results.domain.whois.registrant).length > 0) {
+        console.log("\n   📋 Registrant (Domain Owner):");
+        if(results.domain.whois.registrant.name) 
+          console.log(`      Name: ${results.domain.whois.registrant.name}`);
+        if(results.domain.whois.registrant.organization) 
+          console.log(`      Organization: ${results.domain.whois.registrant.organization}`);
+        if(results.domain.whois.registrant.email) 
+          console.log(`      Email: ${results.domain.whois.registrant.email}`);
+        if(results.domain.whois.registrant.phone) 
+          console.log(`      Phone: ${results.domain.whois.registrant.phone}`);
+        if(results.domain.whois.registrant.street) 
+          console.log(`      Street: ${results.domain.whois.registrant.street}`);
+        if(results.domain.whois.registrant.city) 
+          console.log(`      City: ${results.domain.whois.registrant.city}`);
+        if(results.domain.whois.registrant.state) 
+          console.log(`      State/Province: ${results.domain.whois.registrant.state}`);
+        if(results.domain.whois.registrant.postalCode) 
+          console.log(`      Postal Code: ${results.domain.whois.registrant.postalCode}`);
+        if(results.domain.whois.registrant.country) 
+          console.log(`      Country: ${results.domain.whois.registrant.country}`);
+      }
+      
+      if(results.domain.whois.admin && Object.keys(results.domain.whois.admin).length > 0) {
+        console.log("\n   🔧 Admin Contact:");
+        if(results.domain.whois.admin.name) 
+          console.log(`      Name: ${results.domain.whois.admin.name}`);
+        if(results.domain.whois.admin.organization) 
+          console.log(`      Organization: ${results.domain.whois.admin.organization}`);
+        if(results.domain.whois.admin.email) 
+          console.log(`      Email: ${results.domain.whois.admin.email}`);
+        if(results.domain.whois.admin.phone) 
+          console.log(`      Phone: ${results.domain.whois.admin.phone}`);
+      }
+      
+      if(results.domain.whois.tech && Object.keys(results.domain.whois.tech).length > 0) {
+        console.log("\n   ⚙️  Tech Contact:");
+        if(results.domain.whois.tech.name) 
+          console.log(`      Name: ${results.domain.whois.tech.name}`);
+        if(results.domain.whois.tech.organization) 
+          console.log(`      Organization: ${results.domain.whois.tech.organization}`);
+        if(results.domain.whois.tech.email) 
+          console.log(`      Email: ${results.domain.whois.tech.email}`);
+      }
+      
+      console.log("\n   📅 Domain Dates:");
+      if(results.domain.whois.creationDate) 
+        console.log(`      Created: ${results.domain.whois.creationDate}`);
+      if(results.domain.whois.updatedDate) 
+        console.log(`      Updated: ${results.domain.whois.updatedDate}`);
+      if(results.domain.whois.expirationDate) 
+        console.log(`      Expires: ${results.domain.whois.expirationDate}`);
+      
+      if(results.domain.whois.registrar && Object.keys(results.domain.whois.registrar).length > 0) {
+        console.log("\n   🏢 Registrar:");
+        if(results.domain.whois.registrar.name) 
+          console.log(`      Name: ${results.domain.whois.registrar.name}`);
+        if(results.domain.whois.registrar.url) 
+          console.log(`      URL: ${results.domain.whois.registrar.url}`);
+      }
+      
+      if(results.domain.whois.nameServers && results.domain.whois.nameServers.length > 0) {
+        console.log("\n   🖥️  Name Servers:");
+        results.domain.whois.nameServers.forEach((ns, i) => {
+          console.log(`      ${i + 1}. ${ns}`);
+        });
+      }
+    }
+    
+    console.log("\n🔒 Email Security:");
+    console.log(`   SPF: ${results.domain.spf.valid ? '\x1b[32m✓ Valid\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    if(results.domain.spf.valid) {
+      console.log(`        Policy: ${results.domain.spf.strict ? 'Strict (-all)' : 'Soft (~all)'}`);
+    }
+    console.log(`   DMARC: ${results.domain.dmarc.valid ? '\x1b[32m✓ Configured\x1b[0m' : '\x1b[31m✗ Not Configured\x1b[0m'}`);
+    if(results.domain.dmarc.valid) {
+      console.log(`          Policy: ${results.domain.dmarc.policy}`);
+    }
+    console.log(`   DNSSEC: ${results.domain.dnssec ? '\x1b[32m✓ Enabled\x1b[0m' : '\x1b[31m✗ Disabled\x1b[0m'}`);
+    
+    console.log("\n🛡️  Security Headers:");
+    console.log(`   HSTS: ${results.domain.securityHeaders.hsts ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   Content-Security-Policy: ${results.domain.securityHeaders.csp ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   X-Frame-Options: ${results.domain.securityHeaders.xframe ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   X-Content-Type-Options: ${results.domain.securityHeaders.xcontent ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   X-XSS-Protection: ${results.domain.securityHeaders.xss ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   Referrer-Policy: ${results.domain.securityHeaders.referrer ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    console.log(`   Permissions-Policy: ${results.domain.securityHeaders.permissions ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    
+    if(results.domain.tls) {
+      console.log("\n🔐 TLS Certificate:");
+      console.log(`   Issuer: ${results.domain.tls.issuer.O || 'Unknown'}`);
+      console.log(`   Valid From: ${results.domain.tls.valid_from}`);
+      console.log(`   Valid Until: ${results.domain.tls.valid_to}`);
+      const tlsColor = results.domain.tls.daysRemaining < 30 ? '\x1b[33m' : '\x1b[32m';
+      console.log(`   Days Remaining: ${tlsColor}${results.domain.tls.daysRemaining} days\x1b[0m`);
+    }
     console.log("");
   }
+  
   if(results.subdomains && results.subdomains.length > 0){
-    console.log(`\x1b[36m🔍 SUBDOMAINS (${results.subdomains.length}):\x1b[0m`);
-    results.subdomains.slice(0, 10).forEach(s => console.log(`   \x1b[32m✓\x1b[0m ${s.subdomain}`));
-    if(results.subdomains.length > 10) console.log(`   \x1b[33m... +${results.subdomains.length - 10} more\x1b[0m`);
-    console.log("");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log(`\x1b[36m🔍 SUBDOMAINS FOUND (${results.subdomains.length} total)\x1b[0m`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    results.subdomains.forEach((s, index) => {
+      console.log(`${index + 1}. \x1b[32m${s.subdomain}\x1b[0m`);
+      if(s.ips && s.ips.length > 0) {
+        console.log(`   IP: ${s.ips.join(', ')}`);
+      }
+      console.log(`   Source: ${s.source || 'brute-force'}`);
+      console.log("");
+    });
   }
+  
   if(results.email){
-    console.log("\x1b[36m📧 EMAIL:\x1b[0m");
-    console.log(`   Valid: ${results.email.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`   MX: ${results.email.mx?.length > 0 ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m📧 EMAIL ANALYSIS\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`Format Valid: ${results.email.valid ? '\x1b[32m✓ Yes\x1b[0m' : '\x1b[31m✗ No\x1b[0m'}`);
+    console.log(`MX Records: ${results.email.mx?.length > 0 ? '\x1b[32m✓ Present\x1b[0m' : '\x1b[31m✗ Missing\x1b[0m'}`);
+    if(results.email.mx && results.email.mx.length > 0) {
+      console.log("\nMX Servers:");
+      results.email.mx.forEach((mx, i) => {
+        console.log(`   ${i + 1}. ${mx.exchange} (priority: ${mx.priority})`);
+      });
+    }
+    console.log(`\nGravatar: ${results.email.gravatar}`);
     console.log("");
   }
+  
   if(results.username && results.username.length > 0){
-    console.log(`\x1b[36m👤 USERNAME (${results.username.length}):\x1b[0m`);
-    results.username.forEach(u => console.log(`   \x1b[32m✓\x1b[0m ${u.platform.replace('https://','').split('/')[0]}`));
-    console.log("");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log(`\x1b[36m👤 USERNAME FOOTPRINT (${results.username.length} platforms found)\x1b[0m`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    results.username.forEach((u, index) => {
+      const platform = u.platform.replace('https://','').split('/')[0];
+      console.log(`${index + 1}. \x1b[32m✓ ${platform}\x1b[0m`);
+      console.log(`   ${u.url}`);
+      console.log("");
+    });
   }
+  
   if(results.phone){
-    console.log("\x1b[36m📱 PHONE:\x1b[0m");
-    console.log(`   Valid: ${results.phone.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    if(results.phone.country) console.log(`   Country: ${results.phone.country}`);
-    if(results.phone.type) console.log(`   Type: ${results.phone.type}`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m📱 PHONE ANALYSIS\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`Valid: ${results.phone.valid ? '\x1b[32m✓ Yes\x1b[0m' : '\x1b[31m✗ No\x1b[0m'}`);
+    if(results.phone.country) console.log(`Country: ${results.phone.country}`);
+    if(results.phone.type) console.log(`Type: ${results.phone.type}`);
+    if(results.phone.international) console.log(`International Format: ${results.phone.international}`);
+    if(results.phone.national) console.log(`National Format: ${results.phone.national}`);
     console.log("");
   }
+  
   if(results.ipInfo){
-    console.log("\x1b[36m🌍 IP:\x1b[0m");
-    console.log(`   ${results.ipInfo.city}, ${results.ipInfo.country}`);
-    console.log(`   ${results.ipInfo.org || 'Unknown'}`);
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m🌍 IP GEOLOCATION\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`IP Address: ${results.ipInfo.ip}`);
+    console.log(`Location: ${results.ipInfo.city}, ${results.ipInfo.region}, ${results.ipInfo.country}`);
+    console.log(`ISP: ${results.ipInfo.org || 'Unknown'}`);
+    console.log(`Timezone: ${results.ipInfo.timezone || 'Unknown'}`);
+    if(results.ipInfo.loc) console.log(`Coordinates: ${results.ipInfo.loc}`);
     console.log("");
   }
 }
@@ -341,7 +497,8 @@ async function main(){
   let domain, username, email, phone;
   for(let i=0;i<args.length;i++){
     if(args[i] === "--domain") domain = args[i+1];
-    if(args[i] === "--username") username = args[i+1];
+    if(args[i] === "--username") username = args[i
++1];
     if(args[i] === "--email") email = args[i+1];
     if(args[i] === "--phone") phone = args[i+1];
   }
@@ -403,9 +560,6 @@ async function main(){
   }
   results.risk = calculateRisk(results);
   displayResults(results);
-  console.log("📊 [*] Generating reports...");
-  generateReport(results);
-  console.log("\n✓ report.json\n✓ report.html\n");
   console.log("\x1b[31m");
   console.log("███╗   ██╗██╗██╗  ██╗ █████╗ ");
   console.log("████╗  ██║██║██║ ██╔╝██╔══██╗");
@@ -414,7 +568,7 @@ async function main(){
   console.log("██║ ╚████║██║██║  ██╗██║  ██║");
   console.log("╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝");
   console.log("\x1b[0m");
-  console.log("\x1b[35m    🥝 by kiwi & 777\x1b[0m\n");
+  console.log("\x1b[35m    🥝 by kiwi & 777 - Scan Complete\x1b[0m\n");
 }
 
 main();
