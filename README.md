@@ -1,10 +1,5 @@
-# 🥝 NIKA OSINT ULTRA
-███╗   ██╗ ██╗ ██╗  ██╗  █████╗
-████╗  ██║ ██║ ██║ ██╔╝ ██╔══██╗
-██╔██╗ ██║ ██║ █████╔╝  ███████║
-██║╚██╗██║ ██║ ██╔═██╗  ██╔══██║
-██║ ╚████║ ██║ ██║  ██╗ ██║  ██║
-╚═╝  ╚═══╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝
+# NIKA OSINT ULTRA
+
 **Advanced Open Source Intelligence Gathering Toolkit**
 
 *Developed by kiwi & 777*
@@ -21,44 +16,44 @@
 ](https://nodejs.org/)
 [
 
-![Platform](https://img.shields.io/badge/Platform-Termux%20%7C%20Linux%20%7C%20macOS-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Termux%20|%20Linux%20|%20macOS-blue.svg)
 
 ](https://github.com/god-kiwi/nika-osint)
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [Features](#-features)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Advanced Features](#-advanced-features)
-- [Risk Scoring](#-risk-scoring)
-- [Legal & Ethics](#-legal--ethics)
-- [Troubleshooting](#-troubleshooting)
-- [Credits](#-credits)
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Advanced Features](#advanced-features)
+- [Risk Scoring](#risk-scoring)
+- [Legal & Ethics](#legal--ethics)
+- [Troubleshooting](#troubleshooting)
+- [Credits](#credits)
 
 ---
 
-## 🎯 Overview
+## Overview
 
 **NIKA OSINT ULTRA** is a comprehensive, terminal-based OSINT (Open Source Intelligence) toolkit designed for security researchers, penetration testers, and digital investigators. Built with Node.js, it provides real-time intelligence gathering across multiple domains.
 
 ### Why NIKA?
 
-- 🚀 **Lightning Fast** - Concurrent scanning with intelligent rate limiting
-- 💯 **100% Terminal Output** - No files generated, all results displayed in real-time
-- 🎨 **Beautiful Interface** - Color-coded, organized output with ASCII art
-- 📱 **Mobile Ready** - Optimized for Termux on Android devices
-- 🔒 **Privacy Focused** - All scanning done locally
-- 🆓 **Completely Free** - Open source with MIT license
+- **Lightning Fast** - Concurrent scanning with intelligent rate limiting
+- **100% Terminal Output** - No files generated, all results displayed in real-time
+- **Beautiful Interface** - Color-coded, organized output with ASCII art
+- **Mobile Ready** - Optimized for Termux on Android devices
+- **Privacy Focused** - All scanning done locally
+- **Completely Free** - Open source with MIT license
 
 ---
 
-## ✨ Features
+## Features
 
-### 🌐 Domain Intelligence
+### Domain Intelligence
 
 - **Complete DNS Analysis**: A, AAAA, MX, NS, TXT, CNAME, SOA records
 - **Full WHOIS Data**: Registrant name, organization, address, email, phone
@@ -69,7 +64,7 @@
 - **Blacklist Checking**: 4 major RBLs (Spamhaus, SpamCop, SORBS, CBL)
 - **Risk Scoring**: Automated security assessment (0-100)
 
-### 🔍 Subdomain Enumeration
+### Subdomain Enumeration
 
 - **Wordlist Brute-Force**: 250+ common patterns
 - **Certificate Transparency**: crt.sh integration
@@ -77,7 +72,7 @@
 - **IP Resolution**: Automatic IP address discovery
 - **Source Tracking**: Shows discovery method
 
-### 📧 Email Intelligence
+### Email Intelligence
 
 - **Format Validation**: RFC-compliant checking
 - **MX Records**: Complete mail server enumeration
@@ -86,7 +81,7 @@
 - **Breach Intelligence**: Have I Been Pwned integration
 - **Reputation Analysis**: Spam score indicators
 
-### 👤 Username OSINT (20+ Platforms)
+### Username OSINT (20+ Platforms)
 
 **Developer**: GitHub (API), GitLab, BitBucket, StackOverflow, Dev.to, HackerNews
 
@@ -94,7 +89,7 @@
 
 **Content**: Medium, YouTube, Twitch, Pinterest, Patreon, Keybase
 
-### 📱 Phone Intelligence
+### Phone Intelligence
 
 - **Validation**: libphonenumber-js powered
 - **Multiple Formats**: International, National, E.164, RFC3966, URI
@@ -104,7 +99,7 @@
 - **Social Links**: WhatsApp, Telegram, Signal, Viber
 - **Spam Check**: References to reputation services
 
-### 🌍 IP Geolocation
+### IP Geolocation
 
 - **Location Data**: City, region, country, coordinates
 - **Network Info**: ISP, ASN, hosting provider
@@ -113,7 +108,7 @@
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Termux (Android)
 
@@ -180,20 +175,20 @@ chmod +x osint-menu.sh
 
 # Run
 ./osint-menu.sh
-📖 Usage
+Usage
 Interactive Menu
 # Launch menu
 ./osint-menu-termux.sh  # Termux
 ./osint-menu.sh         # Linux/macOS
 Menu Options:
-[1] 🌐 Domain Intelligence
-[2] 📧 Email Analysis
-[3] 📱 Phone Lookup
-[4] 👤 Username Search
-[5] 🔍 Subdomain Enumeration
-[6] 📊 Full Report
-[7] ℹ️  Info & Help
-[0] ❌ Exit
+[1] Domain Intelligence
+[2] Email Analysis
+[3] Phone Lookup
+[4] Username Search
+[5] Subdomain Enumeration
+[6] Full Report
+[7] Info & Help
+[0] Exit
 Command Line
 Domain Scan:
 ./osint-ultra-max.js --domain example.com
@@ -209,7 +204,7 @@ Combined Scan:
 Display Help:
 ./osint-ultra-max.js --help
 ./osint-ultra-max.js
-🔬 Advanced Features
+Advanced Features
 Custom Subdomains
 Edit the wordlist to add your own patterns:
 nano wordlists/subdomains.txt
@@ -229,7 +224,7 @@ Graceful degradation on failures
 Detailed error messages
 Network failure recovery
 DNS timeout protection
-🎯 Risk Scoring
+Risk Scoring
 Score Calculation
 Risk Factors:
 Missing SPF: +15 points
@@ -247,67 +242,66 @@ Score
 Level
 Description
 0-19
-🟢 LOW
+LOW
 Good security posture
 20-49
-🟡 MEDIUM
+MEDIUM
 Some security concerns
 50-79
-🔴 HIGH
+HIGH
 Significant security issues
 80+
-🟣 CRITICAL
+CRITICAL
 Immediate action required
-📊 Output Format
+Output Format
 Terminal Output
 All results are displayed in real-time with:
-✅ Color Coding: Green (good), Red (bad), Yellow (warning)
-📋 Organized Sections: Separated by category
-🎨 ASCII Art: Beautiful headers and branding
-📈 Risk Assessment: Color-coded score display
+Color Coding: Green (good), Red (bad), Yellow (warning)
+Organized Sections: Separated by category
+ASCII Art: Beautiful headers and branding
+Risk Assessment: Color-coded score display
 Example Output
-🎯 RISK: MEDIUM (35/100)
+RISK: MEDIUM (35/100)
 
-🌐 DOMAIN INTELLIGENCE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DOMAIN INTELLIGENCE
 
-📍 DNS:
+DNS:
    A: 93.184.216.34
    MX: mail.example.com (10)
    NS: ns1.example.com
 
-👤 WHOIS:
+WHOIS:
    Name: John Doe
    Organization: Example Corp
    Email: admin@example.com
    City: Los Angeles, CA
    Country: United States
 
-🔒 Security:
-   SPF: ✓
-   DMARC: ✓ (Policy: reject)
-   DKIM: ✓
-   DNSSEC: ✓
-   HSTS: ✓
+Security:
+   SPF: Valid
+   DMARC: Configured (Policy: reject)
+   DKIM: Found
+   DNSSEC: Enabled
+   HSTS: Present
 
-🔐 TLS: 87 days
+TLS: 87 days
    Issuer: Let's Encrypt
    Protocol: TLSv1.3
-⚖️ Legal & Ethics
+Legal & Ethics
 Important Notice
 This tool is designed for:
-✅ Educational purposes
-✅ Authorized security research
-✅ Penetration testing with permission
-✅ OSINT on publicly available information
-✅ Domain security auditing (your own domains)
+Educational purposes
+Authorized security research
+Penetration testing with permission
+OSINT on publicly available information
+Domain security auditing (your own domains)
 Prohibited Uses
-❌ Unauthorized access attempts
-❌ Privacy violations
-❌ Stalking or harassment
-❌ Illegal surveillance
-❌ Any malicious activities
-❌ Scanning domains without permission
+Unauthorized access attempts
+Privacy violations
+Stalking or harassment
+Illegal surveillance
+Any malicious activities
+Scanning domains without permission
 Responsible Use
 Always obtain proper authorization
 Respect rate limits and Terms of Service
@@ -316,15 +310,15 @@ Use for defensive security purposes
 Report findings responsibly
 Respect privacy and data protection laws
 Users are solely responsible for compliance with all applicable laws.
-🛠️ Troubleshooting
+Troubleshooting
 Common Issues
-"Command not found"
+Command not found
 chmod +x osint-ultra-max.js
 chmod +x osint-menu-termux.sh
-"Cannot find module"
+Cannot find module
 cd nika-osint
 npm install
-"Permission denied"
+Permission denied
 chmod +x *.js *.sh
 Network timeouts
 Check internet connection
@@ -338,13 +332,13 @@ No subdomains found
 Domain may not have subdomains
 Try adding custom patterns to wordlist
 Some domains block enumeration
-📦 Dependencies
+Dependencies
 Node.js >= 14.0.0
 axios - HTTP client
 whois-json - WHOIS lookups
 libphonenumber-js - Phone number parsing
 p-limit - Concurrency control
-🗂️ Project Structure
+Project Structure
 nika-osint/
 ├── osint-ultra-max.js        # Core scanning engine
 ├── osint-menu-termux.sh      # Termux interactive menu
@@ -354,7 +348,7 @@ nika-osint/
 │   └── subdomains.txt        # Subdomain wordlist (250+)
 ├── README.md                 # This file
 └── LICENSE                   # MIT License
-🔄 Updates
+Updates
 Stay Updated
 cd nika-osint
 git pull origin main
@@ -374,7 +368,7 @@ Risk scoring improvements
 v1.0
 Initial release
 Basic domain/email/phone/username scanning
-👥 Credits
+Credits
 Developed by: kiwi & 777
 Special Thanks:
 Termux developers
@@ -386,7 +380,7 @@ whois-json
 axios
 crt.sh (Certificate Transparency)
 ipinfo.io (IP Geolocation)
-📜 License
+License
 MIT License
 Copyright (c) 2024 kiwi & 777
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -404,17 +398,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-🌟 Support
+Support
 If you find NIKA useful:
-⭐ Star the repository
-🐛 Report bugs via Issues
-💡 Suggest features
-🔀 Submit pull requests
-📢 Share with others
-📞 Contact
+Star the repository
+Report bugs via Issues
+Suggest features
+Submit pull requests
+Share with others
+Contact
 GitHub Issues: https://github.com/god-kiwi/nika-osint/issues
 Repository: https://github.com/god-kiwi/nika-osint
-🚀 Quick Start Examples
+Quick Start Examples
 Scan Your Own Domain
 ./osint-ultra-max.js --domain yourwebsite.com
 Check Email Validity
@@ -425,11 +419,6 @@ Phone Number Analysis
 ./osint-ultra-max.js --phone "+39 333 123 4567"
 Complete Investigation
 ./osint-ultra-max.js --domain target.com --email admin@target.com --username targetuser
-🥝 NIKA OSINT ULTRA - Intelligence at your fingertips
+NIKA OSINT ULTRA - Intelligence at your fingertips
 Use responsibly. Respect privacy. Follow laws.
-███╗   ██╗ ██╗ ██╗  ██╗  █████╗   
-████╗  ██║ ██║ ██║ ██╔╝ ██╔══██╗  
-██╔██╗ ██║ ██║ █████╔╝  ███████║  
-██║╚██╗██║ ██║ ██╔═██╗  ██╔══██║  
-██║ ╚████║ ██║ ██║  ██╗ ██║  ██║  
-╚═╝  ╚═══╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝
+by 777 & Kiwi
