@@ -2,6 +2,7 @@
 
 const dns = require('dns').promises;
 const https = require('https');
+const http = require('http');
 const tls = require('tls');
 const axios = require('axios');
 const fs = require('fs');
@@ -9,16 +10,297 @@ const whois = require('whois-json');
 const phoneUtil = require('libphonenumber-js');
 const crypto = require('crypto');
 const pLimit = require('p-limit');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+const execAsync = promisify(exec);
 const limit = pLimit(10);
 
 // ============================================
-// UTILITIES
+// CONFIGURATION
 // ============================================
+
+const CONFIG = {
+  SHODAN_API_KEY: process.env.SHODAN_API_KEY || '',
+  VIRUSTOTAL_API_KEY: process.env.VIRUSTOTAL_API_KEY || '',
+  SAVE_RESULTS: false,
+  TIMEOUT: 10000,
+  REPORTS_DIR: './reports'
+};
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 // ============================================
-// DOMAIN INTELLIGENCE
+// ENHANCED FEATURES
+// ============================================
+
+// Google Dorks Generator
+function generateGoogleDorks(domain) {
+  return [
+    `site:${domain} filetype:pdf`,
+    `site:${domain} filetype:doc OR filetype:docx`,
+    `site:${domain} filetype:xls OR filetype:xlsx`,
+    `site:${domain} filetype:ppt OR filetype:pptx`,
+    `site:${domain} filetype:txt`,
+    `site:${domain} filetype:csv`,
+    `site:${domain} filetype:sql`,
+    `site:${domain} filetype:db`,
+    `site:${domain} filetype:env`,
+    `site:${domain} filetype:log`,
+    `site:${domain} filetype:bak`,
+    `site:${domain} filetype:conf OR filetype:config`,
+    `site:${domain} inurl:admin`,
+    `site:${domain} inurl:login`,
+    `site:${domain} inurl:dashboard`,
+    `site:${domain} inurl:portal`,
+    `site:${domain} inurl:upload`,
+    `site:${domain} inurl:backup`,
+    `site:${domain} inurl:api`,
+    `site:${domain} inurl:wp-admin`,
+    `site:${domain} inurl:wp-login`,
+    `site:${domain} inurl:phpmyadmin`,
+    `site:${domain} inurl:cpanel`,
+    `site:${domain} intitle:"index of"`,
+    `site:${domain} intitle:"index of /" backup`,
+    `site:${domain} intitle:"index of /" passwords`,
+    `site:${domain} intext:"powered by"`,
+    `site:${domain} intext:"api key"`,
+    `site:${domain} intext:"api_key"`,
+    `site:${domain} intext:"password"`,
+    `site:${domain} intext:"secret"`,
+    `site:${domain} intext:"token"`,
+    `site:${domain} intext:"access_token"`,
+    `site:${domain} intext:"private key"`,
+    `site:${domain} intext:"BEGIN RSA PRIVATE KEY"`,
+    `site:${domain} intext:"smtp"`,
+    `site:${domain} intext:"ftp"`,
+    `site:${domain} intext:"database"`,
+    `"${domain}" site:pastebin.com`,
+    `"${domain}" site:paste2.org`,
+    `"${domain}" site:ideone.com`,
+    `"${domain}" site:codebeautify.org`,
+    `"${domain}" site:codepen.io`,
+    `"${domain}" site:jsfiddle.net`,
+    `"${domain}" site:github.com`,
+    `"${domain}" site:gitlab.com`,
+    `"${domain}" site:bitbucket.org`,
+    `"${domain}" site:gist.github.com`,
+    `"${domain}" site:stackoverflow.com`,
+    `"${domain}" site:trello.com`,
+    `"${domain}" site:scribd.com`,
+    `"${domain}" ext:sql intext:password`,
+    `"${domain}" ext:xml intext:password`,
+    `"${domain}" ext:json intext:password`
+  ];
+}
+
+// Shodan Integration
+async function searchShodan(ip) {
+  if (!CONFIG.SHODAN_API_KEY) return { available: false, message: 'Set SHODAN_API_KEY env' };
+  try {
+    const url = `https://api.shodan.io/shodan/host/${ip}?key=${CONFIG.SHODAN_API_KEY}`;
+    const res = await axios.get(url, { timeout: 10000 });
+    return {
+      available: true,
+      ip: res.data.ip_str,
+      organization: res.data.org,
+      os: res.data.os,
+      ports: res.data.ports || [],
+      services: (res.data.data || []).map(s => ({ port: s.port, product: s.product, version: s.version })),
+      vulnerabilities: res.data.vulns || [],
+      hostnames: res.data.hostnames || [],
+      city: res.data.city,
+      country: res.data.country_name,
+      isp: res.data.isp,
+      asn: res.data.asn,
+      tags: res.data.tags || []
+    };
+  } catch (e) {
+    return { available: false, error: e.message };
+  }
+}
+
+// VirusTotal Integration
+async function checkVirusTotal(domain) {
+  if (!CONFIG.VIRUSTOTAL_API_KEY) return { available: false };
+  try {
+    const url = `https://www.virustotal.com/vtapi/v2/domain/report?apikey=${CONFIG.VIRUSTOTAL_API_KEY}&domain=${domain}`;
+    const res = await axios.get(url, { timeout: 10000 });
+    return {
+      available: true,
+      detected_urls: (res.data.detected_urls || []).length,
+      detected_samples: (res.data.detected_communicating_samples || []).length,
+      categories: res.data.categories || {},
+      reputation: res.data.reputation || 0,
+      whois_timestamp: res.data.whois_timestamp
+    };
+  } catch {
+    return { available: false };
+  }
+}
+
+// CVE Search
+async function searchCVE(technology) {
+  try {
+    const url = `https://cve.circl.lu/api/search/${encodeURIComponent(technology)}`;
+    const res = await axios.get(url, { timeout: 5000 });
+    return (res.data || []).slice(0, 5).map(cve => ({
+      id: cve.id,
+      summary: cve.summary ? cve.summary.substring(0, 150) + '...' : 'No summary',
+      cvss: cve.cvss || 'N/A'
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// Web Archive Check
+async function checkWebArchive(domain) {
+  try {
+    const url = `http://archive.org/wayback/available?url=${domain}`;
+    const res = await axios.get(url, { timeout: 5000 });
+    if (res.data.archived_snapshots && res.data.archived_snapshots.closest) {
+      return {
+        available: true,
+        url: res.data.archived_snapshots.closest.url,
+        timestamp: res.data.archived_snapshots.closest.timestamp,
+        status: res.data.archived_snapshots.closest.status
+      };
+    }
+    return { available: false };
+  } catch {
+    return { available: false };
+  }
+}
+
+// GitHub Repository Search
+async function searchGitHub(query) {
+  try {
+    const url = `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&per_page=5`;
+    const res = await axios.get(url, { 
+      timeout: 5000,
+      headers: { 'User-Agent': 'NIKA-OSINT' }
+    });
+    return (res.data.items || []).map(repo => ({
+      name: repo.full_name,
+      description: repo.description,
+      stars: repo.stargazers_count,
+      url: repo.html_url,
+      language: repo.language
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// DNS History (SecurityTrails-like)
+async function getDNSHistory(domain) {
+  // This would require SecurityTrails API, for now we return structure
+  return {
+    note: 'DNS history requires SecurityTrails API key',
+    url: `https://securitytrails.com/domain/${domain}/history/a`
+  };
+}
+
+// SSL Certificate Transparency Alternative Sources
+async function searchCensys(domain) {
+  // Censys would require API key, returning structure
+  return {
+    note: 'Censys search requires API key',
+    url: `https://search.censys.io/search?resource=hosts&q=${domain}`
+  };
+}
+
+// AlienVault OTX Threat Intelligence
+async function checkAlienVault(domain) {
+  try {
+    const url = `https://otx.alienvault.com/api/v1/indicators/domain/${domain}/general`;
+    const res = await axios.get(url, { timeout: 5000 });
+    return {
+      available: true,
+      pulse_count: res.data.pulse_info?.count || 0,
+      url: `https://otx.alienvault.com/indicator/domain/${domain}`
+    };
+  } catch {
+    return { available: false };
+  }
+}
+
+// Email Hunter (Email Finder)
+function getEmailHunterUrl(domain) {
+  return `https://hunter.io/search/${domain}`;
+}
+
+// LinkedIn Company Search
+function getLinkedInUrl(domain) {
+  const company = domain.split('.')[0];
+  return `https://www.linkedin.com/search/results/companies/?keywords=${company}`;
+}
+
+// Crunchbase Search
+function getCrunchbaseUrl(domain) {
+  const company = domain.split('.')[0];
+  return `https://www.crunchbase.com/textsearch?q=${company}`;
+}
+
+// Certificate Search (additional to crt.sh)
+async function searchCertSpotter(domain) {
+  try {
+    const url = `https://api.certspotter.com/v1/issuances?domain=${domain}&include_subdomains=true&expand=dns_names`;
+    const res = await axios.get(url, { timeout: 10000 });
+    return (res.data || []).slice(0, 10).map(cert => ({
+      dns_names: cert.dns_names || [],
+      issuer: cert.issuer?.name || 'Unknown'
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// Phone Number Additional Lookups
+function getPhoneReputationUrls(number) {
+  return {
+    truecaller: `https://www.truecaller.com/search/int/${number}`,
+    numverify: `https://numverify.com/`,
+    phonevalidator: `https://www.phonevalidator.com/index.aspx`,
+    shouldianswer: `https://www.shouldianswer.com/phone-number/${number}`,
+    sync: `https://www.sync.me/`,
+    whocallsme: `https://whocallsme.com/${number.replace(/\D/g, '')}`,
+    whocalld: `https://whocalld.com/+${number.replace(/\D/g, '')}`,
+    spamcalls: `https://www.spamcalls.net/en/number/${number.replace(/\D/g, '')}`,
+    tellows: `https://www.tellows.com/num/${number.replace(/\D/g, '')}`
+  };
+}
+
+// Email Reputation Services
+function getEmailReputationUrls(email) {
+  return {
+    emailrep: `https://emailrep.io/${email}`,
+    hunter: `https://hunter.io/email-verifier`,
+    neverbounce: `https://neverbounce.com/`,
+    zerobounce: `https://www.zerobounce.net/`,
+    emailchecker: `https://email-checker.net/check`,
+    verifalia: `https://verifalia.com/validate-email`
+  };
+}
+
+// Social Media Extended Search
+function getSocialSearchUrls(username) {
+  return {
+    google: `https://www.google.com/search?q="${username}"`,
+    duckduckgo: `https://duckduckgo.com/?q="${username}"`,
+    yandex: `https://yandex.com/search/?text="${username}"`,
+    bing: `https://www.bing.com/search?q="${username}"`,
+    namechk: `https://namechk.com/?s=${username}`,
+    knowem: `https://knowem.com/checkusernames.php?u=${username}`,
+    namecheckup: `https://namecheckup.com/${username}`,
+    socialcatfish: `https://socialcatfish.com/`,
+    pipl: `https://pipl.com/search/?q=${username}`,
+    spokeo: `https://www.spokeo.com/${username}`
+  };
+}
+
+// ============================================
+// DOMAIN INTELLIGENCE (ULTRA ENHANCED)
 // ============================================
 
 async function runDomain(domain){
@@ -33,6 +315,7 @@ async function runDomain(domain){
   try{ data.TXT = await dns.resolveTxt(domain); }catch{}
   try{ data.CNAME = await dns.resolveCname(domain); }catch{}
   try{ data.SOA = await dns.resolveSoa(domain); }catch{}
+  try{ data.CAA = await dns.resolve(domain, 'CAA'); }catch{}
   
   console.log(`   └─ WHOIS lookup...`);
   try{ 
@@ -48,19 +331,15 @@ async function runDomain(domain){
   data.spf = analyzeSPF(data.TXT);
   data.dmarc = await analyzeDMARC(domain);
   data.dkim = await checkDKIM(domain);
+  data.bimi = await checkBIMI(domain);
   if(!data.spf.valid) risk += 15;
   if(!data.dmarc.valid) risk += 15;
   
-  console.log(`   └─ HTTP headers...`);
+  console.log(`   └─ Security headers...`);
   data.headers = await getHeaders(domain);
   data.securityHeaders = analyzeHeaders(data.headers);
   if(!data.securityHeaders.hsts) risk += 10;
   if(!data.securityHeaders.csp) risk += 10;
-  if(!data.securityHeaders.xframe) risk += 5;
-  if(!data.securityHeaders.xcontent) risk += 5;
-  if(!data.securityHeaders.xss) risk += 5;
-  if(!data.securityHeaders.referrer) risk += 5;
-  if(!data.securityHeaders.permissions) risk += 5;
   
   console.log(`   └─ TLS certificate...`);
   data.tls = await getTLSInfo(domain);
@@ -68,7 +347,6 @@ async function runDomain(domain){
   console.log(`   └─ DNSSEC check...`);
   data.dnssec = await checkDNSSEC(domain);
   if(!data.dnssec) risk += 10;
-  if(data.tls && data.tls.daysRemaining < 30) risk += 15;
   
   console.log(`   └─ Blacklist check...`);
   data.blacklists = await checkBlacklists(domain, data.A);
@@ -77,11 +355,59 @@ async function runDomain(domain){
   console.log(`   └─ Technology detection...`);
   data.technologies = await detectTechnologies(domain, data.headers);
   
-  console.log(`   └─ SSL Labs grade...`);
-  data.sslGrade = await getSSLGrade(domain);
+  console.log(`   └─ Google dorks...`);
+  data.googleDorks = generateGoogleDorks(domain);
+  
+  console.log(`   └─ Web archive...`);
+  data.webArchive = await checkWebArchive(domain);
+  
+  console.log(`   └─ AlienVault OTX...`);
+  data.alienVault = await checkAlienVault(domain);
+  
+  console.log(`   └─ GitHub search...`);
+  data.github = await searchGitHub(domain);
+  
+  if(data.A && data.A[0]){
+    console.log(`   └─ Shodan...`);
+    data.shodan = await searchShodan(data.A[0]);
+  }
+  
+  console.log(`   └─ VirusTotal...`);
+  data.virusTotal = await checkVirusTotal(domain);
+  
+  console.log(`   └─ Certificate search...`);
+  data.certspotter = await searchCertSpotter(domain);
+  
+  if(data.technologies && data.technologies.length > 0) {
+    console.log(`   └─ CVE search...`);
+    data.cves = {};
+    for(const tech of data.technologies.slice(0, 3)) {
+      data.cves[tech] = await searchCVE(tech);
+      await sleep(500);
+    }
+  }
+  
+  // Additional URLs
+  data.resources = {
+    emailHunter: getEmailHunterUrl(domain),
+    linkedin: getLinkedInUrl(domain),
+    crunchbase: getCrunchbaseUrl(domain),
+    dnsHistory: getDNSHistory(domain),
+    censys: searchCensys(domain)
+  };
   
   data.riskScore = risk;
   return data;
+}
+
+// BIMI Check
+async function checkBIMI(domain) {
+  try {
+    const record = await dns.resolveTxt(`default._bimi.${domain}`);
+    return { valid: true, record: record.flat().join('') };
+  } catch {
+    return { valid: false };
+  }
 }
 
 function parseWhoisRaw(whoisData) {
@@ -127,7 +453,7 @@ function parseWhoisRaw(whoisData) {
 
 function getHeaders(domain){
   return new Promise(resolve=>{
-    const req = https.request({host:domain,method:'HEAD',timeout:5000},res=>{
+    const req = https.request({host:domain,method:'HEAD',timeout:CONFIG.TIMEOUT},res=>{
       resolve(res.headers);
     });
     req.on('error',()=>resolve({}));
@@ -147,7 +473,9 @@ function analyzeHeaders(headers){
     permissions: !!headers['permissions-policy'],
     expectCT: !!headers['expect-ct'],
     server: headers['server'] || 'Hidden',
-    poweredBy: headers['x-powered-by'] || 'Hidden'
+    poweredBy: headers['x-powered-by'] || 'Hidden',
+    setCookie: !!headers['set-cookie'],
+    cors: !!headers['access-control-allow-origin']
   };
 }
 
@@ -179,7 +507,7 @@ async function analyzeDMARC(domain){
 }
 
 async function checkDKIM(domain){
-  const selectors = ['default', 'google', 'k1', 's1', 's2', 'dkim', 'mail', 'email'];
+  const selectors = ['default', 'google', 'k1', 's1', 's2', 'dkim', 'mail', 'email', 'selector1', 'selector2', 'dkim1', 'dkim2'];
   let found = [];
   
   for(const selector of selectors){
@@ -205,7 +533,7 @@ async function checkDNSSEC(domain){
 
 function getTLSInfo(domain){
   return new Promise(resolve=>{
-    const socket = tls.connect(443, domain, {servername:domain,timeout:5000}, ()=>{
+    const socket = tls.connect(443, domain, {servername:domain,timeout:CONFIG.TIMEOUT}, ()=>{
       const cert = socket.getPeerCertificate();
       const validTo = new Date(cert.valid_to);
       const validFrom = new Date(cert.valid_from);
@@ -221,8 +549,10 @@ function getTLSInfo(domain){
         age,
         serialNumber: cert.serialNumber,
         fingerprint: cert.fingerprint,
+        fingerprint256: cert.fingerprint256,
         protocol: socket.getProtocol(),
-        cipher: socket.getCipher()
+        cipher: socket.getCipher(),
+        bits: cert.bits
       });
       socket.end();
     });
@@ -239,10 +569,13 @@ async function checkBlacklists(domain, ips){
     'zen.spamhaus.org',
     'bl.spamcop.net',
     'dnsbl.sorbs.net',
-    'cbl.abuseat.org'
+    'cbl.abuseat.org',
+    'b.barracudacentral.org',
+    'dnsbl-1.uceprotect.net',
+    'bl.blocklist.de'
   ];
   
-  if(!ips || ips.length === 0) return {listed: false, lists: []};
+  if(!ips || ips.length === 0) return {listed: false, lists: [], checked: blacklists.length};
   
   const ip = ips[0];
   const reversed = ip.split('.').reverse().join('.');
@@ -262,28 +595,31 @@ async function detectTechnologies(domain, headers){
   let tech = [];
   
   if(headers.server){
-    if(headers.server.includes('nginx')) tech.push('Nginx');
-    if(headers.server.includes('Apache')) tech.push('Apache');
-    if(headers.server.includes('cloudflare')) tech.push('Cloudflare');
-    if(headers.server.includes('Microsoft')) tech.push('Microsoft IIS');
+    const server = headers.server.toLowerCase();
+    if(server.includes('nginx')) tech.push('Nginx');
+    if(server.includes('apache')) tech.push('Apache');
+    if(server.includes('cloudflare')) tech.push('Cloudflare');
+    if(server.includes('microsoft-iis')) tech.push('Microsoft IIS');
+    if(server.includes('litespeed')) tech.push('LiteSpeed');
+    if(server.includes('openresty')) tech.push('OpenResty');
   }
   
   if(headers['x-powered-by']){
-    if(headers['x-powered-by'].includes('PHP')) tech.push('PHP');
-    if(headers['x-powered-by'].includes('Express')) tech.push('Node.js/Express');
-    if(headers['x-powered-by'].includes('ASP.NET')) tech.push('ASP.NET');
+    const powered = headers['x-powered-by'];
+    if(powered.includes('PHP')) tech.push('PHP');
+    if(powered.includes('Express')) tech.push('Node.js/Express');
+    if(powered.includes('ASP.NET')) tech.push('ASP.NET');
+    if(powered.includes('Next.js')) tech.push('Next.js');
   }
   
   if(headers['x-aspnet-version']) tech.push('ASP.NET');
   if(headers['x-drupal-cache']) tech.push('Drupal');
-  if(headers['x-generator'] && headers['x-generator'].includes('WordPress')) tech.push('WordPress');
+  if(headers['x-generator']) {
+    if(headers['x-generator'].includes('WordPress')) tech.push('WordPress');
+    if(headers['x-generator'].includes('Joomla')) tech.push('Joomla');
+  }
   
   return tech.length > 0 ? tech : ['Unknown'];
-}
-
-async function getSSLGrade(domain){
-  // Simplified SSL grading based on available data
-  return {note: 'Use ssllabs.com for full analysis', quickCheck: 'Basic TLS check completed'};
 }
 
 // ============================================
@@ -293,7 +629,7 @@ async function getSSLGrade(domain){
 async function runSubdomains(domain){
   let results = [];
   
-  console.log(`   └─ Wordlist brute-force...`);
+  console.log(`   └─ Brute-force scan...`);
   try{
     const wordlistPath = './wordlists/subdomains.txt';
     if(fs.existsSync(wordlistPath)){
@@ -314,10 +650,9 @@ async function runSubdomains(domain){
     }
   }catch{}
   
-  console.log(`   └─ Certificate transparency...`);
+  console.log(`   └─ Certificate transparency (crt.sh)...`);
   const crt = await crtSearch(domain);
   
-  // Deduplicate
   const seen = new Set(results.map(r=>r.subdomain));
   crt.forEach(c => {
     if(!seen.has(c.subdomain)){
@@ -350,7 +685,7 @@ async function crtSearch(domain){
 }
 
 // ============================================
-// EMAIL ANALYSIS
+// EMAIL ANALYSIS (ENHANCED)
 // ============================================
 
 async function runEmail(email){
@@ -376,12 +711,22 @@ async function runEmail(email){
   console.log(`   └─ Gravatar lookup...`);
   data.gravatar = await checkGravatar(email);
   
-  console.log(`   └─ Have I Been Pwned...`);
-  data.breaches = await checkHIBP(email);
-  if(data.breaches.found) risk += 10;
+  console.log(`   └─ Data breach check...`);
+  data.breaches = {
+    haveibeenpwned: `https://haveibeenpwned.com/account/${encodeURIComponent(email)}`,
+    dehashed: `https://www.dehashed.com/search?query=${encodeURIComponent(email)}`,
+    leakcheck: `https://leakcheck.io/`
+  };
   
-  console.log(`   └─ Email reputation...`);
-  data.reputation = await checkEmailReputation(email);
+  console.log(`   └─ Paste sites...`);
+  data.pasteSites = [
+    `https://www.google.com/search?q=site:pastebin.com+"${email}"`,
+    `https://www.google.com/search?q=site:gist.github.com+"${email}"`,
+    `https://www.google.com/search?q=site:ghostbin.com+"${email}"`,
+    `https://www.google.com/search?q=site:ideone.com+"${email}"`
+  ];
+  
+  data.reputationServices = getEmailReputationUrls(email);
   
   data.riskScore = risk;
   return data;
@@ -390,7 +735,11 @@ async function runEmail(email){
 async function checkDisposableEmail(domain){
   const disposableDomains = [
     'tempmail.com','guerrillamail.com','mailinator.com','10minutemail.com',
-    'throwaway.email','temp-mail.org','getnada.com','maildrop.cc'
+    'throwaway.email','temp-mail.org','getnada.com','maildrop.cc','sharklasers.com',
+    'guerillamail.info','grr.la','guerillamail.biz','guerillamail.com','guerillamail.de',
+    'guerrillamail.net','guerrillamail.org','guerrillamailblock.com','pokemail.net',
+    'spam4.me','trashmail.com','yopmail.com','emailondeck.com','fakeinbox.com',
+    'mailnesia.com','tempinbox.com','throwawaymail.com'
   ];
   return disposableDomains.includes(domain.toLowerCase());
 }
@@ -411,25 +760,8 @@ async function checkGravatar(email){
   }
 }
 
-async function checkHIBP(email){
-  // Note: HIBP API requires API key for email search
-  // Free tier: only breach list, not email-specific
-  return {
-    note: 'Check manually at haveibeenpwned.com',
-    url: `https://haveibeenpwned.com/account/${encodeURIComponent(email)}`,
-    found: false
-  };
-}
-
-async function checkEmailReputation(email){
-  return {
-    score: 'Unknown',
-    note: 'Use services like EmailRep.io or Hunter.io for detailed reputation'
-  };
-}
-
 // ============================================
-// USERNAME OSINT
+// USERNAME OSINT (EXTENDED)
 // ============================================
 
 const platforms = [
@@ -452,39 +784,34 @@ const platforms = [
   {name: 'Telegram', url: 'https://t.me/'},
   {name: 'Discord', url: 'https://discord.com/users/'},
   {name: 'Keybase', url: 'https://keybase.io/'},
-  {name: 'Patreon', url: 'https://patreon.com/'}
+  {name: 'Patreon', url: 'https://patreon.com/'},
+  {name: 'Gravatar', url: 'https://gravatar.com/'},
+  {name: 'Behance', url: 'https://www.behance.net/'},
+  {name: 'Dribbble', url: 'https://dribbble.com/'},
+  {name: 'Vimeo', url: 'https://vimeo.com/'},
+  {name: 'SoundCloud', url: 'https://soundcloud.com/'}
 ];
 
 async function runUsername(username){
+  console.log(`   └─ Searching platforms...`);
   const tasks = platforms.map(platform =>
     limit(async () => {
       let url = platform.url + username;
       
-      // Try API first if available
       if(platform.api){
         const apiUrl = platform.api.replace('{}', username);
         try{
           const r = await axios.get(apiUrl, {validateStatus:false, timeout:8000});
           if(r.status === 200){
-            return {
-              platform: platform.name,
-              found: true,
-              url,
-              data: r.data
-            };
+            return {platform: platform.name, found: true, url};
           }
         }catch{}
       }
       
-      // Fallback to HTTP check
       try{
         const r = await axios.get(url, {validateStatus:false, timeout:8000});
         if(r.status === 200 && !r.data.includes('Page Not Found') && !r.data.includes('404')){
-          return {
-            platform: platform.name,
-            found: true,
-            url
-          };
+          return {platform: platform.name, found: true, url};
         }
       }catch{}
       
@@ -493,11 +820,16 @@ async function runUsername(username){
   );
   
   const results = await Promise.all(tasks);
-  return results.filter(Boolean);
+  const found = results.filter(Boolean);
+  
+  // Additional search URLs
+  const additionalSearches = getSocialSearchUrls(username);
+  
+  return { found, additionalSearches };
 }
 
 // ============================================
-// PHONE LOOKUP
+// PHONE LOOKUP (ULTRA ENHANCED)
 // ============================================
 
 async function runPhone(number){
@@ -527,15 +859,12 @@ async function runPhone(number){
     console.log(`   └─ Timezone...`);
     data.timezone = getPhoneTimezone(parsed.country);
     
-    console.log(`   └─ Number type analysis...`);
     data.typeInfo = {
       type: getNumberType(parsed.getType()),
       isPossible: parsed.isPossible(),
-      isValid: parsed.isValid(),
-      canBeInternationallyDialled: true
+      isValid: parsed.isValid()
     };
     
-    console.log(`   └─ Social media links...`);
     data.social = {
       whatsapp: `https://wa.me/${number.replace(/\+/g, '')}`,
       telegram: `https://t.me/${number.replace(/\+/g, '')}`,
@@ -543,8 +872,8 @@ async function runPhone(number){
       viber: `viber://chat?number=${number.replace(/\+/g, '')}`
     };
     
-    console.log(`   └─ Spam check...`);
-    data.spam = checkSpamNumber(number);
+    console.log(`   └─ Reputation services...`);
+    data.reputationServices = getPhoneReputationUrls(number);
     
   }catch(e){
     data.valid = false;
@@ -583,9 +912,6 @@ function getCarrierInfo(country, number){
       '363': 'Wind Tre','366': 'Wind Tre','368': 'Wind Tre','380': 'Wind Tre',
       '383': 'Wind Tre','388': 'Wind Tre','389': 'Wind Tre','390': 'Wind Tre',
       '391': 'Wind Tre','392': 'Wind Tre','393': 'Wind Tre'
-    },
-    'US': {
-      'carriers': 'AT&T, Verizon, T-Mobile, Sprint (requires area code lookup)'
     }
   };
   
@@ -601,7 +927,7 @@ function getCarrierInfo(country, number){
   return {
     name: 'Unknown',
     note: `Carrier database for ${country} not available`,
-    suggestion: 'Use HLR lookup service for accurate carrier detection'
+    suggestion: 'Use HLR lookup service for carrier detection'
   };
 }
 
@@ -641,17 +967,8 @@ function getPhoneTimezone(country){
   return timezones[country] || 'Unknown';
 }
 
-function checkSpamNumber(number){
-  return {
-    isSpam: false,
-    score: 0,
-    reports: 0,
-    note: 'Check manually at: shouldianswer.com, truecaller.com, whocallsme.com'
-  };
-}
-
 // ============================================
-// IP GEOLOCATION
+// IP GEOLOCATION (ENHANCED)
 // ============================================
 
 async function runIPInfo(ip){
@@ -661,8 +978,13 @@ async function runIPInfo(ip){
     
     data.reverseDNS = await getReverseDNS(ip);
     data.asn = data.org ? data.org.split(' ')[0] : 'Unknown';
-    data.vpnCheck = await checkVPN(ip);
     data.blacklistCheck = await checkIPBlacklist(ip);
+    
+    // Additional IP info
+    data.ipapi = `https://ipapi.co/${ip}/json/`;
+    data.abuseipdb = `https://www.abuseipdb.com/check/${ip}`;
+    data.shodan = `https://www.shodan.io/host/${ip}`;
+    data.censys = `https://search.censys.io/hosts/${ip}`;
     
     return data;
   }catch{
@@ -679,23 +1001,22 @@ async function getReverseDNS(ip){
   }
 }
 
-async function checkVPN(ip){
-  return {
-    isVPN: false,
-    note: 'Use IPQualityScore or IPHub API for VPN detection'
-  };
-}
-
 async function checkIPBlacklist(ip){
   const reversed = ip.split('.').reverse().join('.');
   let listed = false;
+  const lists = [];
   
-  try{
-    await dns.resolve4(`${reversed}.zen.spamhaus.org`);
-    listed = true;
-  }catch{}
+  const blacklists = ['zen.spamhaus.org', 'bl.spamcop.net', 'cbl.abuseat.org'];
   
-  return {listed, service: 'Spamhaus'};
+  for(const bl of blacklists){
+    try{
+      await dns.resolve4(`${reversed}.${bl}`);
+      listed = true;
+      lists.push(bl);
+    }catch{}
+  }
+  
+  return {listed, lists, checked: blacklists.length};
 }
 
 // ============================================
@@ -709,6 +1030,8 @@ function calculateRisk(results){
   if(results.email?.riskScore) total += results.email.riskScore;
   if(results.subdomains?.length > 10) total += 15;
   if(results.subdomains?.length > 5) total += 5;
+  if(results.domain?.shodan?.vulnerabilities?.length > 0) total += 25;
+  if(results.domain?.blacklists?.listed) total += 20;
   
   if(total < 20) return {score:total, level:"LOW", color:'\x1b[32m'};
   if(total < 50) return {score:total, level:"MEDIUM", color:'\x1b[33m'};
@@ -717,7 +1040,47 @@ function calculateRisk(results){
 }
 
 // ============================================
-// DISPLAY RESULTS
+// SAVE RESULTS
+// ============================================
+
+async function saveResults(results, target) {
+  if (!CONFIG.SAVE_RESULTS) return;
+  
+  const dir = CONFIG.REPORTS_DIR;
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const filename = `${target.replace(/[^a-z0-9]/gi, '_')}-${timestamp}`;
+  
+  // JSON
+  const jsonPath = `${dir}/${filename}.json`;
+  fs.writeFileSync(jsonPath, JSON.stringify(results, null, 2));
+  console.log(`\n\x1b[32m[✓] Saved: ${jsonPath}\x1b[0m`);
+  
+  // TXT
+  const txtPath = `${dir}/${filename}.txt`;
+  let txtContent = `═══════════════════════════════════════════════════════════
+NIKA OSINT ULTRA v3.0 - COMPLETE REPORT
+═══════════════════════════════════════════════════════════
+
+Target: ${target}
+Date: ${new Date().toISOString()}
+Risk Level: ${results.risk.level} (${results.risk.score}/100)
+
+═══════════════════════════════════════════════════════════
+FULL DATA
+═══════════════════════════════════════════════════════════
+
+${JSON.stringify(results, null, 2)}
+`;
+  fs.writeFileSync(txtPath, txtContent);
+  console.log(`\x1b[32m[✓] Saved: ${txtPath}\x1b[0m`);
+}
+
+// ============================================
+// DISPLAY RESULTS (SAME INTERFACE)
 // ============================================
 
 function displayResults(results){
@@ -744,10 +1107,7 @@ function displayResults(results){
       if(results.domain.whois.registrant.organization) console.log(`   Org: ${results.domain.whois.registrant.organization}`);
       if(results.domain.whois.registrant.email) console.log(`   Email: ${results.domain.whois.registrant.email}`);
       if(results.domain.whois.registrant.phone) console.log(`   Phone: ${results.domain.whois.registrant.phone}`);
-      if(results.domain.whois.registrant.street) console.log(`   Street: ${results.domain.whois.registrant.street}`);
-      if(results.domain.whois.registrant.city) console.log(`   City: ${results.domain.whois.registrant.city}`);
-      if(results.domain.whois.registrant.state) console.log(`   State: ${results.domain.whois.registrant.state}`);
-      if(results.domain.whois.registrant.country) console.log(`   Country: ${results.domain.whois.registrant.country}`);
+      if(results.domain.whois.registrant.city) console.log(`   City: ${results.domain.whois.registrant.city}, ${results.domain.whois.registrant.country}`);
     }
     
     if(results.domain.whois){
@@ -759,24 +1119,68 @@ function displayResults(results){
     console.log(`\n🔒 Security:`);
     console.log(`   SPF: ${results.domain.spf.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
     console.log(`   DMARC: ${results.domain.dmarc.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`   DKIM: ${results.domain.dkim.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
+    console.log(`   DKIM: ${results.domain.dkim.valid ? `\x1b[32m✓ (${results.domain.dkim.selectors.length} selectors)\x1b[0m` : '\x1b[31m✗\x1b[0m'}`);
     console.log(`   DNSSEC: ${results.domain.dnssec ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
     console.log(`   HSTS: ${results.domain.securityHeaders.hsts ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
+    console.log(`   CSP: ${results.domain.securityHeaders.csp ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
     
     if(results.domain.tls){
       const c = results.domain.tls.daysRemaining < 30 ? '\x1b[33m' : '\x1b[32m';
       console.log(`\n🔐 TLS: ${c}${results.domain.tls.daysRemaining} days\x1b[0m`);
       console.log(`   Issuer: ${results.domain.tls.issuer.O}`);
       console.log(`   Protocol: ${results.domain.tls.protocol}`);
+      console.log(`   Cipher: ${results.domain.tls.cipher.name}`);
     }
     
-    if(results.domain.technologies && results.domain.technologies.length > 0){
+    if(results.domain.technologies){
       console.log(`\n⚙️  Tech: ${results.domain.technologies.join(', ')}`);
     }
     
     if(results.domain.blacklists){
-      console.log(`\n🚫 Blacklist: ${results.domain.blacklists.listed ? '\x1b[31mLISTED\x1b[0m' : '\x1b[32mCLEAN\x1b[0m'}`);
+      console.log(`\n🚫 Blacklist: ${results.domain.blacklists.listed ? '\x1b[31mLISTED on '+results.domain.blacklists.lists.join(', ')+'\x1b[0m' : '\x1b[32mCLEAN\x1b[0m'} (checked ${results.domain.blacklists.checked} lists)`);
     }
+    
+    if(results.domain.shodan && results.domain.shodan.available){
+      console.log(`\n🔥 Shodan:`);
+      if(results.domain.shodan.ports.length > 0) console.log(`   Open Ports: ${results.domain.shodan.ports.join(', ')}`);
+      if(results.domain.shodan.vulnerabilities && results.domain.shodan.vulnerabilities.length > 0){
+        console.log(`   \x1b[31m⚠️  Vulnerabilities: ${results.domain.shodan.vulnerabilities.length}\x1b[0m`);
+      }
+      if(results.domain.shodan.os) console.log(`   OS: ${results.domain.shodan.os}`);
+    }
+    
+    if(results.domain.virusTotal && results.domain.virusTotal.available){
+      console.log(`\n🦠 VirusTotal:`);
+      console.log(`   Detected URLs: ${results.domain.virusTotal.detected_urls}`);
+      console.log(`   Reputation: ${results.domain.virusTotal.reputation}`);
+    }
+    
+    if(results.domain.webArchive && results.domain.webArchive.available){
+      console.log(`\n📚 Web Archive: Available (${results.domain.webArchive.timestamp})`);
+    }
+    
+    if(results.domain.alienVault && results.domain.alienVault.available){
+      console.log(`\n👽 AlienVault OTX: ${results.domain.alienVault.pulse_count} pulses`);
+    }
+    
+    if(results.domain.github && results.domain.github.length > 0){
+      console.log(`\n💻 GitHub: ${results.domain.github.length} repositories found`);
+    }
+    
+    if(results.domain.googleDorks && results.domain.googleDorks.length > 0){
+      console.log(`\n🔎 Google Dorks: ${results.domain.googleDorks.length} queries generated`);
+      console.log(`   (use --save to export all dorks)`);
+    }
+    
+    if(results.domain.cves && Object.keys(results.domain.cves).length > 0){
+      let totalCVEs = 0;
+      Object.values(results.domain.cves).forEach(cves => totalCVEs += cves.length);
+      if(totalCVEs > 0){
+        console.log(`\n🔓 CVEs Found: ${totalCVEs} vulnerabilities`);
+        console.log(`   (use --save to see details)`);
+      }
+    }
+    
     console.log("");
   }
   
@@ -785,38 +1189,61 @@ function displayResults(results){
     console.log(`\x1b[36m🔍 SUBDOMAINS (${results.subdomains.length})\x1b[0m`);
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
-    results.subdomains.forEach((s, i) => {
+    results.subdomains.slice(0, 20).forEach((s, i) => {
       console.log(`${i+1}. \x1b[32m${s.subdomain}\x1b[0m`);
       if(s.ips) console.log(`   IP: ${s.ips.join(', ')}`);
       console.log(`   Source: ${s.source}\n`);
     });
+    
+    if(results.subdomains.length > 20){
+      console.log(`... and ${results.subdomains.length - 20} more (use --save to see all)\n`);
+    }
   }
   
   if(results.email){
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
     console.log("\x1b[36m📧 EMAIL\x1b[0m");
-    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
     console.log(`Valid: ${results.email.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
-    console.log(`Disposable: ${results.email.disposable ? '\x1b[31m✓\x1b[0m' : '\x1b[32m✗\x1b[0m'}`);
-    console.log(`MX: ${results.email.mx?.length > 0 ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
+    console.log(`Disposable: ${results.email.disposable ? '\x1b[31m✓ YES\x1b[0m' : '\x1b[32m✗ No\x1b[0m'}`);
+    console.log(`MX: ${results.email.mx?.length > 0 ? '\x1b[32m✓ '+results.email.mx.length+' servers\x1b[0m' : '\x1b[31m✗ None\x1b[0m'}`);
     
     if(results.email.gravatar){
-      console.log(`Gravatar: ${results.email.gravatar.exists ? '\x1b[32m✓\x1b[0m' : '\x1b[33m○\x1b[0m'}`);
-      console.log(`   ${results.email.gravatar.url}`);
+      console.log(`\n🖼️  Gravatar: ${results.email.gravatar.exists ? '\x1b[32m✓ Profile exists\x1b[0m' : '○ No profile'}`);
+      if(results.email.gravatar.exists) console.log(`   ${results.email.gravatar.profileUrl}`);
     }
+    
+    if(results.email.breaches){
+      console.log(`\n🔓 Breach Check:`);
+      console.log(`   HaveIBeenPwned: ${results.email.breaches.haveibeenpwned}`);
+      console.log(`   (use --save to see all breach check services)`);
+    }
+    
+    if(results.email.pasteSites && results.email.pasteSites.length > 0){
+      console.log(`\n📄 Paste Sites: ${results.email.pasteSites.length} search queries`);
+      console.log(`   (use --save to export all links)`);
+    }
+    
     console.log("");
   }
   
-  if(results.username && results.username.length > 0){
+  if(results.username){
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-    console.log(`\x1b[36m👤 USERNAME (${results.username.length})\x1b[0m`);
+    console.log(`\x1b[36m👤 USERNAME (${results.username.found.length}/${platforms.length})\x1b[0m`);
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
-    results.username.forEach((u, i) => {
+    results.username.found.forEach((u, i) => {
       console.log(`${i+1}. \x1b[32m✓ ${u.platform}\x1b[0m`);
       console.log(`   ${u.url}\n`);
     });
+    
+    if(results.username.additionalSearches){
+      console.log(`🔎 Additional searches: ${Object.keys(results.username.additionalSearches).length} engines`);
+      console.log(`   (use --save to export all search links)`);
+    }
+    
+    console.log("");
   }
   
   if(results.phone){
@@ -824,7 +1251,7 @@ function displayResults(results){
     console.log("\x1b[36m📱 PHONE\x1b[0m");
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
-    console.log(`Valid: ${results.phone.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
+    console.log(`Valid: ${results.phone.valid ? '\x1b[32m✓ Yes\x1b[0m' : '\x1b[31m✗ No\x1b[0m'}`);
     
     if(results.phone.valid){
       console.log(`\n📍 Info:`);
@@ -836,34 +1263,45 @@ function displayResults(results){
       console.log(`   International: ${results.phone.international}`);
       console.log(`   National: ${results.phone.national}`);
       console.log(`   E.164: ${results.phone.e164}`);
+      console.log(`   RFC3966: ${results.phone.rfc3966}`);
       
       if(results.phone.carrier){
         console.log(`\n📡 Carrier: ${results.phone.carrier.name}`);
+        if(results.phone.carrier.type) console.log(`   Type: ${results.phone.carrier.type}`);
       }
       
       if(results.phone.location){
         console.log(`\n🌍 Location: ${results.phone.location.country}`);
+        if(results.phone.location.capital) console.log(`   Capital: ${results.phone.location.capital}`);
         if(results.phone.location.lat) console.log(`   Coords: ${results.phone.location.lat}, ${results.phone.location.lon}`);
       }
       
       if(results.phone.social){
-        console.log(`\n💬 Links:`);
+        console.log(`\n💬 Social:`);
         console.log(`   WhatsApp: ${results.phone.social.whatsapp}`);
         console.log(`   Telegram: ${results.phone.social.telegram}`);
+        console.log(`   Signal: ${results.phone.social.signal}`);
+      }
+      
+      if(results.phone.reputationServices){
+        console.log(`\n🚫 Reputation Services: ${Object.keys(results.phone.reputationServices).length} available`);
+        console.log(`   Truecaller: ${results.phone.reputationServices.truecaller}`);
+        console.log(`   (use --save to see all spam check services)`);
       }
     }
+    
     console.log("");
   }
   
   if(results.ipInfo){
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-    console.log("\x1b[36m🌍 IP\x1b[0m");
+    console.log("\x1b[36m🌍 IP INTELLIGENCE\x1b[0m");
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
     console.log(`IP: ${results.ipInfo.ip}`);
     console.log(`Location: ${results.ipInfo.city}, ${results.ipInfo.region}, ${results.ipInfo.country}`);
     console.log(`Coordinates: ${results.ipInfo.loc}`);
-    console.log(`Organization: ${results.ipInfo.org}`);
+    console.log(`ISP: ${results.ipInfo.org}`);
     console.log(`ASN: ${results.ipInfo.asn}`);
     console.log(`Timezone: ${results.ipInfo.timezone}`);
     
@@ -872,11 +1310,21 @@ function displayResults(results){
     }
     
     if(results.ipInfo.blacklistCheck){
-      console.log(`Blacklist: ${results.ipInfo.blacklistCheck.listed ? '\x1b[31mLISTED\x1b[0m' : '\x1b[32mCLEAN\x1b[0m'}`);
+      console.log(`Blacklist: ${results.ipInfo.blacklistCheck.listed ? '\x1b[31mLISTED on '+results.ipInfo.blacklistCheck.lists.join(', ')+'\x1b[0m' : '\x1b[32mCLEAN\x1b[0m'}`);
     }
+    
+    console.log(`\n🔗 Additional Tools:`);
+    console.log(`   Shodan: ${results.ipInfo.shodan}`);
+    console.log(`   AbuseIPDB: ${results.ipInfo.abuseipdb}`);
+    console.log(`   (use --save to see all links)`);
+    
     console.log("");
   }
 }
+
+// ============================================
+// MAIN
+// ============================================
 
 async function main(){
   const args = process.argv.slice(2);
@@ -887,6 +1335,7 @@ async function main(){
     if(args[i] === "--username") username = args[i+1];
     if(args[i] === "--email") email = args[i+1];
     if(args[i] === "--phone") phone = args[i+1];
+    if(args[i] === "--save") CONFIG.SAVE_RESULTS = true;
   }
   
   if(!domain && !username && !email && !phone && args.length > 0 && !args[0].startsWith('--')){
@@ -895,52 +1344,77 @@ async function main(){
   
   if(!domain && !username && !email && !phone){
     console.log("\x1b[31m███╗   ██╗██╗██╗  ██╗ █████╗\n████╗  ██║██║██║ ██╔╝██╔══██╗\n██╔██╗ ██║██║█████╔╝ ███████║\n██║╚██╗██║██║██╔═██╗ ██╔══██║\n██║ ╚████║██║██║  ██╗██║  ██║\n╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝\x1b[0m\n");
-    console.log("\x1b[35m🥝 NIKA OSINT ULTRA v2.0 by kiwi & 777\x1b[0m\n");
+    console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 by kiwi & 777\x1b[0m\n");
     console.log("Usage: osint-ultra-max [OPTIONS]\n");
     console.log("Options:");
-    console.log("  --domain <domain>");
-    console.log("  --username <username>");
-    console.log("  --email <email>");
-    console.log("  --phone <phone>\n");
+    console.log("  --domain <domain>      Domain intelligence + subdomains");
+    console.log("  --username <username>  Social media footprint (25+ platforms)");
+    console.log("  --email <email>        Email analysis + breach check");
+    console.log("  --phone <phone>        Phone lookup + reputation");
+    console.log("  --save                 Save complete results to files\n");
+    console.log("Examples:");
+    console.log("  ./osint-ultra-max.js --domain example.com --save");
+    console.log("  ./osint-ultra-max.js --email test@example.com");
+    console.log("  ./osint-ultra-max.js --phone +393331234567\n");
+    console.log("Features:");
+    console.log("  ✓ 50+ Google dorks per domain");
+    console.log("  ✓ Shodan integration (set SHODAN_API_KEY)");
+    console.log("  ✓ VirusTotal check (set VIRUSTOTAL_API_KEY)");
+    console.log("  ✓ CVE vulnerability search");
+    console.log("  ✓ Web Archive history");
+    console.log("  ✓ AlienVault threat intelligence");
+    console.log("  ✓ GitHub repository search");
+    console.log("  ✓ 9+ spam/reputation services for phones");
+    console.log("  ✓ 6+ email reputation services");
+    console.log("  ✓ 10+ social search engines\n");
+    console.log("API Keys (optional):");
+    console.log("  export SHODAN_API_KEY='your_key'");
+    console.log("  export VIRUSTOTAL_API_KEY='your_key'\n");
     process.exit(0);
   }
   
   console.log("\x1b[31m███╗   ██╗██╗██╗  ██╗ █████╗\n████╗  ██║██║██║ ██╔╝██╔══██╗\n██╔██╗ ██║██║█████╔╝ ███████║\n██║╚██╗██║██║██╔═██╗ ██╔══██║\n██║ ╚████║██║██║  ██╗██║  ██║\n╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝\x1b[0m\n");
-  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v2.0 - Scan Started\x1b[0m\n");
+  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 - Scan Started\x1b[0m\n");
   
   let results = {};
   
   if(domain){
-    console.log("🌐 [*] Domain scan...");
+    console.log("🌐 [*] Domain Intelligence...");
     results.domain = await runDomain(domain);
-    console.log("🔍 [*] Subdomains...");
+    console.log("🔍 [*] Subdomain Enumeration...");
     results.subdomains = await runSubdomains(domain);
     if(results.domain.A && results.domain.A[0]){
-      console.log("🌍 [*] IP info...");
+      console.log("🌍 [*] IP Intelligence...");
       results.ipInfo = await runIPInfo(results.domain.A[0]);
     }
   }
   
   if(username){
-    console.log("👤 [*] Username...");
+    console.log("👤 [*] Username OSINT...");
     results.username = await runUsername(username);
   }
   
   if(email){
-    console.log("📧 [*] Email...");
+    console.log("📧 [*] Email Analysis...");
     results.email = await runEmail(email);
   }
   
   if(phone){
-    console.log("📱 [*] Phone...");
+    console.log("📱 [*] Phone Lookup...");
     results.phone = await runPhone(phone);
   }
   
   results.risk = calculateRisk(results);
   displayResults(results);
   
+  if(CONFIG.SAVE_RESULTS){
+    const target = domain || username || email || phone;
+    await saveResults(results, target);
+  }
+  
   console.log("\x1b[31m███╗   ██╗██╗██╗  ██╗ █████╗\n████╗  ██║██║██║ ██╔╝██╔══██╗\n██╔██╗ ██║██║█████╔╝ ███████║\n██║╚██╗██║██║██╔═██╗ ██╔══██║\n██║ ╚████║██║██║  ██╗██║  ██║\n╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝\x1b[0m\n");
-  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v2.0 - Complete\x1b[0m\n");
+  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 - Scan Complete\x1b[0m");
+  console.log("\x1b[35m       by kiwi & 777\x1b[0m\n");
 }
 
 main();
