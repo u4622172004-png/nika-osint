@@ -32,7 +32,7 @@ show_banner() {
 EOF
     echo -e "${NC}"
     echo -e "${MAGENTA}           ╔═══════════════════════╗${NC}"
-    echo -e "${MAGENTA}           ║   🥝 by kiwi & 777   ║${NC}"
+    echo -e "${MAGENTA}           ║   created by kiwi & hide   ║${NC}"
     echo -e "${MAGENTA}           ╚═══════════════════════╝${NC}"
     echo -e "${CYAN}              Termux Edition${NC}"
     echo ""
