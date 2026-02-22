@@ -32,7 +32,7 @@ show_banner() {
 EOF
     echo -e "${NC}"
     echo -e "${MAGENTA}           ╔═══════════════════════╗${NC}"
-    echo -e "${MAGENTA}           ║created by kiwi & hide║${NC}"
+    echo -e "${MAGENTA}           ║created by kiwi & hide ║${NC}"
     echo -e "${MAGENTA}           ╚═══════════════════════╝${NC}"
     echo -e "${CYAN}              Termux Edition${NC}"
     echo ""
@@ -63,11 +63,11 @@ check_dependencies() {
 # Menu principale
 show_menu() {
     echo -e "${GREEN}╔═══════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║        NIKA OSINT TOOLKIT            ║${NC}"
+    echo -e "${GREEN}║        NIKA OSINT TOOLKIT             ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}┌─────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│         SCAN MODULES               │${NC}"
+    echo -e "${CYAN}│         SCAN MODULES                │${NC}"
     echo -e "${CYAN}└─────────────────────────────────────┘${NC}"
     echo ""
     echo -e "${YELLOW}[1]${NC} 🌐 ${CYAN}Domain Intelligence${NC}"
