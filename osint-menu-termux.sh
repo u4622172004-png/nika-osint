@@ -145,7 +145,7 @@ email_analysis() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║         EMAIL ANALYSIS SCAN           ║${NC}"
+    echo -e "${GREEN}║          EMAIL ANALYSIS SCAN           ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
@@ -182,7 +182,7 @@ phone_lookup() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║         PHONE NUMBER LOOKUP           ║${NC}"
+    echo -e "${GREEN}║          PHONE NUMBER LOOKUP           ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
@@ -222,7 +222,7 @@ username_search() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║       USERNAME FOOTPRINT SCAN         ║${NC}"
+    echo -e "${GREEN}║        USERNAME FOOTPRINT SCAN         ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
@@ -261,7 +261,7 @@ subdomain_scan() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║       SUBDOMAIN ENUMERATION           ║${NC}"
+    echo -e "${GREEN}║        SUBDOMAIN ENUMERATION           ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
@@ -299,7 +299,7 @@ full_report() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║      COMPREHENSIVE RECONNAISSANCE     ║${NC}"
+    echo -e "${GREEN}║       COMPREHENSIVE RECONNAISSANCE     ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
@@ -337,7 +337,7 @@ full_report() {
     
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║      REPORT GENERATION COMPLETE       ║${NC}"
+    echo -e "${GREEN}║       REPORT GENERATION COMPLETE       ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Output Files:${NC}"
@@ -354,7 +354,7 @@ show_info() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║       INFORMATION & HELP              ║${NC}"
+    echo -e "${GREEN}║        INFORMATION & HELP              ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}╔═══════════════════════════════════════╗${NC}"
