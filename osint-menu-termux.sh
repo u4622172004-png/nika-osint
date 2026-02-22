@@ -107,7 +107,7 @@ domain_search() {
     clear
     show_banner
     echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║      DOMAIN INTELLIGENCE SCAN         ║${NC}"
+    echo -e "${GREEN}║        DOMAIN INTELLIGENCE SCAN        ║${NC}"
     echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${CYAN}Target Information:${NC}"
