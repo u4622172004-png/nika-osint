@@ -32,7 +32,7 @@ show_banner() {
 EOF
     echo -e "${NC}"
     echo -e "${MAGENTA}           ╔═══════════════════════╗${NC}"
-    echo -e "${MAGENTA}           ║ created by kiwi & hide ║${NC}"
+    echo -e "${MAGENTA}           ║created by kiwi & hide║${NC}"
     echo -e "${MAGENTA}           ╚═══════════════════════╝${NC}"
     echo -e "${CYAN}              Termux Edition${NC}"
     echo ""
@@ -96,7 +96,7 @@ show_menu() {
     echo -e "${YELLOW}[0]${NC} ❌ ${CYAN}Exit${NC}"
     echo ""
     echo -e "${MAGENTA}┌─────────────────────────────────────┐${NC}"
-    echo -e "${MAGENTA}│  🥝 NIKA by kiwi & 777             │${NC}"
+    echo -e "${MAGENTA}│  🥝 NIKA by kiwi & hide             │${NC}"
     echo -e "${MAGENTA}└─────────────────────────────────────┘${NC}"
     echo ""
     echo -e -n "${CYAN}[NIKA]>${NC} "
@@ -401,7 +401,7 @@ show_info() {
     echo -e "  • View report: termux-open report.html"
     echo ""
     echo -e "${GREEN}💾 CREDITS:${NC}"
-    echo -e "  ${MAGENTA}🥝 Developed by kiwi & 777${NC}"
+    echo -e "  ${MAGENTA}🥝 Developed by kiwi & hide${NC}"
     echo ""
     echo ""
     read -p "Press ENTER to continue..." -t 30
@@ -443,7 +443,7 @@ main() {
 EOF
                 echo -e "${NC}"
                 echo -e "${MAGENTA}  Thanks for using NIKA OSINT!${NC}"
-                echo -e "${MAGENTA}  🥝 by kiwi & 777${NC}"
+                echo -e "${MAGENTA}  created by kiwi & hide${NC}"
                 echo ""
                 exit 0
                 ;;
