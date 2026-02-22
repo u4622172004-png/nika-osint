@@ -24,16 +24,16 @@ show_banner() {
 ║   ╚═╝  ╚═══╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝           ║
 ║                                               ║
 ║        ╔═══════════════════════════╗          ║
-║        ║   OSINT TOOLKIT v1.0     ║          ║
+║        ║   OSINT TOOLKIT v1.0      ║          ║
 ║        ║   Intelligence Gathering  ║          ║
 ║        ╚═══════════════════════════╝          ║
 ║                                               ║
 ╚═══════════════════════════════════════════════╝
 EOF
     echo -e "${NC}"
-    echo -e "${MAGENTA}           ╔═══════════════════════╗${NC}"
-    echo -e "${MAGENTA}           ║created by kiwi & hide ║${NC}"
-    echo -e "${MAGENTA}           ╚═══════════════════════╝${NC}"
+    echo -e "${MAGENTA}           ╔════════════════════════╗${NC}"
+    echo -e "${MAGENTA}           ║ created by kiwi & hide ║${NC}"
+    echo -e "${MAGENTA}           ╚════════════════════════╝${NC}"
     echo -e "${CYAN}              Termux Edition${NC}"
     echo ""
 }
