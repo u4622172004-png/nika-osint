@@ -1,0 +1,53 @@
+{
+  "phone": {
+    "valid": true,
+    "country": "IT",
+    "countryCallingCode": "39",
+    "nationalNumber": "3249923344",
+    "type": "MOBILE",
+    "international": "+39 324 992 3344",
+    "national": "324 992 3344",
+    "e164": "+393249923344",
+    "rfc3966": "tel:+393249923344",
+    "uri": "tel:+393249923344",
+    "carrier": {
+      "name": "Unknown",
+      "type": "Mobile Network Operator",
+      "country": "Italy"
+    },
+    "location": {
+      "country": "Italy",
+      "capital": "Rome",
+      "lat": 41.9028,
+      "lon": 12.4964
+    },
+    "timezone": "Europe/Rome",
+    "typeInfo": {
+      "type": "Mobile/Cellulare",
+      "isPossible": true,
+      "isValid": true
+    },
+    "social": {
+      "whatsapp": "https://wa.me/393249923344",
+      "telegram": "https://t.me/393249923344",
+      "signal": "https://signal.me/#p/393249923344",
+      "viber": "viber://chat?number=393249923344"
+    },
+    "reputationServices": {
+      "truecaller": "https://www.truecaller.com/search/int/+393249923344",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/index.aspx",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/+393249923344",
+      "sync": "https://www.sync.me/",
+      "whocallsme": "https://whocallsme.com/393249923344",
+      "whocalld": "https://whocalld.com/+393249923344",
+      "spamcalls": "https://www.spamcalls.net/en/number/393249923344",
+      "tellows": "https://www.tellows.com/num/393249923344"
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

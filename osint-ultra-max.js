@@ -6,6 +6,7 @@ const http = require('http');
 const tls = require('tls');
 const axios = require('axios');
 const fs = require('fs');
+const path = require('path');
 const whois = require('whois-json');
 const phoneUtil = require('libphonenumber-js');
 const crypto = require('crypto');
@@ -14,10 +15,6 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const execAsync = promisify(exec);
 const limit = pLimit(10);
-
-// ============================================
-// CONFIGURATION
-// ============================================
 
 const CONFIG = {
   SHODAN_API_KEY: process.env.SHODAN_API_KEY || '',
@@ -29,11 +26,16 @@ const CONFIG = {
 
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// ============================================
-// ENHANCED FEATURES
-// ============================================
+function timestamp() {
+  return new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+}
 
-// Google Dorks Generator
+async function ensureDir(dir) {
+  try {
+    await fs.promises.mkdir(dir, { recursive: true });
+  } catch (e) {}
+}
+
 function generateGoogleDorks(domain) {
   return [
     `site:${domain} filetype:pdf`,
@@ -93,7 +95,6 @@ function generateGoogleDorks(domain) {
   ];
 }
 
-// Shodan Integration
 async function searchShodan(ip) {
   if (!CONFIG.SHODAN_API_KEY) return { available: false, message: 'Set SHODAN_API_KEY env' };
   try {
@@ -119,7 +120,6 @@ async function searchShodan(ip) {
   }
 }
 
-// VirusTotal Integration
 async function checkVirusTotal(domain) {
   if (!CONFIG.VIRUSTOTAL_API_KEY) return { available: false };
   try {
@@ -138,7 +138,6 @@ async function checkVirusTotal(domain) {
   }
 }
 
-// CVE Search
 async function searchCVE(technology) {
   try {
     const url = `https://cve.circl.lu/api/search/${encodeURIComponent(technology)}`;
@@ -153,7 +152,6 @@ async function searchCVE(technology) {
   }
 }
 
-// Web Archive Check
 async function checkWebArchive(domain) {
   try {
     const url = `http://archive.org/wayback/available?url=${domain}`;
@@ -172,7 +170,6 @@ async function checkWebArchive(domain) {
   }
 }
 
-// GitHub Repository Search
 async function searchGitHub(query) {
   try {
     const url = `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&per_page=5`;
@@ -192,25 +189,20 @@ async function searchGitHub(query) {
   }
 }
 
-// DNS History (SecurityTrails-like)
-async function getDNSHistory(domain) {
-  // This would require SecurityTrails API, for now we return structure
+function getDNSHistory(domain) {
   return {
     note: 'DNS history requires SecurityTrails API key',
     url: `https://securitytrails.com/domain/${domain}/history/a`
   };
 }
 
-// SSL Certificate Transparency Alternative Sources
-async function searchCensys(domain) {
-  // Censys would require API key, returning structure
+function searchCensys(domain) {
   return {
     note: 'Censys search requires API key',
     url: `https://search.censys.io/search?resource=hosts&q=${domain}`
   };
 }
 
-// AlienVault OTX Threat Intelligence
 async function checkAlienVault(domain) {
   try {
     const url = `https://otx.alienvault.com/api/v1/indicators/domain/${domain}/general`;
@@ -225,24 +217,20 @@ async function checkAlienVault(domain) {
   }
 }
 
-// Email Hunter (Email Finder)
 function getEmailHunterUrl(domain) {
   return `https://hunter.io/search/${domain}`;
 }
 
-// LinkedIn Company Search
 function getLinkedInUrl(domain) {
   const company = domain.split('.')[0];
   return `https://www.linkedin.com/search/results/companies/?keywords=${company}`;
 }
 
-// Crunchbase Search
 function getCrunchbaseUrl(domain) {
   const company = domain.split('.')[0];
   return `https://www.crunchbase.com/textsearch?q=${company}`;
 }
 
-// Certificate Search (additional to crt.sh)
 async function searchCertSpotter(domain) {
   try {
     const url = `https://api.certspotter.com/v1/issuances?domain=${domain}&include_subdomains=true&expand=dns_names`;
@@ -255,53 +243,6 @@ async function searchCertSpotter(domain) {
     return [];
   }
 }
-
-// Phone Number Additional Lookups
-function getPhoneReputationUrls(number) {
-  return {
-    truecaller: `https://www.truecaller.com/search/int/${number}`,
-    numverify: `https://numverify.com/`,
-    phonevalidator: `https://www.phonevalidator.com/index.aspx`,
-    shouldianswer: `https://www.shouldianswer.com/phone-number/${number}`,
-    sync: `https://www.sync.me/`,
-    whocallsme: `https://whocallsme.com/${number.replace(/\D/g, '')}`,
-    whocalld: `https://whocalld.com/+${number.replace(/\D/g, '')}`,
-    spamcalls: `https://www.spamcalls.net/en/number/${number.replace(/\D/g, '')}`,
-    tellows: `https://www.tellows.com/num/${number.replace(/\D/g, '')}`
-  };
-}
-
-// Email Reputation Services
-function getEmailReputationUrls(email) {
-  return {
-    emailrep: `https://emailrep.io/${email}`,
-    hunter: `https://hunter.io/email-verifier`,
-    neverbounce: `https://neverbounce.com/`,
-    zerobounce: `https://www.zerobounce.net/`,
-    emailchecker: `https://email-checker.net/check`,
-    verifalia: `https://verifalia.com/validate-email`
-  };
-}
-
-// Social Media Extended Search
-function getSocialSearchUrls(username) {
-  return {
-    google: `https://www.google.com/search?q="${username}"`,
-    duckduckgo: `https://duckduckgo.com/?q="${username}"`,
-    yandex: `https://yandex.com/search/?text="${username}"`,
-    bing: `https://www.bing.com/search?q="${username}"`,
-    namechk: `https://namechk.com/?s=${username}`,
-    knowem: `https://knowem.com/checkusernames.php?u=${username}`,
-    namecheckup: `https://namecheckup.com/${username}`,
-    socialcatfish: `https://socialcatfish.com/`,
-    pipl: `https://pipl.com/search/?q=${username}`,
-    spokeo: `https://www.spokeo.com/${username}`
-  };
-}
-
-// ============================================
-// DOMAIN INTELLIGENCE (ULTRA ENHANCED)
-// ============================================
 
 async function runDomain(domain){
   let data = {};
@@ -387,7 +328,6 @@ async function runDomain(domain){
     }
   }
   
-  // Additional URLs
   data.resources = {
     emailHunter: getEmailHunterUrl(domain),
     linkedin: getLinkedInUrl(domain),
@@ -400,7 +340,6 @@ async function runDomain(domain){
   return data;
 }
 
-// BIMI Check
 async function checkBIMI(domain) {
   try {
     const record = await dns.resolveTxt(`default._bimi.${domain}`);
@@ -621,7 +560,6 @@ async function detectTechnologies(domain, headers){
   
   return tech.length > 0 ? tech : ['Unknown'];
 }
-
 // ============================================
 // SUBDOMAIN ENUMERATION
 // ============================================
@@ -760,6 +698,17 @@ async function checkGravatar(email){
   }
 }
 
+function getEmailReputationUrls(email) {
+  return {
+    emailrep: `https://emailrep.io/${email}`,
+    hunter: `https://hunter.io/email-verifier`,
+    neverbounce: `https://neverbounce.com/`,
+    zerobounce: `https://www.zerobounce.net/`,
+    emailchecker: `https://email-checker.net/check`,
+    verifalia: `https://verifalia.com/validate-email`
+  };
+}
+
 // ============================================
 // USERNAME OSINT (EXTENDED)
 // ============================================
@@ -822,14 +771,133 @@ async function runUsername(username){
   const results = await Promise.all(tasks);
   const found = results.filter(Boolean);
   
-  // Additional search URLs
   const additionalSearches = getSocialSearchUrls(username);
   
   return { found, additionalSearches };
 }
 
+function getSocialSearchUrls(username) {
+  return {
+    google: `https://www.google.com/search?q="${username}"`,
+    duckduckgo: `https://duckduckgo.com/?q="${username}"`,
+    yandex: `https://yandex.com/search/?text="${username}"`,
+    bing: `https://www.bing.com/search?q="${username}"`,
+    namechk: `https://namechk.com/?s=${username}`,
+    knowem: `https://knowem.com/checkusernames.php?u=${username}`,
+    namecheckup: `https://namecheckup.com/${username}`,
+    socialcatfish: `https://socialcatfish.com/`,
+    pipl: `https://pipl.com/search/?q=${username}`,
+    spokeo: `https://www.spokeo.com/${username}`
+  };
+}
+
 // ============================================
-// PHONE LOOKUP (ULTRA ENHANCED)
+// PHONE AUTO SEARCH (NEW!)
+// ============================================
+
+function generatePhoneSearches(phone) {
+  const cleanPhone = phone.replace(/\D/g, '');
+  const withPlus = phone.startsWith('+') ? phone : '+' + cleanPhone;
+  
+  return {
+    // Search engines
+    google: `https://www.google.com/search?q="${phone}"`,
+    googleClean: `https://www.google.com/search?q=${cleanPhone}`,
+    bing: `https://www.bing.com/search?q="${phone}"`,
+    duckduckgo: `https://duckduckgo.com/?q="${phone}"`,
+    yandex: `https://yandex.com/search/?text="${phone}"`,
+    
+    // Social media
+    facebook: `https://www.facebook.com/search/people/?q=${phone}`,
+    linkedin: `https://www.linkedin.com/search/results/people/?keywords=${phone}`,
+    instagram: `https://www.instagram.com/explore/tags/${cleanPhone}/`,
+    twitter: `https://twitter.com/search?q="${phone}"`,
+    tiktok: `https://www.tiktok.com/search?q=${phone}`,
+    
+    // Messaging
+    telegram: `https://t.me/${cleanPhone}`,
+    whatsapp: `https://wa.me/${cleanPhone}`,
+    signal: `https://signal.me/#p/${cleanPhone}`,
+    viber: `viber://chat?number=${cleanPhone}`,
+    
+    // Reputation services
+    truecaller: `https://www.truecaller.com/search/int/${phone}`,
+    sync: `https://www.sync.me/search/?query=${phone}`,
+    numverify: `https://numverify.com/`,
+    phonevalidator: `https://www.phonevalidator.com/index.aspx`,
+    
+    // Spam check services
+    shouldianswer: `https://www.shouldianswer.com/phone-number/${cleanPhone}`,
+    whocallsme: `https://whocallsme.com/${cleanPhone}`,
+    whocalld: `https://whocalld.com/+${cleanPhone}`,
+    tellows: `https://www.tellows.com/num/${cleanPhone}`,
+    spamcalls: `https://www.spamcalls.net/en/number/${cleanPhone}`,
+    callapp: `https://callapp.com/search/${cleanPhone}`,
+    showcaller: `https://www.showcaller.com/`,
+    
+    // People search
+    pipl: `https://pipl.com/search/?q=${phone}`,
+    spokeo: `https://www.spokeo.com/${phone}`,
+    whitepages: `https://www.whitepages.com/phone/${cleanPhone}`,
+    the411: `https://www.411.com/phone/${cleanPhone}`,
+    
+    // Italy specific
+    paginebianche: `https://www.paginebianche.it/ricerca?qs=${cleanPhone}`,
+    paginegialle: `https://www.paginegialle.it/ricerca/${cleanPhone}`,
+    tuttocitta: `https://www.tuttocitta.it/cerca/${cleanPhone}`,
+    
+    // International directories
+    trueyellow: `https://www.trueyellow.com/search?q=${phone}`,
+    yellowpages: `https://www.yellowpages.com/search?search_terms=${phone}`,
+    
+    // OSINT databases
+    intelx: `https://intelx.io/?s=${phone}`,
+    
+    // Breach databases
+    dehashed: `https://www.dehashed.com/search?query=${phone}`,
+    leakcheck: `https://leakcheck.io/`,
+    snusbase: `https://snusbase.com/`,
+    
+    // Reverse lookup
+    reversephonelookup: `https://www.reversephonelookup.com/number/${cleanPhone}/`,
+    spydialer: `https://www.spydialer.com/default.aspx`,
+    
+    // Carrier lookup
+    freecarrierlookup: `https://freecarrierlookup.com/`,
+    carrierlookup: `https://www.carrierlookup.com/`,
+    
+    // Additional
+    thatsthem: `https://thatsthem.com/phone/${cleanPhone}`,
+    fastpeoplesearch: `https://www.fastpeoplesearch.com/phone/${cleanPhone}`,
+    truepeoplesearch: `https://www.truepeoplesearch.com/results?phoneno=${cleanPhone}`
+  };
+}
+
+async function autoSearchPhone(phone) {
+  const searches = generatePhoneSearches(phone);
+  
+  try {
+    const cleanPhone = phone.replace(/\D/g, '');
+    const res = await axios.get(`https://www.google.com/search?q="${cleanPhone}"`, {
+      timeout: 5000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
+    
+    const hasResults = !res.data.includes('did not match any documents') && 
+                       !res.data.includes('No results found');
+    
+    searches.googleResultsFound = hasResults;
+  } catch {
+    searches.googleResultsFound = 'unknown';
+  }
+  
+  return searches;
+}
+
+// ============================================
+// PHONE LOOKUP (ULTRA ENHANCED WITH AUTO SEARCH)
 // ============================================
 
 async function runPhone(number){
@@ -874,6 +942,9 @@ async function runPhone(number){
     
     console.log(`   └─ Reputation services...`);
     data.reputationServices = getPhoneReputationUrls(number);
+    
+    console.log(`   └─ Auto search online...`);
+    data.autoSearch = await autoSearchPhone(number);
     
   }catch(e){
     data.valid = false;
@@ -967,6 +1038,19 @@ function getPhoneTimezone(country){
   return timezones[country] || 'Unknown';
 }
 
+function getPhoneReputationUrls(number) {
+  return {
+    truecaller: `https://www.truecaller.com/search/int/${number}`,
+    numverify: `https://numverify.com/`,
+    phonevalidator: `https://www.phonevalidator.com/`,
+    shouldianswer: `https://www.shouldianswer.com/phone-number/${number}`,
+    sync: `https://www.sync.me/`,
+    whocallsme: `https://whocallsme.com/${number.replace(/\D/g, '')}`,
+    whocalld: `https://whocalld.com/+${number.replace(/\D/g, '')}`,
+    spamcalls: `https://www.spamcalls.net/en/number/${number.replace(/\D/g, '')}`,
+    tellows: `https://www.tellows.com/num/${number.replace(/\D/g, '')}`
+  };
+}
 // ============================================
 // IP GEOLOCATION (ENHANCED)
 // ============================================
@@ -980,7 +1064,6 @@ async function runIPInfo(ip){
     data.asn = data.org ? data.org.split(' ')[0] : 'Unknown';
     data.blacklistCheck = await checkIPBlacklist(ip);
     
-    // Additional IP info
     data.ipapi = `https://ipapi.co/${ip}/json/`;
     data.abuseipdb = `https://www.abuseipdb.com/check/${ip}`;
     data.shodan = `https://www.shodan.io/host/${ip}`;
@@ -1051,15 +1134,13 @@ async function saveResults(results, target) {
     fs.mkdirSync(dir, { recursive: true });
   }
   
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-  const filename = `${target.replace(/[^a-z0-9]/gi, '_')}-${timestamp}`;
+  const ts = timestamp();
+  const filename = `${target.replace(/[^a-z0-9]/gi, '_')}-${ts}`;
   
-  // JSON
   const jsonPath = `${dir}/${filename}.json`;
   fs.writeFileSync(jsonPath, JSON.stringify(results, null, 2));
   console.log(`\n\x1b[32m[✓] Saved: ${jsonPath}\x1b[0m`);
   
-  // TXT
   const txtPath = `${dir}/${filename}.txt`;
   let txtContent = `═══════════════════════════════════════════════════════════
 NIKA OSINT ULTRA v3.0 - COMPLETE REPORT
@@ -1203,7 +1284,7 @@ function displayResults(results){
   if(results.email){
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
     console.log("\x1b[36m📧 EMAIL\x1b[0m");
-    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
     console.log(`Valid: ${results.email.valid ? '\x1b[32m✓\x1b[0m' : '\x1b[31m✗\x1b[0m'}`);
     console.log(`Disposable: ${results.email.disposable ? '\x1b[31m✓ YES\x1b[0m' : '\x1b[32m✗ No\x1b[0m'}`);
@@ -1283,10 +1364,33 @@ function displayResults(results){
         console.log(`   Signal: ${results.phone.social.signal}`);
       }
       
-      if(results.phone.reputationServices){
-        console.log(`\n🚫 Reputation Services: ${Object.keys(results.phone.reputationServices).length} available`);
-        console.log(`   Truecaller: ${results.phone.reputationServices.truecaller}`);
-        console.log(`   (use --save to see all spam check services)`);
+      if(results.phone.autoSearch){
+        console.log(`\n🔎 Auto Search (${Object.keys(results.phone.autoSearch).length - 1} sources):`);
+        
+        if(results.phone.autoSearch.googleResultsFound === true) {
+          console.log(`   Google: \x1b[32m✓ Results found!\x1b[0m`);
+        } else if(results.phone.autoSearch.googleResultsFound === false) {
+          console.log(`   Google: \x1b[33m○ No results\x1b[0m`);
+        }
+        
+        console.log(`\n   📱 Social Media:`);
+        console.log(`      Facebook: ${results.phone.autoSearch.facebook}`);
+        console.log(`      Instagram: ${results.phone.autoSearch.instagram}`);
+        console.log(`      LinkedIn: ${results.phone.autoSearch.linkedin}`);
+        
+        console.log(`\n   🔍 Search Engines:`);
+        console.log(`      Google: ${results.phone.autoSearch.google}`);
+        console.log(`      Bing: ${results.phone.autoSearch.bing}`);
+        
+        console.log(`\n   🇮🇹 Italy Specific:`);
+        console.log(`      Pagine Bianche: ${results.phone.autoSearch.paginebianche}`);
+        console.log(`      Pagine Gialle: ${results.phone.autoSearch.paginegialle}`);
+        
+        console.log(`\n   🚫 Spam Check:`);
+        console.log(`      Truecaller: ${results.phone.autoSearch.truecaller}`);
+        console.log(`      Tellows: ${results.phone.autoSearch.tellows}`);
+        
+        console.log(`\n   (use --save to see all ${Object.keys(results.phone.autoSearch).length - 1} search links)`);
       }
     }
     
@@ -1344,29 +1448,27 @@ async function main(){
   
   if(!domain && !username && !email && !phone){
     console.log("\x1b[31m███╗   ██╗██╗██╗  ██╗ █████╗\n████╗  ██║██║██║ ██╔╝██╔══██╗\n██╔██╗ ██║██║█████╔╝ ███████║\n██║╚██╗██║██║██╔═██╗ ██╔══██║\n██║ ╚████║██║██║  ██╗██║  ██║\n╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝\x1b[0m\n");
-    console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 by kiwi & 777\x1b[0m\n");
+    console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 + PHONE AUTO SEARCH by kiwi & 777\x1b[0m\n");
     console.log("Usage: osint-ultra-max [OPTIONS]\n");
     console.log("Options:");
     console.log("  --domain <domain>      Domain intelligence + subdomains");
     console.log("  --username <username>  Social media footprint (25+ platforms)");
     console.log("  --email <email>        Email analysis + breach check");
-    console.log("  --phone <phone>        Phone lookup + reputation");
+    console.log("  --phone <phone>        Phone lookup + AUTO SEARCH (45+ sources)");
     console.log("  --save                 Save complete results to files\n");
     console.log("Examples:");
     console.log("  ./osint-ultra-max.js --domain example.com --save");
     console.log("  ./osint-ultra-max.js --email test@example.com");
-    console.log("  ./osint-ultra-max.js --phone +393331234567\n");
-    console.log("Features:");
-    console.log("  ✓ 50+ Google dorks per domain");
-    console.log("  ✓ Shodan integration (set SHODAN_API_KEY)");
-    console.log("  ✓ VirusTotal check (set VIRUSTOTAL_API_KEY)");
-    console.log("  ✓ CVE vulnerability search");
-    console.log("  ✓ Web Archive history");
-    console.log("  ✓ AlienVault threat intelligence");
-    console.log("  ✓ GitHub repository search");
-    console.log("  ✓ 9+ spam/reputation services for phones");
-    console.log("  ✓ 6+ email reputation services");
-    console.log("  ✓ 10+ social search engines\n");
+    console.log("  ./osint-ultra-max.js --phone +393331234567 --save\n");
+    console.log("NEW Phone Features:");
+    console.log("  ✓ Auto search across 45+ sources");
+    console.log("  ✓ Social media (Facebook, Instagram, LinkedIn, Twitter, TikTok)");
+    console.log("  ✓ Search engines (Google, Bing, DuckDuckGo, Yandex)");
+    console.log("  ✓ Italy directories (Pagine Bianche, Pagine Gialle, Tuttocittà)");
+    console.log("  ✓ Spam check (Truecaller, Tellows, ShouldIAnswer, etc.)");
+    console.log("  ✓ People search (Pipl, Spokeo, WhitePages, 411)");
+    console.log("  ✓ Breach databases (DeHashed, LeakCheck, Snusbase)");
+    console.log("  ✓ OSINT databases (IntelX)\n");
     console.log("API Keys (optional):");
     console.log("  export SHODAN_API_KEY='your_key'");
     console.log("  export VIRUSTOTAL_API_KEY='your_key'\n");
@@ -1400,7 +1502,7 @@ async function main(){
   }
   
   if(phone){
-    console.log("📱 [*] Phone Lookup...");
+    console.log("📱 [*] Phone Lookup + Auto Search...");
     results.phone = await runPhone(phone);
   }
   
@@ -1413,7 +1515,7 @@ async function main(){
   }
   
   console.log("\x1b[31m███╗   ██╗██╗██╗  ██╗ █████╗\n████╗  ██║██║██║ ██╔╝██╔══██╗\n██╔██╗ ██║██║█████╔╝ ███████║\n██║╚██╗██║██║██╔═██╗ ██╔══██║\n██║ ╚████║██║██║  ██╗██║  ██║\n╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝\x1b[0m\n");
-  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 - Scan Complete\x1b[0m");
+  console.log("\x1b[35m🥝 NIKA OSINT ULTRA v3.0 + PHONE AUTO SEARCH - Complete\x1b[0m");
   console.log("\x1b[35m       by kiwi & 777\x1b[0m\n");
 }
 
