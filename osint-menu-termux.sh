@@ -34,7 +34,7 @@ EOF
     echo -e "${MAGENTA}           ╔════════════════════════╗${NC}"
     echo -e "${MAGENTA}           ║ created by kiwi & hide ║${NC}"
     echo -e "${MAGENTA}           ╚════════════════════════╝${NC}"
-    echo -e "${CYAN}              Termux Edition${NC}"
+    echo -e "${CYAN}                Termux Edition${NC}"
     echo ""
 }
 
@@ -96,7 +96,7 @@ show_menu() {
     echo -e "${YELLOW}[0]${NC} ❌ ${CYAN}Exit${NC}"
     echo ""
     echo -e "${MAGENTA}┌─────────────────────────────────────┐${NC}"
-    echo -e "${MAGENTA}│  created NIKA by kiwi & hide         │${NC}"
+    echo -e "${MAGENTA}│    created NIKA by kiwi & hide      │${NC}"
     echo -e "${MAGENTA}└─────────────────────────────────────┘${NC}"
     echo ""
     echo -e -n "${CYAN}[NIKA]>${NC} "
