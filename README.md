@@ -140,7 +140,7 @@ pkg update && pkg upgrade -y
 pkg install nodejs git -y
 termux-setup-storage
 
-git clone https://github.com/god-kiwi/nika-osint.git
+git clone https://github.com/u4622172004-png/nika-osint.git
 cd nika-osint
 npm install
 
@@ -157,7 +157,7 @@ chmod +x osint-menu-termux.sh
 ```bash
 sudo apt update && sudo apt install nodejs npm git -y
 
-git clone https://github.com/god-kiwi/nika-osint.git
+git clone https://github.com/u4622172004-png/nika-osint.git
 cd nika-osint
 npm install
 
@@ -174,7 +174,7 @@ chmod +x osint-menu.sh
 ```bash
 brew install node git
 
-git clone https://github.com/god-kiwi/nika-osint.git
+git clone https://github.com/u4622172004-png/nika-osint.git
 cd nika-osint
 npm install
 
