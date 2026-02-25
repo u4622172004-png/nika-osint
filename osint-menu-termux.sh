@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# Colori ottimizzati per Termux
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
@@ -9,7 +9,7 @@ BLUE='\033[0;34m'
 MAGENTA='\033[0;35m'
 NC='\033[0m'
 
-# Banner con ASCII NIKA dettagliato
+
 show_banner() {
     clear
     echo -e "${RED}"
@@ -38,7 +38,7 @@ EOF
     echo ""
 }
 
-# Verifica dipendenze
+
 check_dependencies() {
     local missing=()
     
@@ -60,7 +60,7 @@ check_dependencies() {
     return 0
 }
 
-# Menu principale
+
 show_menu() {
     echo -e "${GREEN}╔═══════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║          NIKA OSINT TOOLKIT           ║${NC}"
@@ -102,7 +102,7 @@ show_menu() {
     echo -e -n "${CYAN}[NIKA]>${NC} "
 }
 
-# Funzione 1: Ricerca Dominio
+
 domain_search() {
     clear
     show_banner
@@ -140,7 +140,7 @@ domain_search() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Funzione 2: Email Analysis
+
 email_analysis() {
     clear
     show_banner
@@ -177,7 +177,7 @@ email_analysis() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Funzione 3: Phone Lookup
+
 phone_lookup() {
     clear
     show_banner
@@ -217,7 +217,7 @@ phone_lookup() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Funzione 4: Username Search
+ 
 username_search() {
     clear
     show_banner
@@ -256,7 +256,7 @@ username_search() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Funzione 5: Subdomain Scan
+
 subdomain_scan() {
     clear
     show_banner
@@ -294,7 +294,7 @@ subdomain_scan() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Funzione 6: Full Report
+
 full_report() {
     clear
     show_banner
@@ -407,9 +407,9 @@ show_info() {
     read -p "Press ENTER to continue..." -t 30
 }
 
-# Main loop
+
 main() {
-    # Verifica dipendenze
+    
     if ! check_dependencies; then
         echo ""
         read -p "Press ENTER to exit..."
@@ -455,5 +455,5 @@ EOF
     done
 }
 
-# Avvio
+
 main
