@@ -11,7 +11,7 @@ const path = require('path');
 // CONFIGURATION
 // ============================================
 
-// Inserita la tua API Key fornita
+// Inserire la tua API Key fornita
 const BOT_TOKEN = '8540182251:AAEY9JbW5zuomyTYFaR-bLHNubKJi5TxJHg';
 const ADMIN_IDS = process.env.ADMIN_IDS ? process.env.ADMIN_IDS.split(',').map(Number) : [];
 const MAX_CONCURRENT_SCANS = 3;

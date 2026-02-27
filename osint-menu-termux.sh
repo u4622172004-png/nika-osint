@@ -5,6 +5,7 @@
 # by kiwi & 777
 # ============================================
 
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,6 +16,7 @@ WHITE='\033[1;37m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 BOLD='\033[1m'
+
 
 show_banner() {
     clear
@@ -33,6 +35,31 @@ show_banner() {
     echo -e "${YELLOW}════════════════════════════════════════${NC}"
     echo ""
 }
+
+
+
+check_dependencies() {
+    local missing=()
+    
+    if ! command -v node &> /dev/null; then
+        missing+=("nodejs")
+    fi
+    
+    if [ ${#missing[@]} -ne 0 ]; then
+        echo -e "${RED}[!] Dipendenze mancanti:${NC}"
+        for dep in "${missing[@]}"; do
+            echo -e "${YELLOW}  - $dep${NC}"
+        done
+        echo ""
+        echo -e "${CYAN}[*] Installale con:${NC}"
+        echo -e "pkg install ${missing[*]}"
+        echo ""
+        return 1
+    fi
+    return 0
+}
+
+
 
 show_menu() {
     echo -e "${CYAN}${BOLD}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
@@ -64,6 +91,9 @@ show_menu() {
     echo -e "${CYAN}┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄${NC}"
     echo -ne "${WHITE}${BOLD}  ➤ Select [0-12]: ${NC}"
 }
+
+
+
 
 domain_search() {
     clear
@@ -107,6 +137,125 @@ domain_search() {
     echo ""
     read -p "Press ENTER to continue..."
 }
+
+
+
+email_analysis() {
+    clear
+    show_banner
+    echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║          EMAIL ANALYSIS SCAN           ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${CYAN}Target Information:${NC}"
+    echo -n "  Email: "
+    read email
+    
+    if [ -z "$email" ]; then
+        echo -e "${RED}[!] Error: Invalid email${NC}"
+        sleep 2
+        return
+    fi
+    
+    echo ""
+    echo -e "${YELLOW}[*] Analyzing email...${NC}"
+    echo -e "${CYAN}    └─ Format Validation${NC}"
+    echo -e "${CYAN}    └─ MX Records Check${NC}"
+    echo -e "${CYAN}    └─ Gravatar Lookup${NC}"
+    echo ""
+    
+    if [ -f "osint-ultra-max.js" ]; then
+        node osint-ultra-max.js --email "$email"
+    else
+        echo -e "${RED}[!] Core module not found${NC}"
+    fi
+    
+    echo ""
+    echo -e "${GREEN}[✓] Analysis completed!${NC}"
+    echo ""
+    read -p "Press ENTER to continue..." -t 30
+}
+
+
+phone_lookup() {
+    clear
+    show_banner
+    echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║          PHONE NUMBER LOOKUP           ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${CYAN}Target Information:${NC}"
+    echo -e "${YELLOW}  Format: +[country code][number]${NC}"
+    echo -e "${YELLOW}  Example: +393331234567${NC}"
+    echo ""
+    echo -n "  Phone: "
+    read phone
+    
+    if [ -z "$phone" ]; then
+        echo -e "${RED}[!] Error: Invalid phone number${NC}"
+        sleep 2
+        return
+    fi
+    
+    echo ""
+    echo -e "${YELLOW}[*] Analyzing phone number...${NC}"
+    echo -e "${CYAN}    └─ Country Detection${NC}"
+    echo -e "${CYAN}    └─ Carrier Identification${NC}"
+    echo -e "${CYAN}    └─ Type Classification${NC}"
+    echo ""
+    
+    if [ -f "osint-ultra-max.js" ]; then
+        node osint-ultra-max.js --phone "$phone"
+    else
+        echo -e "${RED}[!] Core module not found${NC}"
+    fi
+    
+    echo ""
+    echo -e "${GREEN}[✓] Lookup completed!${NC}"
+    echo ""
+    read -p "Press ENTER to continue..." -t 30
+}
+
+ 
+username_search() {
+    clear
+    show_banner
+    echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║        USERNAME FOOTPRINT SCAN         ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${CYAN}Target Information:${NC}"
+    echo -n "  Username: "
+    read username
+    
+    if [ -z "$username" ]; then
+        echo -e "${RED}[!] Error: Invalid username${NC}"
+        sleep 2
+        return
+    fi
+    
+    echo ""
+    echo -e "${YELLOW}[*] Searching across platforms...${NC}"
+    echo -e "${CYAN}    └─ GitHub${NC}"
+    echo -e "${CYAN}    └─ Reddit${NC}"
+    echo -e "${CYAN}    └─ Twitter${NC}"
+    echo -e "${CYAN}    └─ Instagram${NC}"
+    echo -e "${CYAN}    └─ Medium${NC}"
+    echo ""
+    
+    if [ -f "osint-ultra-max.js" ]; then
+        node osint-ultra-max.js --username "$username"
+    else
+        echo -e "${RED}[!] Core module not found${NC}"
+    fi
+    
+    echo ""
+    echo -e "${GREEN}[✓] Search completed!${NC}"
+    echo ""
+    read -p "Press ENTER to continue..." -t 30
+}
+
+
 
 subdomain_scan() {
     clear
@@ -525,6 +674,7 @@ ip_grabber() {
     read -p "Press ENTER to continue..."
 }
 
+
 full_report() {
     clear
     show_banner
@@ -622,7 +772,19 @@ show_info() {
     read -p "Press ENTER to continue..."
 }
 
+
 main() {
+
+
+main() {
+    
+    if ! check_dependencies; then
+        echo ""
+        read -p "Press ENTER to exit..."
+        exit 1
+    fi
+    
+
     while true; do
         show_banner
         show_menu
@@ -661,5 +823,6 @@ main() {
         esac
     done
 }
+
 
 main

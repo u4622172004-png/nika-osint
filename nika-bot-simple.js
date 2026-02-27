@@ -5,19 +5,18 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Token
+
 const TOKEN = '8540182251:AAEY9JbW5zuomyTYFaR-bLHNubKJi5TxJHg';
 
-// Create bot
+
 const bot = new TelegramBot(TOKEN, { polling: true });
 
 console.log('🤖 NIKA Bot Started!');
 console.log('📱 Send /start on Telegram\n');
 
-// Storage
 const history = new Map();
 
-// /start
+
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const text = `
