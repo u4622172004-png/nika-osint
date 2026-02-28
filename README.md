@@ -345,7 +345,7 @@ Powered by:
 # 📜 License
 
 MIT License  
-Copyright (c) 2024 Kiwi & 777  
+Copyright (c) 2024 Kiwi & hide 
 
 ---
 
