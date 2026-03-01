@@ -1,0 +1,113 @@
+═══════════════════════════════════════════════════════════
+NIKA OSINT ULTRA v3.0 - COMPLETE REPORT
+═══════════════════════════════════════════════════════════
+
+Target: +393461555612
+Date: 2026-02-26T21:27:53.376Z
+Risk Level: LOW (0/100)
+
+═══════════════════════════════════════════════════════════
+FULL DATA
+═══════════════════════════════════════════════════════════
+
+{
+  "phone": {
+    "valid": true,
+    "country": "IT",
+    "countryCallingCode": "39",
+    "nationalNumber": "3461555612",
+    "type": "MOBILE",
+    "international": "+39 346 155 5612",
+    "national": "346 155 5612",
+    "e164": "+393461555612",
+    "rfc3966": "tel:+393461555612",
+    "uri": "tel:+393461555612",
+    "carrier": {
+      "name": "Vodafone",
+      "type": "Mobile Network Operator",
+      "country": "Italy"
+    },
+    "location": {
+      "country": "Italy",
+      "capital": "Rome",
+      "lat": 41.9028,
+      "lon": 12.4964
+    },
+    "timezone": "Europe/Rome",
+    "typeInfo": {
+      "type": "Mobile/Cellulare",
+      "isPossible": true,
+      "isValid": true
+    },
+    "social": {
+      "whatsapp": "https://wa.me/393461555612",
+      "telegram": "https://t.me/393461555612",
+      "signal": "https://signal.me/#p/393461555612",
+      "viber": "viber://chat?number=393461555612"
+    },
+    "reputationServices": {
+      "truecaller": "https://www.truecaller.com/search/int/+393461555612",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/+393461555612",
+      "sync": "https://www.sync.me/",
+      "whocallsme": "https://whocallsme.com/393461555612",
+      "whocalld": "https://whocalld.com/+393461555612",
+      "spamcalls": "https://www.spamcalls.net/en/number/393461555612",
+      "tellows": "https://www.tellows.com/num/393461555612"
+    },
+    "autoSearch": {
+      "google": "https://www.google.com/search?q=\"+393461555612\"",
+      "googleClean": "https://www.google.com/search?q=393461555612",
+      "bing": "https://www.bing.com/search?q=\"+393461555612\"",
+      "duckduckgo": "https://duckduckgo.com/?q=\"+393461555612\"",
+      "yandex": "https://yandex.com/search/?text=\"+393461555612\"",
+      "facebook": "https://www.facebook.com/search/people/?q=+393461555612",
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=+393461555612",
+      "instagram": "https://www.instagram.com/explore/tags/393461555612/",
+      "twitter": "https://twitter.com/search?q=\"+393461555612\"",
+      "tiktok": "https://www.tiktok.com/search?q=+393461555612",
+      "telegram": "https://t.me/393461555612",
+      "whatsapp": "https://wa.me/393461555612",
+      "signal": "https://signal.me/#p/393461555612",
+      "viber": "viber://chat?number=393461555612",
+      "truecaller": "https://www.truecaller.com/search/int/+393461555612",
+      "sync": "https://www.sync.me/search/?query=+393461555612",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/index.aspx",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/393461555612",
+      "whocallsme": "https://whocallsme.com/393461555612",
+      "whocalld": "https://whocalld.com/+393461555612",
+      "tellows": "https://www.tellows.com/num/393461555612",
+      "spamcalls": "https://www.spamcalls.net/en/number/393461555612",
+      "callapp": "https://callapp.com/search/393461555612",
+      "showcaller": "https://www.showcaller.com/",
+      "pipl": "https://pipl.com/search/?q=+393461555612",
+      "spokeo": "https://www.spokeo.com/+393461555612",
+      "whitepages": "https://www.whitepages.com/phone/393461555612",
+      "the411": "https://www.411.com/phone/393461555612",
+      "paginebianche": "https://www.paginebianche.it/ricerca?qs=393461555612",
+      "paginegialle": "https://www.paginegialle.it/ricerca/393461555612",
+      "tuttocitta": "https://www.tuttocitta.it/cerca/393461555612",
+      "trueyellow": "https://www.trueyellow.com/search?q=+393461555612",
+      "yellowpages": "https://www.yellowpages.com/search?search_terms=+393461555612",
+      "intelx": "https://intelx.io/?s=+393461555612",
+      "dehashed": "https://www.dehashed.com/search?query=+393461555612",
+      "leakcheck": "https://leakcheck.io/",
+      "snusbase": "https://snusbase.com/",
+      "reversephonelookup": "https://www.reversephonelookup.com/number/393461555612/",
+      "spydialer": "https://www.spydialer.com/default.aspx",
+      "freecarrierlookup": "https://freecarrierlookup.com/",
+      "carrierlookup": "https://www.carrierlookup.com/",
+      "thatsthem": "https://thatsthem.com/phone/393461555612",
+      "fastpeoplesearch": "https://www.fastpeoplesearch.com/phone/393461555612",
+      "truepeoplesearch": "https://www.truepeoplesearch.com/results?phoneno=393461555612",
+      "googleResultsFound": true
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

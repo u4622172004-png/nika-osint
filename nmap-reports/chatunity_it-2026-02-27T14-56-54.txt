@@ -1,0 +1,44 @@
+═══════════════════════════════════════════════════════════
+NIKA NMAP SCAN REPORT
+═══════════════════════════════════════════════════════════
+
+Target: chatunity.it
+Scan Type: fast
+Date: 2/27/2026, 3:56:54 PM
+
+═══════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════
+
+Open Ports: 3
+Filtered Ports: 3
+Closed Ports: 0
+
+═══════════════════════════════════════════════════════════
+OPEN PORTS
+═══════════════════════════════════════════════════════════
+
+22/tcp - ssh
+
+80/tcp - http
+
+443/tcp - https
+
+═══════════════════════════════════════════════════════════
+RAW OUTPUT
+═══════════════════════════════════════════════════════════
+
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-27 15:56 +0100
+Nmap scan report for chatunity.it (45.137.235.95)
+Host is up (0.016s latency).
+Not shown: 94 closed tcp ports (conn-refused)
+PORT    STATE    SERVICE
+22/tcp  open     ssh
+25/tcp  filtered smtp
+80/tcp  open     http
+135/tcp filtered msrpc
+443/tcp open     https
+445/tcp filtered microsoft-ds
+
+Nmap done: 1 IP address (1 host up) scanned in 2.26 seconds
+

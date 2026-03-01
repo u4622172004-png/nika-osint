@@ -1,0 +1,75 @@
+═══════════════════════════════════════════════════════════
+NIKA OSINT ULTRA v3.0 - COMPLETE REPORT
+═══════════════════════════════════════════════════════════
+
+Target: samuele.sacco2012@gmail.com
+Date: 2026-02-28T16:09:41.265Z
+Risk Level: LOW (0/100)
+
+═══════════════════════════════════════════════════════════
+FULL DATA
+═══════════════════════════════════════════════════════════
+
+{
+  "email": {
+    "valid": true,
+    "mx": [
+      {
+        "exchange": "gmail-smtp-in.l.google.com",
+        "priority": 5,
+        "type": "MX"
+      },
+      {
+        "exchange": "alt4.gmail-smtp-in.l.google.com",
+        "priority": 40,
+        "type": "MX"
+      },
+      {
+        "exchange": "alt1.gmail-smtp-in.l.google.com",
+        "priority": 10,
+        "type": "MX"
+      },
+      {
+        "exchange": "alt3.gmail-smtp-in.l.google.com",
+        "priority": 30,
+        "type": "MX"
+      },
+      {
+        "exchange": "alt2.gmail-smtp-in.l.google.com",
+        "priority": 20,
+        "type": "MX"
+      }
+    ],
+    "disposable": false,
+    "gravatar": {
+      "exists": false,
+      "url": "https://www.gravatar.com/avatar/983cebe7f5e124048af960a26a945c03",
+      "profileUrl": "https://gravatar.com/983cebe7f5e124048af960a26a945c03"
+    },
+    "breaches": {
+      "haveibeenpwned": "https://haveibeenpwned.com/account/samuele.sacco2012%40gmail.com",
+      "dehashed": "https://www.dehashed.com/search?query=samuele.sacco2012%40gmail.com",
+      "leakcheck": "https://leakcheck.io/"
+    },
+    "pasteSites": [
+      "https://www.google.com/search?q=site:pastebin.com+\"samuele.sacco2012@gmail.com\"",
+      "https://www.google.com/search?q=site:gist.github.com+\"samuele.sacco2012@gmail.com\"",
+      "https://www.google.com/search?q=site:ghostbin.com+\"samuele.sacco2012@gmail.com\"",
+      "https://www.google.com/search?q=site:ideone.com+\"samuele.sacco2012@gmail.com\""
+    ],
+    "reputationServices": {
+      "emailrep": "https://emailrep.io/samuele.sacco2012@gmail.com",
+      "hunter": "https://hunter.io/email-verifier",
+      "neverbounce": "https://neverbounce.com/",
+      "zerobounce": "https://www.zerobounce.net/",
+      "emailchecker": "https://email-checker.net/check",
+      "verifalia": "https://verifalia.com/validate-email"
+    },
+    "riskScore": 0
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

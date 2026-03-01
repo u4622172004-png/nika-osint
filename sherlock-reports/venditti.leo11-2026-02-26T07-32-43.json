@@ -1,0 +1,55 @@
+{
+  "username": "venditti.leo11",
+  "timestamp": "2026-02-26T07:32:43.342Z",
+  "total_found": 8,
+  "profiles": [
+    {
+      "site": "Twitter",
+      "found": true,
+      "url": "https://twitter.com/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Instagram",
+      "found": true,
+      "url": "https://instagram.com/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Facebook",
+      "found": true,
+      "url": "https://facebook.com/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Twitch",
+      "found": true,
+      "url": "https://twitch.tv/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Telegram",
+      "found": true,
+      "url": "https://t.me/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Discord",
+      "found": true,
+      "url": "https://discord.com/users/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "Steam",
+      "found": true,
+      "url": "https://steamcommunity.com/id/venditti.leo11",
+      "status": "200"
+    },
+    {
+      "site": "HackerNews",
+      "found": true,
+      "url": "https://news.ycombinator.com/user?id=venditti.leo11",
+      "status": "200"
+    }
+  ]
+}

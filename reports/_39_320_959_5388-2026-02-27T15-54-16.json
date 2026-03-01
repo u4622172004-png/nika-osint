@@ -1,0 +1,101 @@
+{
+  "phone": {
+    "valid": true,
+    "country": "IT",
+    "countryCallingCode": "39",
+    "nationalNumber": "3209595388",
+    "type": "MOBILE",
+    "international": "+39 320 959 5388",
+    "national": "320 959 5388",
+    "e164": "+393209595388",
+    "rfc3966": "tel:+393209595388",
+    "uri": "tel:+393209595388",
+    "carrier": {
+      "name": "Unknown",
+      "type": "Mobile Network Operator",
+      "country": "Italy"
+    },
+    "location": {
+      "country": "Italy",
+      "capital": "Rome",
+      "lat": 41.9028,
+      "lon": 12.4964
+    },
+    "timezone": "Europe/Rome",
+    "typeInfo": {
+      "type": "Mobile/Cellulare",
+      "isPossible": true,
+      "isValid": true
+    },
+    "social": {
+      "whatsapp": "https://wa.me/39 320 959 5388",
+      "telegram": "https://t.me/39 320 959 5388",
+      "signal": "https://signal.me/#p/39 320 959 5388",
+      "viber": "viber://chat?number=39 320 959 5388"
+    },
+    "reputationServices": {
+      "truecaller": "https://www.truecaller.com/search/int/+39 320 959 5388",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/+39 320 959 5388",
+      "sync": "https://www.sync.me/",
+      "whocallsme": "https://whocallsme.com/393209595388",
+      "whocalld": "https://whocalld.com/+393209595388",
+      "spamcalls": "https://www.spamcalls.net/en/number/393209595388",
+      "tellows": "https://www.tellows.com/num/393209595388"
+    },
+    "autoSearch": {
+      "google": "https://www.google.com/search?q=\"+39 320 959 5388\"",
+      "googleClean": "https://www.google.com/search?q=393209595388",
+      "bing": "https://www.bing.com/search?q=\"+39 320 959 5388\"",
+      "duckduckgo": "https://duckduckgo.com/?q=\"+39 320 959 5388\"",
+      "yandex": "https://yandex.com/search/?text=\"+39 320 959 5388\"",
+      "facebook": "https://www.facebook.com/search/people/?q=+39 320 959 5388",
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=+39 320 959 5388",
+      "instagram": "https://www.instagram.com/explore/tags/393209595388/",
+      "twitter": "https://twitter.com/search?q=\"+39 320 959 5388\"",
+      "tiktok": "https://www.tiktok.com/search?q=+39 320 959 5388",
+      "telegram": "https://t.me/393209595388",
+      "whatsapp": "https://wa.me/393209595388",
+      "signal": "https://signal.me/#p/393209595388",
+      "viber": "viber://chat?number=393209595388",
+      "truecaller": "https://www.truecaller.com/search/int/+39 320 959 5388",
+      "sync": "https://www.sync.me/search/?query=+39 320 959 5388",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/index.aspx",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/393209595388",
+      "whocallsme": "https://whocallsme.com/393209595388",
+      "whocalld": "https://whocalld.com/+393209595388",
+      "tellows": "https://www.tellows.com/num/393209595388",
+      "spamcalls": "https://www.spamcalls.net/en/number/393209595388",
+      "callapp": "https://callapp.com/search/393209595388",
+      "showcaller": "https://www.showcaller.com/",
+      "pipl": "https://pipl.com/search/?q=+39 320 959 5388",
+      "spokeo": "https://www.spokeo.com/+39 320 959 5388",
+      "whitepages": "https://www.whitepages.com/phone/393209595388",
+      "the411": "https://www.411.com/phone/393209595388",
+      "paginebianche": "https://www.paginebianche.it/ricerca?qs=393209595388",
+      "paginegialle": "https://www.paginegialle.it/ricerca/393209595388",
+      "tuttocitta": "https://www.tuttocitta.it/cerca/393209595388",
+      "trueyellow": "https://www.trueyellow.com/search?q=+39 320 959 5388",
+      "yellowpages": "https://www.yellowpages.com/search?search_terms=+39 320 959 5388",
+      "intelx": "https://intelx.io/?s=+39 320 959 5388",
+      "dehashed": "https://www.dehashed.com/search?query=+39 320 959 5388",
+      "leakcheck": "https://leakcheck.io/",
+      "snusbase": "https://snusbase.com/",
+      "reversephonelookup": "https://www.reversephonelookup.com/number/393209595388/",
+      "spydialer": "https://www.spydialer.com/default.aspx",
+      "freecarrierlookup": "https://freecarrierlookup.com/",
+      "carrierlookup": "https://www.carrierlookup.com/",
+      "thatsthem": "https://thatsthem.com/phone/393209595388",
+      "fastpeoplesearch": "https://www.fastpeoplesearch.com/phone/393209595388",
+      "truepeoplesearch": "https://www.truepeoplesearch.com/results?phoneno=393209595388",
+      "googleResultsFound": true
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

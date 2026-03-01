@@ -1,0 +1,65 @@
+{
+  "available": true,
+  "target": "chatunity.it",
+  "scanType": "fast",
+  "timestamp": "2026-02-27T14:56:54.749Z",
+  "ports": [
+    {
+      "port": "22",
+      "protocol": "tcp",
+      "state": "open",
+      "service": "ssh",
+      "version": "unknown"
+    },
+    {
+      "port": "25",
+      "protocol": "tcp",
+      "state": "filtered",
+      "service": "smtp",
+      "version": "unknown"
+    },
+    {
+      "port": "80",
+      "protocol": "tcp",
+      "state": "open",
+      "service": "http",
+      "version": "unknown"
+    },
+    {
+      "port": "135",
+      "protocol": "tcp",
+      "state": "filtered",
+      "service": "msrpc",
+      "version": "unknown"
+    },
+    {
+      "port": "443",
+      "protocol": "tcp",
+      "state": "open",
+      "service": "https",
+      "version": "unknown"
+    },
+    {
+      "port": "445",
+      "protocol": "tcp",
+      "state": "filtered",
+      "service": "microsoft-ds",
+      "version": "unknown"
+    }
+  ],
+  "services": [
+    "ssh (22/tcp)",
+    "http (80/tcp)",
+    "https (443/tcp)"
+  ],
+  "os": null,
+  "vulnerabilities": [],
+  "scripts": {},
+  "summary": {
+    "openPorts": 3,
+    "filteredPorts": 3,
+    "closedPorts": 0,
+    "totalScanned": 6
+  },
+  "rawOutput": "Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-27 15:56 +0100\nNmap scan report for chatunity.it (45.137.235.95)\nHost is up (0.016s latency).\nNot shown: 94 closed tcp ports (conn-refused)\nPORT    STATE    SERVICE\n22/tcp  open     ssh\n25/tcp  filtered smtp\n80/tcp  open     http\n135/tcp filtered msrpc\n443/tcp open     https\n445/tcp filtered microsoft-ds\n\nNmap done: 1 IP address (1 host up) scanned in 2.26 seconds\n"
+}

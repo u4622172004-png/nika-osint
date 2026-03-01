@@ -1,0 +1,79 @@
+{
+  "username": "giambavenditti",
+  "timestamp": "2026-02-26T21:26:22.568Z",
+  "total_found": 12,
+  "profiles": [
+    {
+      "site": "Twitter",
+      "found": true,
+      "url": "https://twitter.com/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Instagram",
+      "found": true,
+      "url": "https://instagram.com/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Facebook",
+      "found": true,
+      "url": "https://facebook.com/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "TikTok",
+      "found": true,
+      "url": "https://tiktok.com/@giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Pinterest",
+      "found": true,
+      "url": "https://pinterest.com/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Twitch",
+      "found": true,
+      "url": "https://twitch.tv/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Telegram",
+      "found": true,
+      "url": "https://t.me/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Discord",
+      "found": true,
+      "url": "https://discord.com/users/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "Steam",
+      "found": true,
+      "url": "https://steamcommunity.com/id/giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "WordPress",
+      "found": true,
+      "url": "https://giambavenditti.wordpress.com",
+      "status": "200"
+    },
+    {
+      "site": "HackerNews",
+      "found": true,
+      "url": "https://news.ycombinator.com/user?id=giambavenditti",
+      "status": "200"
+    },
+    {
+      "site": "CashApp",
+      "found": true,
+      "url": "https://cash.app/$giambavenditti",
+      "status": "200"
+    }
+  ]
+}

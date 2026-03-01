@@ -1,0 +1,145 @@
+═══════════════════════════════════════════════════════════
+NIKA OSINT ULTRA v3.0 - COMPLETE REPORT
+═══════════════════════════════════════════════════════════
+
+Target: https://sunforce_kerneltunnel.ai/
+Date: 2026-02-28T22:40:30.771Z
+Risk Level: HIGH (60/100)
+
+═══════════════════════════════════════════════════════════
+FULL DATA
+═══════════════════════════════════════════════════════════
+
+{
+  "domain": {
+    "whois": null,
+    "spf": {
+      "valid": false
+    },
+    "dmarc": {
+      "valid": false
+    },
+    "dkim": {
+      "valid": false,
+      "selectors": []
+    },
+    "bimi": {
+      "valid": false
+    },
+    "headers": {},
+    "securityHeaders": {
+      "hsts": false,
+      "csp": false,
+      "xframe": false,
+      "xcontent": false,
+      "xss": false,
+      "referrer": false,
+      "permissions": false,
+      "expectCT": false,
+      "server": "Hidden",
+      "poweredBy": "Hidden",
+      "setCookie": false,
+      "cors": false
+    },
+    "tls": null,
+    "dnssec": false,
+    "blacklists": {
+      "listed": false,
+      "lists": [],
+      "checked": 7
+    },
+    "technologies": [
+      "Unknown"
+    ],
+    "googleDorks": [
+      "site:https://sunforce_kerneltunnel.ai/ filetype:pdf",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:doc OR filetype:docx",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:xls OR filetype:xlsx",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:ppt OR filetype:pptx",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:txt",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:csv",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:sql",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:db",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:env",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:log",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:bak",
+      "site:https://sunforce_kerneltunnel.ai/ filetype:conf OR filetype:config",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:admin",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:login",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:dashboard",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:portal",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:upload",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:backup",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:api",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:wp-admin",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:wp-login",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:phpmyadmin",
+      "site:https://sunforce_kerneltunnel.ai/ inurl:cpanel",
+      "site:https://sunforce_kerneltunnel.ai/ intitle:\"index of\"",
+      "site:https://sunforce_kerneltunnel.ai/ intitle:\"index of /\" backup",
+      "site:https://sunforce_kerneltunnel.ai/ intitle:\"index of /\" passwords",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"powered by\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"api key\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"api_key\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"password\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"secret\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"token\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"access_token\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"private key\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"BEGIN RSA PRIVATE KEY\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"smtp\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"ftp\"",
+      "site:https://sunforce_kerneltunnel.ai/ intext:\"database\"",
+      "\"https://sunforce_kerneltunnel.ai/\" site:pastebin.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:paste2.org",
+      "\"https://sunforce_kerneltunnel.ai/\" site:ideone.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:codebeautify.org",
+      "\"https://sunforce_kerneltunnel.ai/\" site:codepen.io",
+      "\"https://sunforce_kerneltunnel.ai/\" site:jsfiddle.net",
+      "\"https://sunforce_kerneltunnel.ai/\" site:github.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:gitlab.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:bitbucket.org",
+      "\"https://sunforce_kerneltunnel.ai/\" site:gist.github.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:stackoverflow.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:trello.com",
+      "\"https://sunforce_kerneltunnel.ai/\" site:scribd.com",
+      "\"https://sunforce_kerneltunnel.ai/\" ext:sql intext:password",
+      "\"https://sunforce_kerneltunnel.ai/\" ext:xml intext:password",
+      "\"https://sunforce_kerneltunnel.ai/\" ext:json intext:password"
+    ],
+    "webArchive": {
+      "available": false
+    },
+    "alienVault": {
+      "available": false
+    },
+    "github": [],
+    "virusTotal": {
+      "available": false
+    },
+    "certspotter": [],
+    "cves": {
+      "Unknown": []
+    },
+    "resources": {
+      "emailHunter": "https://hunter.io/search/https://sunforce_kerneltunnel.ai/",
+      "linkedin": "https://www.linkedin.com/search/results/companies/?keywords=https://sunforce_kerneltunnel",
+      "crunchbase": "https://www.crunchbase.com/textsearch?q=https://sunforce_kerneltunnel",
+      "dnsHistory": {
+        "note": "DNS history requires SecurityTrails API key",
+        "url": "https://securitytrails.com/domain/https://sunforce_kerneltunnel.ai//history/a"
+      },
+      "censys": {
+        "note": "Censys search requires API key",
+        "url": "https://search.censys.io/search?resource=hosts&q=https://sunforce_kerneltunnel.ai/"
+      }
+    },
+    "riskScore": 60
+  },
+  "subdomains": [],
+  "risk": {
+    "score": 60,
+    "level": "HIGH",
+    "color": "\u001b[31m"
+  }
+}

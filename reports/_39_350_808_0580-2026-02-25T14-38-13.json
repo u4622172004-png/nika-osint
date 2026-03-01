@@ -1,0 +1,101 @@
+{
+  "phone": {
+    "valid": true,
+    "country": "IT",
+    "countryCallingCode": "39",
+    "nationalNumber": "3508080580",
+    "type": "MOBILE",
+    "international": "+39 350 808 0580",
+    "national": "350 808 0580",
+    "e164": "+393508080580",
+    "rfc3966": "tel:+393508080580",
+    "uri": "tel:+393508080580",
+    "carrier": {
+      "name": "Vodafone",
+      "type": "Mobile Network Operator",
+      "country": "Italy"
+    },
+    "location": {
+      "country": "Italy",
+      "capital": "Rome",
+      "lat": 41.9028,
+      "lon": 12.4964
+    },
+    "timezone": "Europe/Rome",
+    "typeInfo": {
+      "type": "Mobile/Cellulare",
+      "isPossible": true,
+      "isValid": true
+    },
+    "social": {
+      "whatsapp": "https://wa.me/39 350 808 0580",
+      "telegram": "https://t.me/39 350 808 0580",
+      "signal": "https://signal.me/#p/39 350 808 0580",
+      "viber": "viber://chat?number=39 350 808 0580"
+    },
+    "reputationServices": {
+      "truecaller": "https://www.truecaller.com/search/int/+39 350 808 0580",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/+39 350 808 0580",
+      "sync": "https://www.sync.me/",
+      "whocallsme": "https://whocallsme.com/393508080580",
+      "whocalld": "https://whocalld.com/+393508080580",
+      "spamcalls": "https://www.spamcalls.net/en/number/393508080580",
+      "tellows": "https://www.tellows.com/num/393508080580"
+    },
+    "autoSearch": {
+      "google": "https://www.google.com/search?q=\"+39 350 808 0580\"",
+      "googleClean": "https://www.google.com/search?q=393508080580",
+      "bing": "https://www.bing.com/search?q=\"+39 350 808 0580\"",
+      "duckduckgo": "https://duckduckgo.com/?q=\"+39 350 808 0580\"",
+      "yandex": "https://yandex.com/search/?text=\"+39 350 808 0580\"",
+      "facebook": "https://www.facebook.com/search/people/?q=+39 350 808 0580",
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=+39 350 808 0580",
+      "instagram": "https://www.instagram.com/explore/tags/393508080580/",
+      "twitter": "https://twitter.com/search?q=\"+39 350 808 0580\"",
+      "tiktok": "https://www.tiktok.com/search?q=+39 350 808 0580",
+      "telegram": "https://t.me/393508080580",
+      "whatsapp": "https://wa.me/393508080580",
+      "signal": "https://signal.me/#p/393508080580",
+      "viber": "viber://chat?number=393508080580",
+      "truecaller": "https://www.truecaller.com/search/int/+39 350 808 0580",
+      "sync": "https://www.sync.me/search/?query=+39 350 808 0580",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/index.aspx",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/393508080580",
+      "whocallsme": "https://whocallsme.com/393508080580",
+      "whocalld": "https://whocalld.com/+393508080580",
+      "tellows": "https://www.tellows.com/num/393508080580",
+      "spamcalls": "https://www.spamcalls.net/en/number/393508080580",
+      "callapp": "https://callapp.com/search/393508080580",
+      "showcaller": "https://www.showcaller.com/",
+      "pipl": "https://pipl.com/search/?q=+39 350 808 0580",
+      "spokeo": "https://www.spokeo.com/+39 350 808 0580",
+      "whitepages": "https://www.whitepages.com/phone/393508080580",
+      "the411": "https://www.411.com/phone/393508080580",
+      "paginebianche": "https://www.paginebianche.it/ricerca?qs=393508080580",
+      "paginegialle": "https://www.paginegialle.it/ricerca/393508080580",
+      "tuttocitta": "https://www.tuttocitta.it/cerca/393508080580",
+      "trueyellow": "https://www.trueyellow.com/search?q=+39 350 808 0580",
+      "yellowpages": "https://www.yellowpages.com/search?search_terms=+39 350 808 0580",
+      "intelx": "https://intelx.io/?s=+39 350 808 0580",
+      "dehashed": "https://www.dehashed.com/search?query=+39 350 808 0580",
+      "leakcheck": "https://leakcheck.io/",
+      "snusbase": "https://snusbase.com/",
+      "reversephonelookup": "https://www.reversephonelookup.com/number/393508080580/",
+      "spydialer": "https://www.spydialer.com/default.aspx",
+      "freecarrierlookup": "https://freecarrierlookup.com/",
+      "carrierlookup": "https://www.carrierlookup.com/",
+      "thatsthem": "https://thatsthem.com/phone/393508080580",
+      "fastpeoplesearch": "https://www.fastpeoplesearch.com/phone/393508080580",
+      "truepeoplesearch": "https://www.truepeoplesearch.com/results?phoneno=393508080580",
+      "googleResultsFound": true
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}
