@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -8,64 +9,132 @@ WHITE='\033[1;37m'
 GRAY='\033[0;90m'
 NC='\033[0m'
 BOLD='\033[1m'
+DIM='\033[2m'
+
+# Gradient colors
+RED1='\033[38;5;196m'
+RED2='\033[38;5;160m'
+ORANGE='\033[38;5;208m'
+PINK='\033[38;5;205m'
+PURPLE='\033[38;5;129m'
+BLUE1='\033[38;5;39m'
+GREEN1='\033[38;5;46m'
+GREEN2='\033[38;5;40m'
 
 show_banner() {
     clear
-    echo -e "${RED}${BOLD}"
-    echo "  ███╗   ██╗██╗██╗  ██╗ █████╗ "
-    echo "  ████╗  ██║██║██║ ██╔╝██╔══██╗"
-    echo "  ██╔██╗ ██║██║█████╔╝ ███████║"
-    echo "  ██║╚██╗██║██║██╔═██╗ ██╔══██║"
-    echo "  ██║ ╚████║██║██║  ██╗██║  ██║"
-    echo "  ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝"
-    echo -e "${NC}"
-    echo -e "${MAGENTA}${BOLD}     🥝 OSINT ULTRA v4.0 🥝${NC}"
-    echo -e "${CYAN}  Advanced Intelligence Gathering${NC}"
+    echo ""
+    echo -e "${RED1}          ███╗   ██╗██╗██╗  ██╗ █████╗ ${NC}"
+    echo -e "${RED2}          ████╗  ██║██║██║ ██╔╝██╔══██╗${NC}"
+    echo -e "${ORANGE}          ██╔██╗ ██║██║█████╔╝ ███████║${NC}"
+    echo -e "${YELLOW}          ██║╚██╗██║██║██╔═██╗ ██╔══██║${NC}"
+    echo -e "${GREEN1}          ██║ ╚████║██║██║  ██╗██║  ██║${NC}"
+    echo -e "${GREEN2}          ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝╚═╝  ╚═╝${NC}"
+    echo ""
+    echo -e "          ${PINK}╔═══════════════════════════════════╗${NC}"
+    echo -e "          ${PINK}║${NC}  ${CYAN}🥝 ${BOLD}${WHITE}OSINT ULTRA ${CYAN}v5.0 🥝${NC}  ${PINK}║${NC}"
+    echo -e "          ${PINK}╚═══════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "     ${DIM}${GRAY}┌─────────────────────────────────────────────┐${NC}"
+    echo -e "     ${DIM}${GRAY}│${NC}  ${CYAN}Advanced Intelligence Gathering Toolkit${NC}  ${DIM}${GRAY}│${NC}"
+    echo -e "     ${DIM}${GRAY}│${NC}     ${MAGENTA}21 Modules${NC} ${DIM}${GRAY}│ ${YELLOW}⚡ 150+ Sources${NC}     ${DIM}${GRAY}│${NC}"
+    echo -e "     ${DIM}${GRAY}└─────────────────────────────────────────────┘${NC}"
     echo ""
 }
 
 show_menu() {
-    echo -e "${CYAN}${BOLD}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
-    echo -e "${CYAN}${BOLD}┃        🎯 MAIN MENU 🎯               ┃${NC}"
-    echo -e "${CYAN}${BOLD}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${PURPLE}║              ${BOLD}${WHITE}🎯  M A I N   M E N U  🎯${NC}                    ${PURPLE}║${NC}"
+    echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${WHITE}${BOLD}  🔍 RECONNAISSANCE${NC}"
-    echo -e "${GREEN}  [1]${NC}  🌐 Domain Intelligence"
-    echo -e "${GREEN}  [2]${NC}  🔍 Subdomain Enumeration"
+    
+    echo -e "${CYAN}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${CYAN}┃${NC} ${BOLD}${WHITE}🔍 RECONNAISSANCE${NC}                                          ${CYAN}┃${NC}"
+    echo -e "${CYAN}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "  ${GREEN1}[${WHITE}01${GREEN1}]${NC} ${BLUE1}🌐${NC} Domain Intelligence      ${DIM}${GRAY}DNS, WHOIS, Security${NC}"
+    echo -e "  ${GREEN1}[${WHITE}02${GREEN1}]${NC} ${BLUE1}🔍${NC} Subdomain Enumeration    ${DIM}${GRAY}Brute + CT logs${NC}"
     echo ""
-    echo -e "${WHITE}${BOLD}  👤 IDENTITY & CONTACTS${NC}"
-    echo -e "${GREEN}  [3]${NC}  📧 Email Analysis"
-    echo -e "${GREEN}  [4]${NC}  📱 Phone Lookup"
-    echo -e "${GREEN}  [5]${NC}  👤 Username Footprint"
+    
+    echo -e "${ORANGE}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${ORANGE}┃${NC} ${BOLD}${WHITE}👤 IDENTITY & CONTACTS${NC}                                     ${ORANGE}┃${NC}"
+    echo -e "${ORANGE}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "  ${GREEN1}[${WHITE}03${GREEN1}]${NC} ${BLUE1}📧${NC} Email Analysis           ${DIM}${GRAY}Breach + Reputation${NC}"
+    echo -e "  ${GREEN1}[${WHITE}04${GREEN1}]${NC} ${BLUE1}📱${NC} Phone Lookup             ${DIM}${GRAY}45+ Auto Search${NC}"
+    echo -e "  ${GREEN1}[${WHITE}05${GREEN1}]${NC} ${BLUE1}👤${NC} Username Footprint       ${DIM}${GRAY}25+ Platforms${NC}"
     echo ""
-    echo -e "${WHITE}${BOLD}  🕵️  ADVANCED OSINT${NC}"
-    echo -e "${GREEN}  [6]${NC}  🕵️  Sherlock Search (50+ sites)"
-    echo -e "${GREEN}  [7]${NC}  📧 Email Harvesting"
-    echo -e "${GREEN}  [8]${NC}  🖼️  Reverse Image Search"
-    echo -e "${GREEN}  [9]${NC}  🌍 Geolocation Tracker (GPS)"
-    echo -e "${GREEN} [10]${NC}  📱 Social Media Scraper"
+    
+    echo -e "${PINK}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${PINK}┃${NC} ${BOLD}${WHITE}🕵️  ADVANCED OSINT${NC}                                          ${PINK}┃${NC}"
+    echo -e "${PINK}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "  ${GREEN1}[${WHITE}06${GREEN1}]${NC} ${BLUE1}🕵️${NC}  Sherlock Search          ${DIM}${GRAY}50+ Sites${NC}"
+    echo -e "  ${GREEN1}[${WHITE}07${GREEN1}]${NC} ${BLUE1}📧${NC} Email Harvesting         ${DIM}${GRAY}TheHarvester${NC}"
+    echo -e "  ${GREEN1}[${WHITE}08${GREEN1}]${NC} ${BLUE1}🖼️${NC}  Reverse Image            ${DIM}${GRAY}9 Engines + GPS${NC}"
+    echo -e "  ${GREEN1}[${WHITE}09${GREEN1}]${NC} ${BLUE1}🌍${NC} Geolocation Tracker      ${DIM}${GRAY}GPS from Images${NC}"
+    echo -e "  ${GREEN1}[${WHITE}10${GREEN1}]${NC} ${BLUE1}📱${NC} Social Media Scraper     ${DIM}${GRAY}GitHub, Reddit, etc${NC}"
+    echo -e "  ${GREEN1}[${WHITE}11${GREEN1}]${NC} ${BLUE1}🖥️${NC}  MAC Address Lookup       ${DIM}${GRAY}Device Identification${NC}"
+    echo -e "  ${GREEN1}[${WHITE}12${GREEN1}]${NC} ${BLUE1}📸${NC} Metadata Extractor       ${DIM}${GRAY}Document Forensics${NC}"
+    echo -e "  ${GREEN1}[${WHITE}13${GREEN1}]${NC} ${BLUE1}🔍${NC} Google Dork Generator    ${DIM}${GRAY}100+ Auto Dorks${NC}"
     echo ""
-    echo -e "${WHITE}${BOLD}  🛡️  SECURITY & THREATS${NC}"
-    echo -e "${GREEN} [11]${NC}  🔓 Breach Monitor"
-    echo -e "${GREEN} [12]${NC}  🕸️  Darkweb Scanner"
-    echo -e "${GREEN} [13]${NC}  🤖 AI Risk Analyzer"
+    
+    echo -e "${RED1}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${RED1}┃${NC} ${BOLD}${WHITE}🛡️  SECURITY & THREATS${NC}                                      ${RED1}┃${NC}"
+    echo -e "${RED1}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "  ${GREEN1}[${WHITE}14${GREEN1}]${NC} ${BLUE1}🔓${NC} Breach Monitor           ${DIM}${GRAY}Check Data Leaks${NC}"
+    echo -e "  ${GREEN1}[${WHITE}15${GREEN1}]${NC} ${BLUE1}🕸️${NC}  Darkweb Scanner          ${DIM}${GRAY}.onion Search${NC}"
+    echo -e "  ${GREEN1}[${WHITE}16${GREEN1}]${NC} ${BLUE1}🤖${NC} AI Risk Analyzer         ${DIM}${GRAY}Intelligent Assessment${NC}"
+    echo -e "  ${GREEN1}[${WHITE}17${GREEN1}]${NC} ${BLUE1}💰${NC} Crypto Tracker           ${DIM}${GRAY}BTC/ETH Wallets${NC}"
+    echo -e "  ${GREEN1}[${WHITE}18${GREEN1}]${NC} ${BLUE1}🔒${NC} SSL/TLS Analyzer         ${DIM}${GRAY}Certificate Security${NC}"
     echo ""
-    echo -e "${WHITE}${BOLD}  🎣 TOOLS${NC}"
-    echo -e "${GREEN} [14]${NC}  🎣 IP Grabber Generator"
-    echo -e "${GREEN} [15]${NC}  📊 Full OSINT Report"
+    
+    echo -e "${GREEN2}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${GREEN2}┃${NC} ${BOLD}${WHITE}🎣 TOOLS & UTILITIES${NC}                                       ${GREEN2}┃${NC}"
+    echo -e "${GREEN2}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
+    echo -e "  ${GREEN1}[${WHITE}19${GREEN1}]${NC} ${BLUE1}🎣${NC} IP Grabber Generator     ${DIM}${GRAY}Grabify + More${NC}"
+    echo -e "  ${GREEN1}[${WHITE}20${GREEN1}]${NC} ${BLUE1}📊${NC} Full OSINT Report        ${DIM}${GRAY}All-in-One Scan${NC}"
     echo ""
-    echo -e "${YELLOW} [16]${NC}  ℹ️  Info & Features"
-    echo -e "${YELLOW}  [0]${NC}  ❌ Exit"
+    
+    echo -e "${YELLOW}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${NC}"
+    echo -e "${YELLOW}┃${NC}  ${GREEN1}[${WHITE}21${GREEN1}]${NC} ${CYAN}ℹ️  Info & Features${NC}     ${GREEN1}[${WHITE}00${GREEN1}]${NC} ${RED}❌ Exit${NC}            ${YELLOW}┃${NC}"
+    echo -e "${YELLOW}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${NC}"
     echo ""
-    echo -e "${CYAN}┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄${NC}"
-    echo -ne "${WHITE}${BOLD}  ➤ Select [0-16]: ${NC}"
+    echo -e "  ${DIM}${GRAY}╭─────────────────────────────────────────────────────────╮${NC}"
+    echo -ne "  ${DIM}${GRAY}│${NC} ${BOLD}${PINK}➤${NC} ${WHITE}Select option:${NC} "
 }
 
-run_script() {
+show_loading() {
+    local text="$1"
+    echo ""
+    echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║${NC}  ${YELLOW}⏳${NC} ${text}${NC}"
+    echo -e "${CYAN}╚════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+}
+
+show_input_prompt() {
+    local prompt="$1"
+    echo ""
+    echo -e "${PURPLE}┌────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${PURPLE}│${NC} ${BOLD}${prompt}${NC}"
+    echo -e "${PURPLE}└────────────────────────────────────────────────────────┘${NC}"
+    echo -ne "  ${PINK}➤${NC} "
+}
+
+run_module() {
     cd "$HOME/nika-osint"
     "$@"
     echo ""
-    read -p "Press ENTER to continue..."
+    echo -e "${DIM}${GRAY}Press ENTER to return to menu...${NC}"
+    read
+}
+
+show_category_header() {
+    local title="$1"
+    local icon="$2"
+    clear
+    show_banner
+    echo -e "${PINK}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${PINK}║${NC}  ${icon} ${BOLD}${WHITE}${title}${NC}"
+    echo -e "${PINK}╚════════════════════════════════════════════════════════╝${NC}"
 }
 
 main() {
@@ -75,164 +144,169 @@ main() {
         read choice
         
         case $choice in
-            1)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🌐 DOMAIN INTELLIGENCE${NC}\n"
-                echo -ne "${YELLOW}➤ Domain: ${NC}"
+            1|01)
+                show_category_header "DOMAIN INTELLIGENCE" "🌐"
+                show_input_prompt "Enter domain (e.g., example.com):"
                 read domain
-                [ -n "$domain" ] && run_script node osint-ultra-max.js --domain "$domain" --save
+                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain" --save
                 ;;
-            2)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🔍 SUBDOMAIN ENUMERATION${NC}\n"
-                echo -ne "${YELLOW}➤ Domain: ${NC}"
+            2|02)
+                show_category_header "SUBDOMAIN ENUMERATION" "🔍"
+                show_input_prompt "Enter domain:"
                 read domain
-                [ -n "$domain" ] && run_script node osint-ultra-max.js --domain "$domain" --save
+                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain" --save
                 ;;
-            3)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}📧 EMAIL ANALYSIS${NC}\n"
-                echo -ne "${YELLOW}➤ Email: ${NC}"
+            3|03)
+                show_category_header "EMAIL ANALYSIS" "📧"
+                show_input_prompt "Enter email address:"
                 read email
-                [ -n "$email" ] && run_script node osint-ultra-max.js --email "$email" --save
+                [ -n "$email" ] && run_module node osint-ultra-max.js --email "$email" --save
                 ;;
-            4)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}📱 PHONE LOOKUP${NC}\n"
-                echo -ne "${YELLOW}➤ Phone (+country code): ${NC}"
+            4|04)
+                show_category_header "PHONE LOOKUP" "📱"
+                show_input_prompt "Enter phone number (+country code):"
                 read phone
-                [ -n "$phone" ] && run_script node osint-ultra-max.js --phone "$phone" --save
+                [ -n "$phone" ] && run_module node osint-ultra-max.js --phone "$phone" --save
                 ;;
-            5)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}👤 USERNAME FOOTPRINT${NC}\n"
-                echo -ne "${YELLOW}➤ Username: ${NC}"
+            5|05)
+                show_category_header "USERNAME FOOTPRINT" "👤"
+                show_input_prompt "Enter username:"
                 read user
-                [ -n "$user" ] && run_script node osint-ultra-max.js --username "$user" --save
+                [ -n "$user" ] && run_module node osint-ultra-max.js --username "$user" --save
                 ;;
-            6)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🕵️  SHERLOCK USERNAME SEARCH${NC}\n"
-                echo -e "${CYAN}Search 50+ platforms${NC}\n"
-                echo -ne "${YELLOW}➤ Username: ${NC}"
+            6|06)
+                show_category_header "SHERLOCK USERNAME SEARCH" "🕵️"
+                echo -e "\n  ${CYAN}➤ Searches 50+ social platforms${NC}\n"
+                show_input_prompt "Enter username:"
                 read user
-                [ -n "$user" ] && run_script node sherlock-search.js "$user" --save
+                [ -n "$user" ] && run_module node sherlock-search.js "$user" --save
                 ;;
-            7)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}📧 EMAIL HARVESTING${NC}\n"
-                echo -ne "${YELLOW}➤ Domain: ${NC}"
+            7|07)
+                show_category_header "EMAIL HARVESTING" "📧"
+                show_input_prompt "Enter domain:"
                 read domain
-                [ -n "$domain" ] && run_script node theharvester-search.js "$domain" --save
+                [ -n "$domain" ] && run_module node theharvester-search.js "$domain" --save
                 ;;
-            8)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🖼️  REVERSE IMAGE SEARCH${NC}\n"
-                echo -e "${GREEN}[1]${NC} Local File  ${GREEN}[2]${NC} URL"
-                echo -ne "${YELLOW}➤ Select: ${NC}"
+            8|08)
+                show_category_header "REVERSE IMAGE SEARCH" "🖼️"
+                echo ""
+                echo -e "  ${GREEN1}[1]${NC} Local Image File"
+                echo -e "  ${GREEN1}[2]${NC} Image URL"
+                echo ""
+                show_input_prompt "Select option:"
                 read ch
                 if [ "$ch" == "1" ]; then
-                    echo -ne "${YELLOW}➤ Image path: ${NC}"
+                    show_input_prompt "Enter image path:"
                     read path
-                    [ -f "$path" ] && run_script node reverse-image-search.js --file "$path"
+                    [ -f "$path" ] && run_module node reverse-image-search.js --file "$path"
                 elif [ "$ch" == "2" ]; then
-                    echo -ne "${YELLOW}➤ Image URL: ${NC}"
+                    show_input_prompt "Enter image URL:"
                     read url
-                    [ -n "$url" ] && run_script node reverse-image-search.js --url "$url"
+                    [ -n "$url" ] && run_module node reverse-image-search.js --url "$url"
                 fi
                 ;;
-            9)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🌍 GEOLOCATION TRACKER${NC}\n"
-                echo -e "${CYAN}Extract GPS from image metadata${NC}\n"
-                echo -ne "${YELLOW}➤ Image path: ${NC}"
+            9|09)
+                show_category_header "GEOLOCATION TRACKER" "🌍"
+                echo -e "\n  ${CYAN}➤ Extract GPS coordinates from image metadata${NC}\n"
+                show_input_prompt "Enter image path:"
                 read path
-                if [ -f "$path" ]; then
-                    run_script node geo-tracker.js "$path" --save
-                else
-                    echo -e "${RED}✗ File not found${NC}"
-                    sleep 2
-                fi
+                [ -f "$path" ] && run_module node geo-tracker.js "$path" --save
                 ;;
             10)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}📱 SOCIAL MEDIA SCRAPER${NC}\n"
-                echo -e "${CYAN}Platforms:${NC}"
-                echo -e "${GREEN}[1]${NC} All Platforms  ${GREEN}[2]${NC} GitHub  ${GREEN}[3]${NC} Reddit"
-                echo -e "${GREEN}[4]${NC} Instagram      ${GREEN}[5]${NC} Twitter ${GREEN}[6]${NC} TikTok"
-                echo -ne "${YELLOW}➤ Select: ${NC}"
+                show_category_header "SOCIAL MEDIA SCRAPER" "📱"
+                echo ""
+                echo -e "  ${GREEN1}[1]${NC} All Platforms    ${GREEN1}[2]${NC} GitHub       ${GREEN1}[3]${NC} Reddit"
+                echo -e "  ${GREEN1}[4]${NC} Instagram        ${GREEN1}[5]${NC} Twitter      ${GREEN1}[6]${NC} TikTok"
+                echo ""
+                show_input_prompt "Select platform:"
                 read plat
-                echo -ne "${YELLOW}➤ Username: ${NC}"
+                show_input_prompt "Enter username:"
                 read user
                 if [ -n "$user" ]; then
                     case $plat in
-                        1) run_script node social-scraper.js "$user" --save ;;
-                        2) run_script node social-scraper.js --platform github "$user" --save ;;
-                        3) run_script node social-scraper.js --platform reddit "$user" --save ;;
-                        4) run_script node social-scraper.js --platform instagram "$user" --save ;;
-                        5) run_script node social-scraper.js --platform twitter "$user" --save ;;
-                        6) run_script node social-scraper.js --platform tiktok "$user" --save ;;
-                        *) run_script node social-scraper.js "$user" --save ;;
+                        1) run_module node social-scraper.js "$user" --save ;;
+                        2) run_module node social-scraper.js --platform github "$user" --save ;;
+                        3) run_module node social-scraper.js --platform reddit "$user" --save ;;
+                        4) run_module node social-scraper.js --platform instagram "$user" --save ;;
+                        5) run_module node social-scraper.js --platform twitter "$user" --save ;;
+                        6) run_module node social-scraper.js --platform tiktok "$user" --save ;;
+                        *) run_module node social-scraper.js "$user" --save ;;
                     esac
                 fi
                 ;;
             11)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🔓 BREACH MONITOR${NC}\n"
-                echo -e "${CYAN}Check data leaks and breaches${NC}\n"
-                echo -e "${GREEN}[1]${NC} Check Email  ${GREEN}[2]${NC} Check Password"
-                echo -ne "${YELLOW}➤ Select: ${NC}"
-                read check_type
-                if [ "$check_type" == "1" ]; then
-                    echo -ne "${YELLOW}➤ Email: ${NC}"
-                    read email
-                    [ -n "$email" ] && run_script node breach-monitor.js --email "$email" --save
-                elif [ "$check_type" == "2" ]; then
-                    run_script node breach-monitor.js --password
-                fi
+                show_category_header "MAC ADDRESS LOOKUP" "🖥️"
+                echo -e "\n  ${CYAN}➤ Device identification from MAC address${NC}\n"
+                show_input_prompt "Enter MAC address (XX:XX:XX:XX:XX:XX):"
+                read mac
+                [ -n "$mac" ] && run_module node mac-lookup.js "$mac" --online --save
                 ;;
             12)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🕸️  DARKWEB SCANNER${NC}\n"
-                echo -e "${RED}⚠️  Use with caution${NC}\n"
-                echo -ne "${YELLOW}➤ Search query: ${NC}"
-                read query
-                [ -n "$query" ] && run_script node darkweb-scanner.js "$query" --save
+                show_category_header "METADATA EXTRACTOR" "📸"
+                echo -e "\n  ${CYAN}➤ Extract hidden data from documents/images${NC}\n"
+                show_input_prompt "Enter file path:"
+                read path
+                [ -f "$path" ] && run_module node metadata-extractor.js "$path" --save
                 ;;
             13)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🤖 AI RISK ANALYZER${NC}\n"
-                echo -e "${CYAN}Analyze OSINT report with AI${NC}\n"
-                echo -ne "${YELLOW}➤ Report file (JSON): ${NC}"
-                read file
-                if [ -f "$file" ]; then
-                    run_script node ai-analyzer.js "$file"
-                else
-                    echo -e "${RED}✗ File not found${NC}"
-                    sleep 2
-                fi
+                show_category_header "GOOGLE DORK GENERATOR" "🔍"
+                echo -e "\n  ${CYAN}➤ Generate 100+ search dorks automatically${NC}\n"
+                show_input_prompt "Enter target domain:"
+                read domain
+                [ -n "$domain" ] && run_module node dork-generator.js "$domain" --save
                 ;;
             14)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}🎣 IP GRABBER GENERATOR${NC}\n"
-                echo -e "${GREEN}[1]${NC} YouTube   ${GREEN}[2]${NC} Wikipedia ${GREEN}[3]${NC} News"
-                echo -e "${GREEN}[4]${NC} Telegram  ${GREEN}[5]${NC} GitHub    ${GREEN}[6]${NC} Reddit"
-                echo -e "${GREEN}[7]${NC} Spotify   ${GREEN}[8]${NC} Instagram ${GREEN}[9]${NC} Random"
-                echo -ne "${YELLOW}➤ Select: ${NC}"
+                show_category_header "BREACH MONITOR" "🔓"
+                echo ""
+                echo -e "  ${GREEN1}[1]${NC} Check Email Address"
+                echo -e "  ${GREEN1}[2]${NC} Check Password Security"
+                echo ""
+                show_input_prompt "Select option:"
+                read check_type
+                if [ "$check_type" == "1" ]; then
+                    show_input_prompt "Enter email:"
+                    read email
+                    [ -n "$email" ] && run_module node breach-monitor.js --email "$email" --save
+                elif [ "$check_type" == "2" ]; then
+                    run_module node breach-monitor.js --password
+                fi
+                ;;
+            15)
+                show_category_header "DARKWEB SCANNER" "🕸️"
+                echo -e "\n  ${RED}⚠️  Use responsibly - Darkweb content can be dangerous${NC}\n"
+                show_input_prompt "Enter search query:"
+                read query
+                [ -n "$query" ] && run_module node darkweb-scanner.js "$query" --save
+                ;;
+            16)
+                show_category_header "AI RISK ANALYZER" "🤖"
+                echo -e "\n  ${CYAN}➤ Analyze OSINT reports with AI-powered assessment${NC}\n"
+                show_input_prompt "Enter report file path (JSON):"
+                read file
+                [ -f "$file" ] && run_module node ai-analyzer.js "$file"
+                ;;
+            17)
+                show_category_header "CRYPTO TRACKER" "💰"
+                echo -e "\n  ${CYAN}➤ Track Bitcoin and Ethereum wallets${NC}\n"
+                show_input_prompt "Enter wallet address:"
+                read addr
+                [ -n "$addr" ] && run_module node crypto-tracker.js "$addr" --save
+                ;;
+            18)
+                show_category_header "SSL/TLS ANALYZER" "🔒"
+                echo -e "\n  ${CYAN}➤ Analyze certificate security and vulnerabilities${NC}\n"
+                show_input_prompt "Enter domain:"
+                read domain
+                [ -n "$domain" ] && run_module node ssl-analyzer.js "$domain" --save
+                ;;
+            19)
+                show_category_header "IP GRABBER GENERATOR" "🎣"
+                echo ""
+                echo -e "  ${GREEN1}[1]${NC} YouTube      ${GREEN1}[2]${NC} Wikipedia    ${GREEN1}[3]${NC} News"
+                echo -e "  ${GREEN1}[4]${NC} Telegram     ${GREEN1}[5]${NC} GitHub       ${GREEN1}[6]${NC} Reddit"
+                echo -e "  ${GREEN1}[7]${NC} Spotify      ${GREEN1}[8]${NC} Instagram    ${GREEN1}[9]${NC} Random"
+                echo ""
+                show_input_prompt "Select category:"
                 read cat
                 case $cat in
                     1) c="youtube" ;;
@@ -245,20 +319,18 @@ main() {
                     8) c="instagram" ;;
                     *) c="random" ;;
                 esac
-                run_script node osint-ultra-max.js --grabber $c
+                run_module node osint-ultra-max.js --grabber $c
                 ;;
-            15)
-                clear
-                show_banner
-                echo -e "${GREEN}${BOLD}📊 FULL OSINT REPORT${NC}\n"
-                echo -e "${YELLOW}Leave blank to skip${NC}\n"
-                echo -ne "${CYAN}➤ Domain: ${NC}"
+            20)
+                show_category_header "FULL OSINT REPORT" "📊"
+                echo -e "\n  ${YELLOW}Leave fields blank to skip${NC}\n"
+                show_input_prompt "Domain:"
                 read d
-                echo -ne "${CYAN}➤ Email: ${NC}"
+                show_input_prompt "Email:"
                 read e
-                echo -ne "${CYAN}➤ Phone: ${NC}"
+                show_input_prompt "Phone:"
                 read p
-                echo -ne "${CYAN}➤ Username: ${NC}"
+                show_input_prompt "Username:"
                 read u
                 
                 cmd="node osint-ultra-max.js --save"
@@ -268,68 +340,69 @@ main() {
                 [ -n "$u" ] && cmd="$cmd --username $u"
                 
                 if [ "$cmd" != "node osint-ultra-max.js --save" ]; then
-                    run_script $cmd
+                    run_module $cmd
                 else
-                    echo -e "${RED}✗ No input${NC}"
+                    echo -e "${RED}✗ At least one parameter required${NC}"
                     sleep 2
                 fi
                 ;;
-            16)
+            21)
                 clear
                 show_banner
-                echo -e "${CYAN}${BOLD}ℹ️  NIKA OSINT ULTRA v4.0${NC}\n"
-                echo -e "${YELLOW}${BOLD}NEW IN v4.0:${NC}"
-                echo -e "  ${GREEN}✓${NC} Geolocation Tracker (GPS from images)"
-                echo -e "  ${GREEN}✓${NC} Social Media Scraper (GitHub, Reddit, etc.)"
-                echo -e "  ${GREEN}✓${NC} Breach Monitor (HaveIBeenPwned, etc.)"
-                echo -e "  ${GREEN}✓${NC} Darkweb Scanner (.onion search)"
-                echo -e "  ${GREEN}✓${NC} AI Risk Analyzer (intelligent assessment)\n"
-                echo -e "${YELLOW}${BOLD}v3.0 FEATURES:${NC}"
-                echo -e "  ${GREEN}✓${NC} Sherlock (50+ sites)"
-                echo -e "  ${GREEN}✓${NC} Email Harvesting (TheHarvester)"
-                echo -e "  ${GREEN}✓${NC} Reverse Image Search (9 engines)"
-                echo -e "  ${GREEN}✓${NC} Phone Auto Search (45+ sources)"
-                echo -e "  ${GREEN}✓${NC} IP Grabber Generator\n"
-                echo -e "${YELLOW}${BOLD}CORE FEATURES:${NC}"
-                echo -e "  ${GRAY}•${NC} 150+ Intelligence Sources"
-                echo -e "  ${GRAY}•${NC} Domain Intelligence (54+ checks)"
-                echo -e "  ${GRAY}•${NC} Subdomain Enumeration"
-                echo -e "  ${GRAY}•${NC} Email Analysis (12+ checks)"
-                echo -e "  ${GRAY}•${NC} Username Search (25+ platforms)"
-                echo -e "  ${GRAY}•${NC} Auto-save Reports (JSON + TXT)\n"
-                echo -e "${YELLOW}${BOLD}REPORTS SAVED IN:${NC}"
-                echo -e "  ${CYAN}./reports/${NC}                (OSINT scans)"
-                echo -e "  ${CYAN}./sherlock-reports/${NC}       (Sherlock)"
-                echo -e "  ${CYAN}./harvester-reports/${NC}      (Email harvesting)"
-                echo -e "  ${CYAN}./geo-reports/${NC}            (Geolocation)"
-                echo -e "  ${CYAN}./social-scraper-reports/${NC} (Social media)"
-                echo -e "  ${CYAN}./breach-monitor-reports/${NC} (Breaches)"
-                echo -e "  ${CYAN}./darkweb-reports/${NC}        (Darkweb)"
-                echo -e "  ${CYAN}./ai-analysis-reports/${NC}    (AI analysis)\n"
-                echo -e "${YELLOW}${BOLD}AUTHORS:${NC}"
-                echo -e "  ${MAGENTA}🥝 kiwi & 777${NC}\n"
-                echo -e "${YELLOW}${BOLD}GITHUB:${NC}"
-                echo -e "  ${CYAN}https://github.com/u4622172004-png/nika-osint${NC}\n"
+                echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
+                echo -e "${CYAN}║${NC}         ${BOLD}${WHITE}ℹ️  NIKA OSINT ULTRA v5.0${NC}                      ${CYAN}║${NC}"
+                echo -e "${CYAN}╚════════════════════════════════════════════════════════╝${NC}"
+                echo ""
+                echo -e "${YELLOW}${BOLD}✨ NEW IN v5.0 (5 NEW MODULES):${NC}"
+                echo -e "  ${GREEN2}▸${NC} MAC Address Lookup ${DIM}${GRAY}(Device identification)${NC}"
+                echo -e "  ${GREEN2}▸${NC} Metadata Extractor ${DIM}${GRAY}(Document forensics)${NC}"
+                echo -e "  ${GREEN2}▸${NC} Google Dork Generator ${DIM}${GRAY}(100+ auto dorks)${NC}"
+                echo -e "  ${GREEN2}▸${NC} Crypto Tracker ${DIM}${GRAY}(BTC/ETH wallets)${NC}"
+                echo -e "  ${GREEN2}▸${NC} SSL/TLS Analyzer ${DIM}${GRAY}(Certificate security)${NC}"
+                echo ""
+                echo -e "${YELLOW}${BOLD}🔥 v4.0 MODULES:${NC}"
+                echo -e "  ${GREEN2}▸${NC} Geolocation Tracker, Social Scraper, Breach Monitor"
+                echo -e "  ${GREEN2}▸${NC} Darkweb Scanner, AI Risk Analyzer"
+                echo ""
+                echo -e "${YELLOW}${BOLD}🚀 TOTAL FEATURES:${NC}"
+                echo -e "  ${BLUE1}▸${NC} 21 Powerful Modules"
+                echo -e "  ${BLUE1}▸${NC} 150+ Intelligence Sources"
+                echo -e "  ${BLUE1}▸${NC} Auto-save Reports (JSON + TXT)"
+                echo -e "  ${BLUE1}▸${NC} Phone Auto Search (45+ sources)"
+                echo -e "  ${BLUE1}▸${NC} Username Search (50+ platforms)"
+                echo ""
+                echo -e "${YELLOW}${BOLD}👥 AUTHORS:${NC}"
+                echo -e "  ${PINK}🥝 kiwi & 777${NC}"
+                echo ""
+                echo -e "${YELLOW}${BOLD}📦 GITHUB:${NC}"
+                echo -e "  ${CYAN}https://github.com/u4622172004-png/nika-osint${NC}"
+                echo ""
                 echo -e "${RED}${BOLD}⚠️  LEGAL NOTICE:${NC}"
-                echo -e "  ${GRAY}For authorized security research and${NC}"
-                echo -e "  ${GRAY}educational purposes only.${NC}\n"
-                read -p "Press ENTER to continue..."
+                echo -e "  ${DIM}${GRAY}For authorized security research and${NC}"
+                echo -e "  ${DIM}${GRAY}educational purposes only.${NC}"
+                echo ""
+                echo -e "${DIM}${GRAY}Press ENTER to return to menu...${NC}"
+                read
                 ;;
-            0)
+            0|00)
                 clear
                 echo ""
-                echo -e "${MAGENTA}${BOLD}  ╔═══════════════════════════════════════╗${NC}"
-                echo -e "${MAGENTA}${BOLD}  ║  🥝 Thanks for using NIKA OSINT! 🥝  ║${NC}"
-                echo -e "${MAGENTA}${BOLD}  ╚═══════════════════════════════════════╝${NC}"
+                echo -e "${PINK}╔═══════════════════════════════════════════════════════╗${NC}"
+                echo -e "${PINK}║${NC}                                                       ${PINK}║${NC}"
+                echo -e "${PINK}║${NC}     ${CYAN}🥝${NC} ${BOLD}${WHITE}Thanks for using NIKA OSINT!${NC} ${CYAN}🥝${NC}            ${PINK}║${NC}"
+                echo -e "${PINK}║${NC}                                                       ${PINK}║${NC}"
+                echo -e "${PINK}╚═══════════════════════════════════════════════════════╝${NC}"
                 echo ""
-                echo -e "${CYAN}    Stay curious, stay safe! 🔐${NC}"
+                echo -e "           ${CYAN}Stay curious, stay safe! 🔐${NC}"
                 echo ""
-                sleep 1
+                echo -e "${DIM}${GRAY}        Developed with ❤️  by kiwi & 777${NC}"
+                echo ""
+                sleep 2
                 exit 0
                 ;;
             *)
                 echo ""
-                echo -e "${RED}✗ Invalid option${NC}"
+                echo -e "${RED}✗ Invalid option. Please select 0-21${NC}"
                 sleep 1
                 ;;
         esac

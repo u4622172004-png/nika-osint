@@ -1,0 +1,25 @@
+═══════════════════════════════════════════════════════════
+DARKWEB SCANNER REPORT
+═══════════════════════════════════════════════════════════
+
+Query: kiwi
+Engine: Ahmia
+Date: 3/2/2026, 5:33:18 AM
+
+═══════════════════════════════════════════════════════════
+RESULTS (0)
+═══════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════
+MANUAL SEARCH QUERIES
+═══════════════════════════════════════════════════════════
+
+1. site:*.onion "kiwi"
+2. site:*.onion kiwi
+3. inurl:.onion "kiwi"
+4. kiwi site:pastebin.com
+5. kiwi site:ghostbin.com
+6. kiwi site:rentry.co
+7. kiwi "onion link"
+8. kiwi "dark web"
+9. kiwi "tor hidden service"

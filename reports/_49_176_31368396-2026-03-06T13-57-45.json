@@ -1,0 +1,99 @@
+{
+  "phone": {
+    "valid": true,
+    "country": "DE",
+    "countryCallingCode": "49",
+    "nationalNumber": "17631368396",
+    "international": "+49 176 31368396",
+    "national": "0176 31368396",
+    "e164": "+4917631368396",
+    "rfc3966": "tel:+4917631368396",
+    "uri": "tel:+4917631368396",
+    "carrier": {
+      "name": "Unknown",
+      "note": "Carrier database for DE not available",
+      "suggestion": "Use HLR lookup service for carrier detection"
+    },
+    "location": {
+      "country": "Germany",
+      "capital": "Berlin",
+      "lat": 52.52,
+      "lon": 13.405
+    },
+    "timezone": "Europe/Berlin",
+    "typeInfo": {
+      "isPossible": true,
+      "isValid": true
+    },
+    "social": {
+      "whatsapp": "https://wa.me/49 176 31368396",
+      "telegram": "https://t.me/49 176 31368396",
+      "signal": "https://signal.me/#p/49 176 31368396",
+      "viber": "viber://chat?number=49 176 31368396"
+    },
+    "reputationServices": {
+      "truecaller": "https://www.truecaller.com/search/int/+49 176 31368396",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/+49 176 31368396",
+      "sync": "https://www.sync.me/",
+      "whocallsme": "https://whocallsme.com/4917631368396",
+      "whocalld": "https://whocalld.com/+4917631368396",
+      "spamcalls": "https://www.spamcalls.net/en/number/4917631368396",
+      "tellows": "https://www.tellows.com/num/4917631368396"
+    },
+    "autoSearch": {
+      "google": "https://www.google.com/search?q=\"+49 176 31368396\"",
+      "googleClean": "https://www.google.com/search?q=4917631368396",
+      "bing": "https://www.bing.com/search?q=\"+49 176 31368396\"",
+      "duckduckgo": "https://duckduckgo.com/?q=\"+49 176 31368396\"",
+      "yandex": "https://yandex.com/search/?text=\"+49 176 31368396\"",
+      "facebook": "https://www.facebook.com/search/people/?q=+49 176 31368396",
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=+49 176 31368396",
+      "instagram": "https://www.instagram.com/explore/tags/4917631368396/",
+      "twitter": "https://twitter.com/search?q=\"+49 176 31368396\"",
+      "tiktok": "https://www.tiktok.com/search?q=+49 176 31368396",
+      "telegram": "https://t.me/4917631368396",
+      "whatsapp": "https://wa.me/4917631368396",
+      "signal": "https://signal.me/#p/4917631368396",
+      "viber": "viber://chat?number=4917631368396",
+      "truecaller": "https://www.truecaller.com/search/int/+49 176 31368396",
+      "sync": "https://www.sync.me/search/?query=+49 176 31368396",
+      "numverify": "https://numverify.com/",
+      "phonevalidator": "https://www.phonevalidator.com/index.aspx",
+      "shouldianswer": "https://www.shouldianswer.com/phone-number/4917631368396",
+      "whocallsme": "https://whocallsme.com/4917631368396",
+      "whocalld": "https://whocalld.com/+4917631368396",
+      "tellows": "https://www.tellows.com/num/4917631368396",
+      "spamcalls": "https://www.spamcalls.net/en/number/4917631368396",
+      "callapp": "https://callapp.com/search/4917631368396",
+      "showcaller": "https://www.showcaller.com/",
+      "pipl": "https://pipl.com/search/?q=+49 176 31368396",
+      "spokeo": "https://www.spokeo.com/+49 176 31368396",
+      "whitepages": "https://www.whitepages.com/phone/4917631368396",
+      "the411": "https://www.411.com/phone/4917631368396",
+      "paginebianche": "https://www.paginebianche.it/ricerca?qs=4917631368396",
+      "paginegialle": "https://www.paginegialle.it/ricerca/4917631368396",
+      "tuttocitta": "https://www.tuttocitta.it/cerca/4917631368396",
+      "trueyellow": "https://www.trueyellow.com/search?q=+49 176 31368396",
+      "yellowpages": "https://www.yellowpages.com/search?search_terms=+49 176 31368396",
+      "intelx": "https://intelx.io/?s=+49 176 31368396",
+      "dehashed": "https://www.dehashed.com/search?query=+49 176 31368396",
+      "leakcheck": "https://leakcheck.io/",
+      "snusbase": "https://snusbase.com/",
+      "reversephonelookup": "https://www.reversephonelookup.com/number/4917631368396/",
+      "spydialer": "https://www.spydialer.com/default.aspx",
+      "freecarrierlookup": "https://freecarrierlookup.com/",
+      "carrierlookup": "https://www.carrierlookup.com/",
+      "thatsthem": "https://thatsthem.com/phone/4917631368396",
+      "fastpeoplesearch": "https://www.fastpeoplesearch.com/phone/4917631368396",
+      "truepeoplesearch": "https://www.truepeoplesearch.com/results?phoneno=4917631368396",
+      "googleResultsFound": true
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

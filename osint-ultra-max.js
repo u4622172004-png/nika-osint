@@ -635,6 +635,7 @@ async function runEmail(email){
   if(!data.valid) risk += 20;
   
   const domain = email.split("@")[1];
+  if (!domain) return false;
   
   console.log(`   └─ MX records...`);
   try{

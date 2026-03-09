@@ -1,0 +1,43 @@
+{
+  "username": {
+    "found": [
+      {
+        "platform": "Reddit",
+        "found": true,
+        "url": "https://reddit.com/user/Nicole Caguana"
+      },
+      {
+        "platform": "HackerNews",
+        "found": true,
+        "url": "https://news.ycombinator.com/user?id=Nicole Caguana"
+      },
+      {
+        "platform": "Telegram",
+        "found": true,
+        "url": "https://t.me/Nicole Caguana"
+      },
+      {
+        "platform": "Discord",
+        "found": true,
+        "url": "https://discord.com/users/Nicole Caguana"
+      }
+    ],
+    "additionalSearches": {
+      "google": "https://www.google.com/search?q=\"Nicole Caguana\"",
+      "duckduckgo": "https://duckduckgo.com/?q=\"Nicole Caguana\"",
+      "yandex": "https://yandex.com/search/?text=\"Nicole Caguana\"",
+      "bing": "https://www.bing.com/search?q=\"Nicole Caguana\"",
+      "namechk": "https://namechk.com/?s=Nicole Caguana",
+      "knowem": "https://knowem.com/checkusernames.php?u=Nicole Caguana",
+      "namecheckup": "https://namecheckup.com/Nicole Caguana",
+      "socialcatfish": "https://socialcatfish.com/",
+      "pipl": "https://pipl.com/search/?q=Nicole Caguana",
+      "spokeo": "https://www.spokeo.com/Nicole Caguana"
+    }
+  },
+  "risk": {
+    "score": 0,
+    "level": "LOW",
+    "color": "\u001b[32m"
+  }
+}

@@ -1,0 +1,192 @@
+═══════════════════════════════════════════════════════════
+GOOGLE DORK GENERATOR REPORT
+═══════════════════════════════════════════════════════════
+
+Target: chatunity.it
+Generated: 3/9/2026, 12:46:26 AM
+Total Dorks: 133
+Categories: 10
+
+═══════════════════════════════════════════════════════════
+FILE DISCOVERY (18)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it filetype:pdf
+2. site:chatunity.it filetype:doc
+3. site:chatunity.it filetype:docx
+4. site:chatunity.it filetype:xls
+5. site:chatunity.it filetype:xlsx
+6. site:chatunity.it filetype:ppt
+7. site:chatunity.it filetype:txt
+8. site:chatunity.it filetype:csv
+9. site:chatunity.it filetype:sql
+10. site:chatunity.it filetype:log
+11. site:chatunity.it filetype:bak
+12. site:chatunity.it filetype:conf
+13. site:chatunity.it filetype:config
+14. site:chatunity.it filetype:env
+15. site:chatunity.it ext:xml
+16. site:chatunity.it ext:json
+17. inurl:chatunity.it filetype:pdf "confidential"
+18. inurl:chatunity.it filetype:doc "internal use only"
+
+═══════════════════════════════════════════════════════════
+CREDENTIAL LEAKS (15)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it intext:"password"
+2. site:chatunity.it intext:"username"
+3. site:chatunity.it intext:"admin"
+4. site:chatunity.it intext:"login"
+5. site:chatunity.it inurl:admin
+6. site:chatunity.it inurl:login
+7. site:chatunity.it inurl:password
+8. site:chatunity.it "index of" "password.txt"
+9. site:chatunity.it filetype:sql "password"
+10. site:chatunity.it filetype:log "password"
+11. site:chatunity.it ext:env "DB_PASSWORD"
+12. site:chatunity.it ext:env "API_KEY"
+13. site:chatunity.it "mysql_connect"
+14. site:chatunity.it "pg_connect"
+15. inurl:chatunity.it intext:"sql syntax near"
+
+═══════════════════════════════════════════════════════════
+SENSITIVE INFORMATION (15)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it intext:"confidential"
+2. site:chatunity.it intext:"secret"
+3. site:chatunity.it intext:"internal"
+4. site:chatunity.it intext:"not for distribution"
+5. site:chatunity.it intext:"ssn"
+6. site:chatunity.it intext:"social security"
+7. site:chatunity.it filetype:xls intext:"email"
+8. site:chatunity.it filetype:csv intext:"email"
+9. site:chatunity.it "index of" "backup"
+10. site:chatunity.it "index of" "config"
+11. site:chatunity.it "index of" "database"
+12. site:chatunity.it intitle:"index of" "parent directory"
+13. site:chatunity.it ext:bak
+14. site:chatunity.it ext:old
+15. site:chatunity.it ext:backup
+
+═══════════════════════════════════════════════════════════
+ERROR MESSAGES & DEBUG (14)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it "fatal error"
+2. site:chatunity.it "warning:"
+3. site:chatunity.it "error:"
+4. site:chatunity.it "exception"
+5. site:chatunity.it "stack trace"
+6. site:chatunity.it "syntax error"
+7. site:chatunity.it "mysql error"
+8. site:chatunity.it "ORA-" "error"
+9. site:chatunity.it "SQL Server" "error"
+10. site:chatunity.it intext:"Warning: mysql_connect()"
+11. site:chatunity.it intext:"Error Message : Error loading"
+12. site:chatunity.it "PHP Parse error"
+13. site:chatunity.it "PHP Warning"
+14. site:chatunity.it "PHP Error"
+
+═══════════════════════════════════════════════════════════
+ADMIN PANELS (14)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it inurl:admin
+2. site:chatunity.it inurl:administrator
+3. site:chatunity.it inurl:login
+4. site:chatunity.it inurl:cpanel
+5. site:chatunity.it inurl:phpmyadmin
+6. site:chatunity.it inurl:dashboard
+7. site:chatunity.it inurl:wp-admin
+8. site:chatunity.it inurl:wp-login
+9. site:chatunity.it intitle:"admin panel"
+10. site:chatunity.it intitle:"login"
+11. site:chatunity.it intitle:"dashboard"
+12. site:chatunity.it "powered by phpMyAdmin"
+13. site:chatunity.it inurl:"/admin/login"
+14. site:chatunity.it inurl:"/user/login"
+
+═══════════════════════════════════════════════════════════
+SUBDOMAIN DISCOVERY (12)
+═══════════════════════════════════════════════════════════
+
+1. site:*.chatunity.it
+2. site:*.chatunity.it -www
+3. site:dev.chatunity.it
+4. site:staging.chatunity.it
+5. site:test.chatunity.it
+6. site:api.chatunity.it
+7. site:admin.chatunity.it
+8. site:mail.chatunity.it
+9. site:ftp.chatunity.it
+10. site:vpn.chatunity.it
+11. site:portal.chatunity.it
+12. site:beta.chatunity.it
+
+═══════════════════════════════════════════════════════════
+TECHNOLOGY STACK (12)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it "powered by"
+2. site:chatunity.it "built with"
+3. site:chatunity.it intext:"WordPress"
+4. site:chatunity.it intext:"Joomla"
+5. site:chatunity.it intext:"Drupal"
+6. site:chatunity.it "Apache" "Server at"
+7. site:chatunity.it "nginx"
+8. site:chatunity.it "Microsoft-IIS"
+9. site:chatunity.it ext:php
+10. site:chatunity.it ext:asp
+11. site:chatunity.it ext:jsp
+12. site:chatunity.it ext:aspx
+
+═══════════════════════════════════════════════════════════
+SOCIAL MEDIA & PROFILES (10)
+═══════════════════════════════════════════════════════════
+
+1. site:linkedin.com "chatunity.it"
+2. site:twitter.com "chatunity.it"
+3. site:facebook.com "chatunity.it"
+4. site:github.com "chatunity.it"
+5. site:instagram.com "chatunity.it"
+6. site:pinterest.com "chatunity.it"
+7. site:reddit.com "chatunity.it"
+8. site:youtube.com "chatunity.it"
+9. "@chatunity.it" site:linkedin.com
+10. "@chatunity.it" site:twitter.com
+
+═══════════════════════════════════════════════════════════
+EMAIL ADDRESSES (8)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it intext:"@chatunity.it"
+2. site:chatunity.it "email" | "e-mail"
+3. site:chatunity.it "contact" intext:"@chatunity.it"
+4. "@chatunity.it" site:linkedin.com
+5. "@chatunity.it" site:github.com
+6. "@chatunity.it" filetype:pdf
+7. "@chatunity.it" filetype:doc
+8. "@chatunity.it" filetype:xls
+
+═══════════════════════════════════════════════════════════
+COMMON VULNERABILITIES (15)
+═══════════════════════════════════════════════════════════
+
+1. site:chatunity.it inurl:"/phpinfo.php"
+2. site:chatunity.it inurl:"eval("
+3. site:chatunity.it inurl:"exec("
+4. site:chatunity.it inurl:"shell"
+5. site:chatunity.it inurl:"cmd"
+6. site:chatunity.it intext:"Index of /"
+7. site:chatunity.it "parent directory"
+8. site:chatunity.it intitle:"index of" ".git"
+9. site:chatunity.it intitle:"index of" ".svn"
+10. site:chatunity.it intitle:"index of" "backup"
+11. site:chatunity.it ext:git
+12. site:chatunity.it ext:svn
+13. site:chatunity.it ".env"
+14. site:chatunity.it "config.php"
+15. site:chatunity.it "database.yml"
+
