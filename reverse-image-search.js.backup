@@ -328,7 +328,7 @@ async function main() {
   
   // Save if requested
   if (saveFile) {
-    // saveResults({ imagePath, imageUrl, metadata, urls, hash }, saveFile);
+    saveResults({ imagePath, imageUrl, metadata, urls, hash }, saveFile);
   }
   
   console.log("\x1b[31m██████╗ ███████╗██╗   ██╗███████╗██████╗ ███████╗███████╗\x1b[0m");

@@ -563,8 +563,8 @@ async function main() {
   
   displayResults(results);
   
-  if (false && saveResults_flag && !results.error) {
-    // saveResults(results);
+  if (saveResults_flag && !results.error) {
+    saveResults(results);
   }
   
   console.log("\x1b[31m███████╗███████╗██╗\x1b[0m");

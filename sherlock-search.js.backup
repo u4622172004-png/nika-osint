@@ -331,8 +331,8 @@ async function main() {
   displayResults(username, results);
   
   // Save if requested
-  if (false && saveResults_flag) {
-    // saveResults(username, results);
+  if (saveResults_flag) {
+    saveResults(username, results);
   }
   
   console.log("\x1b[31m███████╗██╗  ██╗███████╗██████╗ ██╗      ██████╗  ██████╗██╗  ██╗\x1b[0m");

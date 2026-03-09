@@ -495,8 +495,8 @@ async function main() {
       
       displayResults(data);
       
-      if (false && saveResults_flag) {
-        // saveResults(data);
+      if (saveResults_flag) {
+        saveResults(data);
       }
     });
     
@@ -526,8 +526,8 @@ async function main() {
     
     displayResults(data);
     
-    if (false && saveResults_flag) {
-      // saveResults(data);
+    if (saveResults_flag) {
+      saveResults(data);
     }
   } else {
     console.log("\x1b[31m❌ No query specified!\x1b[0m\n");

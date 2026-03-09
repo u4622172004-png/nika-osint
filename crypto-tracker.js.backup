@@ -335,8 +335,8 @@ async function main() {
   
   displayResults(results, cryptoType);
   
-  if (false && saveResults_flag && results.available) {
-    // saveResults(results, cryptoType);
+  if (saveResults_flag && results.available) {
+    saveResults(results, cryptoType);
   }
   
   console.log("\x1b[31m ██████╗██████╗ ██╗   ██╗██████╗ ████████╗ ██████╗\x1b[0m");

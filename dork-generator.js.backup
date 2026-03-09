@@ -405,8 +405,8 @@ function main() {
   
   displayResults(results);
   
-  if (false && saveResults_flag) {
-    // saveResults(results);
+  if (saveResults_flag) {
+    saveResults(results);
   }
   
   console.log("\x1b[31m██████╗  ██████╗ ██████╗ ██╗  ██╗\x1b[0m");

@@ -148,44 +148,44 @@ main() {
                 show_category_header "DOMAIN INTELLIGENCE" "🌐"
                 show_input_prompt "Enter domain (e.g., example.com):"
                 read domain
-                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain"
+                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain" --save
                 ;;
             2|02)
                 show_category_header "SUBDOMAIN ENUMERATION" "🔍"
                 show_input_prompt "Enter domain:"
                 read domain
-                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain"
+                [ -n "$domain" ] && run_module node osint-ultra-max.js --domain "$domain" --save
                 ;;
             3|03)
                 show_category_header "EMAIL ANALYSIS" "📧"
                 show_input_prompt "Enter email address:"
                 read email
-                [ -n "$email" ] && run_module node osint-ultra-max.js --email "$email"
+                [ -n "$email" ] && run_module node osint-ultra-max.js --email "$email" --save
                 ;;
             4|04)
                 show_category_header "PHONE LOOKUP" "📱"
                 show_input_prompt "Enter phone number (+country code):"
                 read phone
-                [ -n "$phone" ] && run_module node osint-ultra-max.js --phone "$phone"
+                [ -n "$phone" ] && run_module node osint-ultra-max.js --phone "$phone" --save
                 ;;
             5|05)
                 show_category_header "USERNAME FOOTPRINT" "👤"
                 show_input_prompt "Enter username:"
                 read user
-                [ -n "$user" ] && run_module node osint-ultra-max.js --username "$user"
+                [ -n "$user" ] && run_module node osint-ultra-max.js --username "$user" --save
                 ;;
             6|06)
                 show_category_header "SHERLOCK USERNAME SEARCH" "🕵️"
                 echo -e "\n  ${CYAN}➤ Searches 50+ social platforms${NC}\n"
                 show_input_prompt "Enter username:"
                 read user
-                [ -n "$user" ] && run_module node sherlock-search.js "$user"
+                [ -n "$user" ] && run_module node sherlock-search.js "$user" --save
                 ;;
             7|07)
                 show_category_header "EMAIL HARVESTING" "📧"
                 show_input_prompt "Enter domain:"
                 read domain
-                [ -n "$domain" ] && run_module node theharvester-search.js "$domain"
+                [ -n "$domain" ] && run_module node theharvester-search.js "$domain" --save
                 ;;
             8|08)
                 show_category_header "REVERSE IMAGE SEARCH" "🖼️"
@@ -210,7 +210,7 @@ main() {
                 echo -e "\n  ${CYAN}➤ Extract GPS coordinates from image metadata${NC}\n"
                 show_input_prompt "Enter image path:"
                 read path
-                [ -f "$path" ] && run_module node geo-tracker.js "$path"
+                [ -f "$path" ] && run_module node geo-tracker.js "$path" --save
                 ;;
             10)
                 show_category_header "SOCIAL MEDIA SCRAPER" "📱"
@@ -224,13 +224,13 @@ main() {
                 read user
                 if [ -n "$user" ]; then
                     case $plat in
-                        1) run_module node social-scraper.js "$user" ;;
-                        2) run_module node social-scraper.js --platform github "$user" ;;
-                        3) run_module node social-scraper.js --platform reddit "$user" ;;
-                        4) run_module node social-scraper.js --platform instagram "$user" ;;
-                        5) run_module node social-scraper.js --platform twitter "$user" ;;
-                        6) run_module node social-scraper.js --platform tiktok "$user" ;;
-                        *) run_module node social-scraper.js "$user" ;;
+                        1) run_module node social-scraper.js "$user" --save ;;
+                        2) run_module node social-scraper.js --platform github "$user" --save ;;
+                        3) run_module node social-scraper.js --platform reddit "$user" --save ;;
+                        4) run_module node social-scraper.js --platform instagram "$user" --save ;;
+                        5) run_module node social-scraper.js --platform twitter "$user" --save ;;
+                        6) run_module node social-scraper.js --platform tiktok "$user" --save ;;
+                        *) run_module node social-scraper.js "$user" --save ;;
                     esac
                 fi
                 ;;
@@ -239,21 +239,21 @@ main() {
                 echo -e "\n  ${CYAN}➤ Device identification from MAC address${NC}\n"
                 show_input_prompt "Enter MAC address (XX:XX:XX:XX:XX:XX):"
                 read mac
-                [ -n "$mac" ] && run_module node mac-lookup.js "$mac" --online
+                [ -n "$mac" ] && run_module node mac-lookup.js "$mac" --online --save
                 ;;
             12)
                 show_category_header "METADATA EXTRACTOR" "📸"
                 echo -e "\n  ${CYAN}➤ Extract hidden data from documents/images${NC}\n"
                 show_input_prompt "Enter file path:"
                 read path
-                [ -f "$path" ] && run_module node metadata-extractor.js "$path"
+                [ -f "$path" ] && run_module node metadata-extractor.js "$path" --save
                 ;;
             13)
                 show_category_header "GOOGLE DORK GENERATOR" "🔍"
                 echo -e "\n  ${CYAN}➤ Generate 100+ search dorks automatically${NC}\n"
                 show_input_prompt "Enter target domain:"
                 read domain
-                [ -n "$domain" ] && run_module node dork-generator.js "$domain"
+                [ -n "$domain" ] && run_module node dork-generator.js "$domain" --save
                 ;;
             14)
                 show_category_header "BREACH MONITOR" "🔓"
@@ -266,7 +266,7 @@ main() {
                 if [ "$check_type" == "1" ]; then
                     show_input_prompt "Enter email:"
                     read email
-                    [ -n "$email" ] && run_module node breach-monitor.js --email "$email"
+                    [ -n "$email" ] && run_module node breach-monitor.js --email "$email" --save
                 elif [ "$check_type" == "2" ]; then
                     run_module node breach-monitor.js --password
                 fi
@@ -276,7 +276,7 @@ main() {
                 echo -e "\n  ${RED}⚠️  Use responsibly - Darkweb content can be dangerous${NC}\n"
                 show_input_prompt "Enter search query:"
                 read query
-                [ -n "$query" ] && run_module node darkweb-scanner.js "$query"
+                [ -n "$query" ] && run_module node darkweb-scanner.js "$query" --save
                 ;;
             16)
                 show_category_header "AI RISK ANALYZER" "🤖"
@@ -290,14 +290,14 @@ main() {
                 echo -e "\n  ${CYAN}➤ Track Bitcoin and Ethereum wallets${NC}\n"
                 show_input_prompt "Enter wallet address:"
                 read addr
-                [ -n "$addr" ] && run_module node crypto-tracker.js "$addr"
+                [ -n "$addr" ] && run_module node crypto-tracker.js "$addr" --save
                 ;;
             18)
                 show_category_header "SSL/TLS ANALYZER" "🔒"
                 echo -e "\n  ${CYAN}➤ Analyze certificate security and vulnerabilities${NC}\n"
                 show_input_prompt "Enter domain:"
                 read domain
-                [ -n "$domain" ] && run_module node ssl-analyzer.js "$domain"
+                [ -n "$domain" ] && run_module node ssl-analyzer.js "$domain" --save
                 ;;
             19)
                 show_category_header "IP GRABBER GENERATOR" "🎣"
@@ -333,13 +333,13 @@ main() {
                 show_input_prompt "Username:"
                 read u
                 
-                cmd="node osint-ultra-max.js"
+                cmd="node osint-ultra-max.js --save"
                 [ -n "$d" ] && cmd="$cmd --domain $d"
                 [ -n "$e" ] && cmd="$cmd --email $e"
                 [ -n "$p" ] && cmd="$cmd --phone $p"
                 [ -n "$u" ] && cmd="$cmd --username $u"
                 
-                if [ "$cmd" != "node osint-ultra-max.js" ]; then
+                if [ "$cmd" != "node osint-ultra-max.js --save" ]; then
                     run_module $cmd
                 else
                     echo -e "${RED}✗ At least one parameter required${NC}"

@@ -410,8 +410,8 @@ async function main() {
   
   displayResults(results, onlineData);
   
-  if (false && saveResults_flag && results.isValid) {
-    // saveResults(results, onlineData);
+  if (saveResults_flag && results.isValid) {
+    saveResults(results, onlineData);
   }
   
   console.log("\x1b[31m███╗   ███╗ █████╗  ██████╗\x1b[0m");

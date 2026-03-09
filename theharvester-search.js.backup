@@ -376,8 +376,8 @@ async function main() {
   displayResults(results);
   
   // Save if requested
-  if (false && saveResults_flag && !results.manualSearch) {
-    // saveResults(results);
+  if (saveResults_flag && !results.manualSearch) {
+    saveResults(results);
   }
   
   console.log("\x1b[31m████████╗██╗  ██╗███████╗██╗  ██╗ █████╗ ██████╗ ██╗   ██╗███████╗███████╗████████╗███████╗██████╗\x1b[0m");
