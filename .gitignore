@@ -1,17 +1,16 @@
+node_modules/
+*.log
+.env
 
 # Report directories
 *-reports/
 reports/
-nmap-reports/
-sherlock-reports/
-harvester-reports/
-geo-reports/
-social-scraper-reports/
-breach-monitor-reports/
-darkweb-reports/
-ai-analysis-reports/
-mac-lookup-reports/
-metadata-reports/
-dork-reports/
-crypto-tracker-reports/
-ssl-analyzer-reports/
+
+# Backup files
+*.backup
+*.bak
+
+# Temporary files
+0
+0,
+bot.log
