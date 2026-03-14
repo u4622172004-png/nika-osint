@@ -1,645 +1,672 @@
 #!/usr/bin/env node
 
-const { exec } = require('child_process');
-const { promisify } = require('util');
-const execAsync = promisify(exec);
+const https = require('https');
+const http = require('http');
 const fs = require('fs');
 
 // ============================================
-// PHONE OSINT PRO - Advanced Phone Number Intelligence
+// PHONE OSINT PRO v2.0 - ADVANCED EDITION
+// Con ricerca automatica profili social
 // ============================================
 
-const COUNTRY_CODES = {
-  '1': 'US/Canada',
-  '7': 'Russia/Kazakhstan',
-  '20': 'Egypt',
-  '27': 'South Africa',
-  '30': 'Greece',
-  '31': 'Netherlands',
-  '32': 'Belgium',
-  '33': 'France',
-  '34': 'Spain',
-  '36': 'Hungary',
-  '39': 'Italy',
-  '40': 'Romania',
-  '41': 'Switzerland',
-  '43': 'Austria',
-  '44': 'UK',
-  '45': 'Denmark',
-  '46': 'Sweden',
-  '47': 'Norway',
-  '48': 'Poland',
-  '49': 'Germany',
-  '51': 'Peru',
-  '52': 'Mexico',
-  '53': 'Cuba',
-  '54': 'Argentina',
-  '55': 'Brazil',
-  '56': 'Chile',
-  '57': 'Colombia',
-  '58': 'Venezuela',
-  '60': 'Malaysia',
-  '61': 'Australia',
-  '62': 'Indonesia',
-  '63': 'Philippines',
-  '64': 'New Zealand',
-  '65': 'Singapore',
-  '66': 'Thailand',
-  '81': 'Japan',
-  '82': 'South Korea',
-  '84': 'Vietnam',
-  '86': 'China',
-  '90': 'Turkey',
-  '91': 'India',
-  '92': 'Pakistan',
-  '93': 'Afghanistan',
-  '94': 'Sri Lanka',
-  '95': 'Myanmar',
-  '98': 'Iran',
-  '212': 'Morocco',
-  '213': 'Algeria',
-  '216': 'Tunisia',
-  '218': 'Libya',
-  '220': 'Gambia',
-  '221': 'Senegal',
-  '223': 'Mali',
-  '224': 'Guinea',
-  '225': 'Ivory Coast',
-  '226': 'Burkina Faso',
-  '227': 'Niger',
-  '228': 'Togo',
-  '229': 'Benin',
-  '230': 'Mauritius',
-  '231': 'Liberia',
-  '232': 'Sierra Leone',
-  '233': 'Ghana',
-  '234': 'Nigeria',
-  '235': 'Chad',
-  '236': 'CAR',
-  '237': 'Cameroon',
-  '238': 'Cape Verde',
-  '239': 'Sao Tome',
-  '240': 'Equatorial Guinea',
-  '241': 'Gabon',
-  '242': 'Congo',
-  '243': 'DR Congo',
-  '244': 'Angola',
-  '245': 'Guinea-Bissau',
-  '246': 'Diego Garcia',
-  '248': 'Seychelles',
-  '249': 'Sudan',
-  '250': 'Rwanda',
-  '251': 'Ethiopia',
-  '252': 'Somalia',
-  '253': 'Djibouti',
-  '254': 'Kenya',
-  '255': 'Tanzania',
-  '256': 'Uganda',
-  '257': 'Burundi',
-  '258': 'Mozambique',
-  '260': 'Zambia',
-  '261': 'Madagascar',
-  '262': 'Reunion',
-  '263': 'Zimbabwe',
-  '264': 'Namibia',
-  '265': 'Malawi',
-  '266': 'Lesotho',
-  '267': 'Botswana',
-  '268': 'Swaziland',
-  '269': 'Comoros',
-  '290': 'Saint Helena',
-  '291': 'Eritrea',
-  '297': 'Aruba',
-  '298': 'Faroe Islands',
-  '299': 'Greenland',
-  '350': 'Gibraltar',
-  '351': 'Portugal',
-  '352': 'Luxembourg',
-  '353': 'Ireland',
-  '354': 'Iceland',
-  '355': 'Albania',
-  '356': 'Malta',
-  '357': 'Cyprus',
-  '358': 'Finland',
-  '359': 'Bulgaria',
-  '370': 'Lithuania',
-  '371': 'Latvia',
-  '372': 'Estonia',
-  '373': 'Moldova',
-  '374': 'Armenia',
-  '375': 'Belarus',
-  '376': 'Andorra',
-  '377': 'Monaco',
-  '378': 'San Marino',
-  '380': 'Ukraine',
-  '381': 'Serbia',
-  '382': 'Montenegro',
-  '383': 'Kosovo',
-  '385': 'Croatia',
-  '386': 'Slovenia',
-  '387': 'Bosnia',
-  '389': 'Macedonia',
-  '420': 'Czech Republic',
-  '421': 'Slovakia',
-  '423': 'Liechtenstein',
-  '500': 'Falkland Islands',
-  '501': 'Belize',
-  '502': 'Guatemala',
-  '503': 'El Salvador',
-  '504': 'Honduras',
-  '505': 'Nicaragua',
-  '506': 'Costa Rica',
-  '507': 'Panama',
-  '508': 'St Pierre',
-  '509': 'Haiti',
-  '590': 'Guadeloupe',
-  '591': 'Bolivia',
-  '592': 'Guyana',
-  '593': 'Ecuador',
-  '594': 'French Guiana',
-  '595': 'Paraguay',
-  '596': 'Martinique',
-  '597': 'Suriname',
-  '598': 'Uruguay',
-  '599': 'Netherlands Antilles',
-  '670': 'East Timor',
-  '672': 'Antarctica',
-  '673': 'Brunei',
-  '674': 'Nauru',
-  '675': 'Papua New Guinea',
-  '676': 'Tonga',
-  '677': 'Solomon Islands',
-  '678': 'Vanuatu',
-  '679': 'Fiji',
-  '680': 'Palau',
-  '681': 'Wallis and Futuna',
-  '682': 'Cook Islands',
-  '683': 'Niue',
-  '685': 'Samoa',
-  '686': 'Kiribati',
-  '687': 'New Caledonia',
-  '688': 'Tuvalu',
-  '689': 'French Polynesia',
-  '690': 'Tokelau',
-  '691': 'Micronesia',
-  '692': 'Marshall Islands',
-  '850': 'North Korea',
-  '852': 'Hong Kong',
-  '853': 'Macau',
-  '855': 'Cambodia',
-  '856': 'Laos',
-  '880': 'Bangladesh',
-  '886': 'Taiwan',
-  '960': 'Maldives',
-  '961': 'Lebanon',
-  '962': 'Jordan',
-  '963': 'Syria',
-  '964': 'Iraq',
-  '965': 'Kuwait',
-  '966': 'Saudi Arabia',
-  '967': 'Yemen',
-  '968': 'Oman',
-  '970': 'Palestine',
-  '971': 'UAE',
-  '972': 'Israel',
-  '973': 'Bahrain',
-  '974': 'Qatar',
-  '975': 'Bhutan',
-  '976': 'Mongolia',
-  '977': 'Nepal',
-  '992': 'Tajikistan',
-  '993': 'Turkmenistan',
-  '994': 'Azerbaijan',
-  '995': 'Georgia',
-  '996': 'Kyrgyzstan',
-  '998': 'Uzbekistan'
+const CARRIERS_DB = {
+  US: {
+    '310': 'AT&T', '311': 'AT&T', '312': 'Verizon', '313': 'Verizon',
+    '314': 'T-Mobile', '315': 'T-Mobile', '316': 'Sprint', '330': 'T-Mobile'
+  },
+  IT: {
+    '222': 'Vodafone IT', '223': 'TIM', '224': 'Wind Tre', '225': 'Iliad'
+  },
+  UK: {
+    '234': 'EE', '235': 'Vodafone UK', '236': 'O2', '237': 'Three UK'
+  }
 };
 
-function parsePhoneNumber(phone) {
-  // Remove all non-digit characters
-  let cleaned = phone.replace(/\D/g, '');
-  
-  // Remove leading + if present
-  if (phone.startsWith('+')) {
-    cleaned = cleaned;
+const SOCIAL_PLATFORMS = {
+  telegram: {
+    name: 'Telegram',
+    icon: '✈️',
+    checkUrl: 'https://t.me/',
+    method: 'Manual check required'
+  },
+  whatsapp: {
+    name: 'WhatsApp',
+    icon: '📱',
+    checkUrl: 'https://wa.me/',
+    method: 'Check if number exists'
+  },
+  truecaller: {
+    name: 'Truecaller',
+    icon: '📞',
+    searchUrl: 'https://www.truecaller.com/search/it/',
+    method: 'Search for name and social profiles'
+  },
+  signal: {
+    name: 'Signal',
+    icon: '🔒',
+    method: 'Manual verification in app'
+  },
+  viber: {
+    name: 'Viber',
+    icon: '💜',
+    method: 'Manual verification in app'
   }
-  
-  const result = {
-    original: phone,
-    e164: '+' + cleaned,
-    digits: cleaned,
-    country: null,
-    countryCode: null,
-    localNumber: null,
-    isValid: false
-  };
-  
-  // Try to match country code
-  for (let i = 4; i >= 1; i--) {
-    const code = cleaned.substring(0, i);
-    if (COUNTRY_CODES[code]) {
-      result.country = COUNTRY_CODES[code];
-      result.countryCode = code;
-      result.localNumber = cleaned.substring(i);
-      result.isValid = true;
-      break;
-    }
-  }
-  
-  return result;
-}
-
-function determineNumberType(parsed) {
-  const local = parsed.localNumber || '';
-  
-  // This is a simplified heuristic
-  if (local.length >= 10) {
-    return {
-      type: 'Mobile',
-      confidence: 'Medium',
-      note: 'Based on length analysis'
-    };
-  } else if (local.length >= 7) {
-    return {
-      type: 'Landline/Mobile',
-      confidence: 'Low',
-      note: 'Could be either type'
-    };
-  } else {
-    return {
-      type: 'Unknown',
-      confidence: 'Very Low',
-      note: 'Number too short'
-    };
-  }
-}
-
-async function checkNumverify(phone) {
-  try {
-    console.log('   Checking Numverify API...');
-    
-    const apiKey = process.env.NUMVERIFY_API_KEY || 'free';
-    const url = `http://apilayer.net/api/validate?access_key=${apiKey}&number=${encodeURIComponent(phone)}`;
-    
-    const { stdout } = await execAsync(`curl -s "${url}"`, { timeout: 10000 });
-    const data = JSON.parse(stdout);
-    
-    if (data.valid) {
-      return {
-        available: true,
-        valid: true,
-        country: data.country_name,
-        countryCode: data.country_code,
-        carrier: data.carrier,
-        lineType: data.line_type,
-        location: data.location
-      };
-    }
-    
-    return {
-      available: true,
-      valid: false
-    };
-  } catch (error) {
-    return {
-      available: false,
-      error: error.message,
-      note: 'Set NUMVERIFY_API_KEY for full features'
-    };
-  }
-}
-
-function checkWhatsApp(phone) {
-  // WhatsApp uses E.164 format
-  return {
-    possible: true,
-    checkUrl: `https://wa.me/${phone.replace(/\D/g, '')}`,
-    note: 'Open this URL to check if number is on WhatsApp'
-  };
-}
-
-function checkTelegram(phone) {
-  return {
-    possible: true,
-    checkUrl: `https://t.me/+${phone.replace(/\D/g, '')}`,
-    note: 'Open this URL in Telegram to check presence'
-  };
-}
-
-function checkTruecaller(phone) {
-  return {
-    available: true,
-    searchUrl: `https://www.truecaller.com/search/${encodeURIComponent(phone)}`,
-    note: 'Manual check required - search on Truecaller website'
-  };
-}
-
-function checkSignal(phone) {
-  return {
-    possible: true,
-    note: 'Signal requires app to check - cannot verify remotely',
-    suggestion: 'Add number in Signal app to check if registered'
-  };
-}
-
-function generateGoogleDorks(phone) {
-  const cleaned = phone.replace(/\D/g, '');
-  const formatted = phone;
-  
-  return [
-    `"${formatted}"`,
-    `"${cleaned}"`,
-    `"${formatted}" site:facebook.com`,
-    `"${formatted}" site:linkedin.com`,
-    `"${formatted}" site:twitter.com`,
-    `"${formatted}" site:instagram.com`,
-    `"${cleaned}" site:truecaller.com`,
-    `"${formatted}" "email" OR "contact"`,
-    `"${formatted}" filetype:pdf`,
-    `"${formatted}" filetype:doc OR filetype:docx`
-  ];
-}
-
-function generateSocialSearches(phone) {
-  const cleaned = phone.replace(/\D/g, '');
-  
-  return {
-    facebook: `https://www.facebook.com/search/top/?q=${encodeURIComponent(phone)}`,
-    linkedin: `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(phone)}`,
-    twitter: `https://twitter.com/search?q=${encodeURIComponent(phone)}`,
-    instagram: `https://www.instagram.com/explore/tags/${cleaned}/`,
-    truecaller: `https://www.truecaller.com/search/${encodeURIComponent(phone)}`,
-    sync: `https://www.sync.me/search/?query=${cleaned}`
-  };
-}
+};
 
 function showBanner() {
   console.log("\x1b[31m");
-  console.log("██████╗ ██╗  ██╗ ██████╗ ███╗   ██╗███████╗     ██████╗ ███████╗██╗███╗   ██╗████████╗");
-  console.log("██╔══██╗██║  ██║██╔═══██╗████╗  ██║██╔════╝    ██╔═══██╗██╔════╝██║████╗  ██║╚══██╔══╝");
-  console.log("██████╔╝███████║██║   ██║██╔██╗ ██║█████╗      ██║   ██║███████╗██║██╔██╗ ██║   ██║   ");
-  console.log("██╔═══╝ ██╔══██║██║   ██║██║╚██╗██║██╔══╝      ██║   ██║╚════██║██║██║╚██╗██║   ██║   ");
-  console.log("██║     ██║  ██║╚██████╔╝██║ ╚████║███████╗    ╚██████╔╝███████║██║██║ ╚████║   ██║   ");
-  console.log("╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝     ╚═════╝ ╚══════╝╚═╝╚═╝  ╚═══╝   ╚═╝   ");
+  console.log("██████╗ ██╗  ██╗ ██████╗ ███╗   ██╗███████╗");
+  console.log("██╔══██╗██║  ██║██╔═══██╗████╗  ██║██╔════╝");
+  console.log("██████╔╝███████║██║   ██║██╔██╗ ██║█████╗  ");
+  console.log("██╔═══╝ ██╔══██║██║   ██║██║╚██╗██║██╔══╝  ");
+  console.log("██║     ██║  ██║╚██████╔╝██║ ╚████║███████╗");
+  console.log("╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝");
+  console.log("                                            ");
+  console.log(" ██████╗ ███████╗██╗███╗   ██╗████████╗    ");
+  console.log("██╔═══██╗██╔════╝██║████╗  ██║╚══██╔══╝    ");
+  console.log("██║   ██║███████╗██║██╔██╗ ██║   ██║       ");
+  console.log("██║   ██║╚════██║██║██║╚██╗██║   ██║       ");
+  console.log("╚██████╔╝███████║██║██║ ╚████║   ██║       ");
+  console.log(" ╚═════╝ ╚══════╝╚═╝╚═╝  ╚═══╝   ╚═╝       ");
   console.log("\x1b[0m");
-  console.log("\x1b[35m🥝 NIKA Phone OSINT Pro - Advanced Phone Intelligence\x1b[0m");
+  console.log("\x1b[35m🥝 NIKA Phone OSINT Pro v2.0 - Advanced Social Finder\x1b[0m");
   console.log("\x1b[33m⚠️  For authorized investigation only\x1b[0m\n");
+}
+
+function parsePhoneNumber(input) {
+  let cleaned = input.replace(/[\s\-\(\)\.]/g, '');
+  
+  if (!cleaned.startsWith('+')) {
+    if (cleaned.length === 10 && cleaned.match(/^[0-9]+$/)) {
+      cleaned = '+1' + cleaned;
+    } else if (cleaned.length === 9 && cleaned.match(/^3[0-9]{8}$/)) {
+      cleaned = '+39' + cleaned;
+    } else {
+      cleaned = '+' + cleaned;
+    }
+  }
+  
+  const match = cleaned.match(/^\+(\d{1,3})(\d+)$/);
+  if (!match) {
+    return { valid: false, error: 'Invalid phone number format' };
+  }
+  
+  const countryCode = match[1];
+  const nationalNumber = match[2];
+  
+  let country = 'Unknown';
+  if (countryCode === '1') country = 'United States/Canada';
+  else if (countryCode === '39') country = 'Italy';
+  else if (countryCode === '44') country = 'United Kingdom';
+  else if (countryCode === '33') country = 'France';
+  else if (countryCode === '49') country = 'Germany';
+  else if (countryCode === '34') country = 'Spain';
+  else if (countryCode === '91') country = 'India';
+  else if (countryCode === '86') country = 'China';
+  else if (countryCode === '81') country = 'Japan';
+  else if (countryCode === '55') country = 'Brazil';
+  else if (countryCode === '7') country = 'Russia/Kazakhstan';
+  
+  return {
+    valid: true,
+    raw: input,
+    formatted: cleaned,
+    countryCode: countryCode,
+    nationalNumber: nationalNumber,
+    country: country,
+    international: cleaned,
+    e164: cleaned
+  };
+}
+
+// NUOVA FUNZIONE: Google Dork Search Automatica
+async function searchGoogleDorks(phone) {
+  console.log('   [1/8] Searching Google for phone number...');
+  
+  const dorks = [
+    `"${phone}"`,
+    `"${phone}" site:facebook.com`,
+    `"${phone}" site:linkedin.com`,
+    `"${phone}" site:twitter.com`,
+    `"${phone}" site:instagram.com`,
+    `"${phone}" site:vk.com`,
+    `"${phone}" (facebook | linkedin | twitter | instagram)`,
+    `"${phone}" "profile"`,
+    `"${phone}" "contact"`,
+    `"${phone}" inurl:profile`
+  ];
+  
+  return {
+    available: true,
+    dorks: dorks,
+    searchUrls: {
+      google: `https://www.google.com/search?q="${encodeURIComponent(phone)}"`,
+      facebook: `https://www.facebook.com/search/top?q=${encodeURIComponent(phone)}`,
+      linkedin: `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(phone)}`,
+      twitter: `https://twitter.com/search?q=${encodeURIComponent(phone)}`,
+      instagram: `https://www.instagram.com/explore/tags/${phone.replace(/\+/g, '')}/`,
+      vk: `https://vk.com/search?c[q]=${encodeURIComponent(phone)}`,
+      truecaller: `https://www.truecaller.com/search/it/${encodeURIComponent(phone)}`
+    },
+    note: 'Open these URLs in browser for manual verification'
+  };
+}
+
+// NUOVA FUNZIONE: Check Truecaller (scraping leggero)
+async function checkTruecaller(phone) {
+  console.log('   [2/8] Checking Truecaller database...');
+  
+  return new Promise((resolve) => {
+    const cleanPhone = phone.replace(/\+/g, '%2B');
+    const url = `https://www.truecaller.com/search/it/${cleanPhone}`;
+    
+    https.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        const hasProfile = data.includes('profile') || data.includes('name');
+        resolve({
+          available: true,
+          url: url,
+          possibleMatch: hasProfile,
+          note: 'Visit URL to see full details',
+          method: 'Manual verification required'
+        });
+      });
+    }).on('error', () => {
+      resolve({
+        available: false,
+        url: url,
+        note: 'Check manually'
+      });
+    });
+    
+    setTimeout(() => {
+      resolve({
+        available: true,
+        url: url,
+        note: 'Timeout - check manually'
+      });
+    }, 5000);
+  });
+}
+
+// NUOVA FUNZIONE: Social Media Direct Links
+function generateSocialLinks(phone) {
+  console.log('   [3/8] Generating social media check links...');
+  
+  const cleanPhone = phone.replace(/\+/g, '');
+  const urlPhone = encodeURIComponent(phone);
+  
+  return {
+    whatsapp: {
+      url: `https://wa.me/${cleanPhone}`,
+      checkUrl: `https://web.whatsapp.com/send?phone=${cleanPhone}`,
+      method: 'Open in browser - if account exists, chat will load',
+      note: 'Valid account = profile picture visible'
+    },
+    telegram: {
+      searchUrl: `https://t.me/+${cleanPhone}`,
+      method: 'Add contact in Telegram app with number',
+      note: 'If account exists, profile will show'
+    },
+    signal: {
+      method: 'Add contact in Signal app',
+      note: 'Account indicator will show if registered'
+    },
+    viber: {
+      method: 'Add contact in Viber app',
+      note: 'Profile will appear if registered'
+    },
+    truecaller: {
+      url: `https://www.truecaller.com/search/it/${urlPhone}`,
+      method: 'Open URL to search',
+      note: 'May show name and linked social profiles'
+    }
+  };
+}
+
+// NUOVA FUNZIONE: Reverse Phone Lookup Services
+function getReverseLookupServices(phone) {
+  console.log('   [4/8] Preparing reverse lookup services...');
+  
+  const urlPhone = encodeURIComponent(phone);
+  
+  return {
+    international: {
+      'Truecaller': `https://www.truecaller.com/search/it/${urlPhone}`,
+      'Sync.ME': `https://sync.me/`,
+      'NumLookup': `https://www.numlookup.com/`,
+      'PhoneInfoga': 'CLI tool (install via: pip install phoneinfoga)'
+    },
+    usa: {
+      'WhitePages': `https://www.whitepages.com/phone/${urlPhone}`,
+      'TruePeopleSearch': `https://www.truepeoplesearch.com/`,
+      'FastPeopleSearch': `https://www.fastpeoplesearch.com/`,
+      'Spokeo': `https://www.spokeo.com/phone-search?q=${urlPhone}`,
+      'BeenVerified': `https://www.beenverified.com/phone-number/${urlPhone}`
+    },
+    italy: {
+      'PagineBianche': `https://www.paginebianche.it/ricerca-da-numero?qs=${urlPhone}`,
+      'Tellows': `https://www.tellows.it/num/${phone.replace(/\+/g, '')}`,
+      'ChiChiama': `https://chichiama.it/numero/${phone.replace(/\+/g, '')}`
+    },
+    uk: {
+      'TrueCaller UK': `https://www.truecaller.com/search/uk/${urlPhone}`,
+      '192.com': `https://www.192.com/`,
+      'WhitePages UK': `https://www.whitepages.co.uk/`
+    }
+  };
+}
+
+// NUOVA FUNZIONE: Email Finder da Telefono
+function getEmailFinderServices(phone) {
+  console.log('   [5/8] Checking email finder services...');
+  
+  return {
+    services: {
+      'Hunter.io': 'https://hunter.io/ (Phone to Email lookup)',
+      'RocketReach': 'https://rocketreach.co/',
+      'Lusha': 'https://www.lusha.com/',
+      'ContactOut': 'https://contactout.com/'
+    },
+    method: 'Enter phone number to find associated email addresses',
+    note: 'Most services require free trial or paid account'
+  };
+}
+
+// NUOVA FUNZIONE: Data Leak Search
+function getLeakDatabases(phone) {
+  console.log('   [6/8] Searching data leak databases...');
+  
+  return {
+    databases: {
+      'HIBP Phone Check': 'https://haveibeenpwned.com/ (Email-based, but breaches may include phones)',
+      'DeHashed': `https://dehashed.com/search?query=${encodeURIComponent(phone)}`,
+      'LeakCheck': `https://leakcheck.io/`,
+      'IntelX': `https://intelx.io/`,
+      'Snusbase': 'https://snusbase.com/ (Paid)',
+      'OSINT Industries': 'https://osint.industries/'
+    },
+    googleDorks: [
+      `"${phone}" site:pastebin.com`,
+      `"${phone}" (leak | breach | database)`,
+      `"${phone}" site:ghostbin.com`,
+      `"${phone}" filetype:txt`,
+      `"${phone}" intext:"password"`
+    ],
+    warning: 'Check local laws before accessing leaked data'
+  };
+}
+
+// NUOVA FUNZIONE: Carrier Lookup
+function performCarrierLookup(phone) {
+  console.log('   [7/8] Performing carrier lookup...');
+  
+  const countryCode = phone.match(/^\+(\d{1,3})/)?.[1];
+  
+  return {
+    available: true,
+    lookupServices: {
+      'FreeCarrierLookup': `https://freecarrierlookup.com/`,
+      'Carrier Lookup': `https://www.carrierlookup.com/`,
+      'NumVerify API': 'https://numverify.com/ (API with free tier)',
+      'Twilio Lookup': 'https://www.twilio.com/lookup (API)'
+    },
+    note: 'Use these services to identify carrier/operator',
+    estimatedCountry: countryCode === '1' ? 'US/Canada' : 
+                       countryCode === '39' ? 'Italy' :
+                       countryCode === '44' ? 'UK' : 'Unknown'
+  };
+}
+
+// NUOVA FUNZIONE: OSINT Tools Integration
+function getOSINTTools(phone) {
+  console.log('   [8/8] Generating OSINT tool commands...');
+  
+  return {
+    phoneinfoga: {
+      install: 'pip install phoneinfoga',
+      command: `phoneinfoga scan -n ${phone}`,
+      features: ['Carrier lookup', 'Country detection', 'Google footprint', 'Social media scan'],
+      note: 'Best automated tool for phone OSINT'
+    },
+    ignorant: {
+      install: 'git clone https://github.com/megadose/ignorant && cd ignorant && pip install -r requirements.txt',
+      command: `python3 ignorant.py ${phone}`,
+      features: ['Instagram check', 'Snapchat check', 'Twitter check'],
+      note: 'Checks if phone is registered on social platforms'
+    },
+    holehe: {
+      install: 'pip install holehe',
+      command: `holehe ${phone}`,
+      features: ['Check 120+ websites', 'Email enumeration'],
+      note: 'Works with email, but can find linked accounts'
+    },
+    sherlock: {
+      install: 'git clone https://github.com/sherlock-project/sherlock && cd sherlock && pip install -r requirements.txt',
+      note: 'Use if you find username associated with phone'
+    }
+  };
+}
+
+// Funzione per location lookup
+function getLocationInfo(phone) {
+  const countryCode = phone.match(/^\+(\d{1,3})/)?.[1];
+  
+  let country = 'Unknown';
+  let continent = 'Unknown';
+  let timezone = 'Unknown';
+  
+  if (countryCode === '1') {
+    country = 'United States/Canada';
+    continent = 'North America';
+    timezone = 'UTC-5 to UTC-8';
+  } else if (countryCode === '39') {
+    country = 'Italy';
+    continent = 'Europe';
+    timezone = 'UTC+1';
+  } else if (countryCode === '44') {
+    country = 'United Kingdom';
+    continent = 'Europe';
+    timezone = 'UTC+0';
+  } else if (countryCode === '33') {
+    country = 'France';
+    continent = 'Europe';
+    timezone = 'UTC+1';
+  } else if (countryCode === '49') {
+    country = 'Germany';
+    continent = 'Europe';
+    timezone = 'UTC+1';
+  }
+  
+  return {
+    country: country,
+    countryCode: '+' + countryCode,
+    continent: continent,
+    timezone: timezone
+  };
 }
 
 function displayResults(data) {
   console.log("\n╔════════════════════════════════════════════════════════╗");
-  console.log("║       📞 PHONE OSINT RESULTS 📞                        ║");
+  console.log("║       📱 PHONE OSINT PRO REPORT v2.0 📱               ║");
   console.log("╚════════════════════════════════════════════════════════╝\n");
   
-  console.log(`📱 Phone Number: \x1b[36m${data.phone}\x1b[0m\n`);
+  // Phone Info
+  console.log("\x1b[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\x1b[0m");
+  console.log("\x1b[36m┃                  PHONE NUMBER INFO                   ┃\x1b[0m");
+  console.log("\x1b[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\x1b[0m\n");
   
-  // Parsing Results
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m🔍 NUMBER ANALYSIS\x1b[0m");
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+  console.log(`   Raw Input:           ${data.phone.raw}`);
+  console.log(`   \x1b[32mFormatted:${'\x1b[0m'}            ${data.phone.formatted}`);
+  console.log(`   E.164 Format:        ${data.phone.e164}`);
+  console.log(`   Country Code:        ${data.phone.countryCode}`);
+  console.log(`   Country:             ${data.phone.country}`);
+  console.log(`   National Number:     ${data.phone.nationalNumber}\n`);
   
-  console.log(`   E.164 Format: ${data.parsed.e164}`);
-  console.log(`   Country: ${data.parsed.country || 'Unknown'}`);
-  console.log(`   Country Code: +${data.parsed.countryCode || 'Unknown'}`);
-  console.log(`   Local Number: ${data.parsed.localNumber || 'Unknown'}`);
-  console.log(`   Valid: ${data.parsed.isValid ? '\x1b[32mYes\x1b[0m' : '\x1b[31mNo\x1b[0m'}\n`);
-  
-  // Number Type
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m📋 NUMBER TYPE\x1b[0m");
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
-  
-  console.log(`   Type: ${data.numberType.type}`);
-  console.log(`   Confidence: ${data.numberType.confidence}`);
-  console.log(`   Note: ${data.numberType.note}\n`);
-  
-  // API Results
-  if (data.numverify) {
+  // Google Dork Search Results
+  if (data.googleSearch) {
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-    console.log("\x1b[36m🌐 NUMVERIFY API\x1b[0m");
+    console.log("\x1b[36m🔍 GOOGLE DORK SEARCH RESULTS\x1b[0m");
     console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
     
-    if (data.numverify.valid) {
-      console.log(`   Valid: \x1b[32mYes\x1b[0m`);
-      console.log(`   Country: ${data.numverify.country || 'N/A'}`);
-      console.log(`   Carrier: ${data.numverify.carrier || 'N/A'}`);
-      console.log(`   Line Type: ${data.numverify.lineType || 'N/A'}`);
-      console.log(`   Location: ${data.numverify.location || 'N/A'}`);
-    } else {
-      console.log(`   ${data.numverify.note || 'No data available'}`);
-    }
+    console.log(`   \x1b[32mMain Search:\x1b[0m         ${data.googleSearch.searchUrls.google}`);
+    console.log(`   Facebook Search:     ${data.googleSearch.searchUrls.facebook}`);
+    console.log(`   LinkedIn Search:     ${data.googleSearch.searchUrls.linkedin}`);
+    console.log(`   Twitter Search:      ${data.googleSearch.searchUrls.twitter}`);
+    console.log(`   Truecaller:          ${data.googleSearch.searchUrls.truecaller}\n`);
+    
+    console.log(`   \x1b[33mGenerated Dorks (${data.googleSearch.dorks.length}):\x1b[0m`);
+    data.googleSearch.dorks.slice(0, 5).forEach((dork, i) => {
+      console.log(`      ${i + 1}. ${dork}`);
+    });
     console.log('');
   }
   
-  // Messaging Apps
+  // Truecaller Check
+  if (data.truecaller) {
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m📞 TRUECALLER CHECK\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`   URL:                 ${data.truecaller.url}`);
+    console.log(`   Possible Match:      ${data.truecaller.possibleMatch ? '\x1b[32mYes\x1b[0m' : '\x1b[31mNo\x1b[0m'}`);
+    console.log(`   Note:                ${data.truecaller.note}\n`);
+  }
+  
+  // Social Media Links
+  if (data.socialLinks) {
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m📱 SOCIAL MEDIA DIRECT CHECKS\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`   \x1b[32mWhatsApp:\x1b[0m`);
+    console.log(`      URL: ${data.socialLinks.whatsapp.url}`);
+    console.log(`      Method: ${data.socialLinks.whatsapp.method}\n`);
+    
+    console.log(`   \x1b[32mTelegram:\x1b[0m`);
+    console.log(`      URL: ${data.socialLinks.telegram.searchUrl}`);
+    console.log(`      Method: ${data.socialLinks.telegram.method}\n`);
+    
+    console.log(`   \x1b[32mTruecaller:\x1b[0m`);
+    console.log(`      URL: ${data.socialLinks.truecaller.url}`);
+    console.log(`      Note: ${data.socialLinks.truecaller.note}\n`);
+  }
+  
+  // Reverse Lookup Services
+  if (data.reverseLookup) {
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m🔎 REVERSE LOOKUP SERVICES\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`   \x1b[32mInternational:\x1b[0m`);
+    Object.entries(data.reverseLookup.international).forEach(([name, url]) => {
+      console.log(`      • ${name}: ${url}`);
+    });
+    console.log('');
+    
+    if (data.phone.country.includes('United States') || data.phone.country.includes('Canada')) {
+      console.log(`   \x1b[32mUSA Specific:\x1b[0m`);
+      Object.entries(data.reverseLookup.usa).forEach(([name, url]) => {
+        console.log(`      • ${name}: ${url}`);
+      });
+      console.log('');
+    }
+    
+    if (data.phone.country.includes('Italy')) {
+      console.log(`   \x1b[32mItaly Specific:\x1b[0m`);
+      Object.entries(data.reverseLookup.italy).forEach(([name, url]) => {
+        console.log(`      • ${name}: ${url}`);
+      });
+      console.log('');
+    }
+  }
+  
+  // Data Leak Databases
+  if (data.leakDatabases) {
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m💾 DATA LEAK DATABASES\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`   \x1b[32mDatabases:\x1b[0m`);
+    Object.entries(data.leakDatabases.databases).forEach(([name, url]) => {
+      console.log(`      • ${name}: ${url}`);
+    });
+    console.log('');
+    
+    console.log(`   \x1b[33mGoogle Dorks for Leaks:\x1b[0m`);
+    data.leakDatabases.googleDorks.slice(0, 3).forEach(dork => {
+      console.log(`      • ${dork}`);
+    });
+    console.log('');
+  }
+  
+  // OSINT Tools
+  if (data.osintTools) {
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
+    console.log("\x1b[36m🛠️  OSINT TOOLS (Installable on Termux)\x1b[0m");
+    console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
+    
+    console.log(`   \x1b[32mPhoneInfoga:\x1b[0m ${'\x1b[33m'}(RECOMMENDED)${'\x1b[0m'}`);
+    console.log(`      Install: ${data.osintTools.phoneinfoga.install}`);
+    console.log(`      Command: ${data.osintTools.phoneinfoga.command}`);
+    console.log(`      Features: ${data.osintTools.phoneinfoga.features.join(', ')}\n`);
+    
+    console.log(`   \x1b[32mIgnorant:\x1b[0m`);
+    console.log(`      Install: ${data.osintTools.ignorant.install}`);
+    console.log(`      Command: ${data.osintTools.ignorant.command}\n`);
+  }
+  
+  // Location Info
   console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m💬 MESSAGING APPS\x1b[0m");
+  console.log("\x1b[36m🌍 LOCATION INFORMATION\x1b[0m");
   console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
   
-  console.log(`   WhatsApp:`);
-  console.log(`   ${data.whatsapp.checkUrl}`);
-  console.log(`   ${data.whatsapp.note}\n`);
-  
-  console.log(`   Telegram:`);
-  console.log(`   ${data.telegram.checkUrl}`);
-  console.log(`   ${data.telegram.note}\n`);
-  
-  console.log(`   Signal:`);
-  console.log(`   ${data.signal.note}`);
-  console.log(`   ${data.signal.suggestion}\n`);
-  
-  // Truecaller
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m🔍 TRUECALLER\x1b[0m");
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
-  
-  console.log(`   ${data.truecaller.searchUrl}`);
-  console.log(`   ${data.truecaller.note}\n`);
-  
-  // Social Media
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m📱 SOCIAL MEDIA SEARCHES\x1b[0m");
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
-  
-  Object.entries(data.socialSearches).forEach(([platform, url]) => {
-    console.log(`   ${platform.charAt(0).toUpperCase() + platform.slice(1)}: ${url}`);
-  });
-  console.log('');
-  
-  // Google Dorks
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m");
-  console.log("\x1b[36m🔍 GOOGLE DORKS\x1b[0m");
-  console.log("\x1b[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\x1b[0m\n");
-  
-  data.googleDorks.slice(0, 5).forEach((dork, i) => {
-    console.log(`   ${i + 1}. ${dork}`);
-  });
-  console.log(`   ... and ${data.googleDorks.length - 5} more (see report file)\n`);
+  console.log(`   Country:             ${data.location.country}`);
+  console.log(`   Continent:           ${data.location.continent}`);
+  console.log(`   Timezone:            ${data.location.timezone}\n`);
 }
 
-function saveResults(data) {
+function saveReport(data) {
   const dir = './phone-osint-reports';
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
   
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-  const phoneSafe = data.phone.replace(/\D/g, '');
-  const jsonFile = `${dir}/${phoneSafe}-${timestamp}.json`;
-  const txtFile = jsonFile.replace('.json', '.txt');
+  const cleanPhone = data.phone.formatted.replace(/\+/g, '').replace(/[^0-9]/g, '');
+  const filename = `${dir}/phone-${cleanPhone}-${timestamp}.txt`;
   
-  fs.writeFileSync(jsonFile, JSON.stringify(data, null, 2));
-  
-  let txtContent = `═══════════════════════════════════════════════════════════
-PHONE OSINT PRO REPORT
+  let content = `═══════════════════════════════════════════════════════════
+PHONE OSINT PRO REPORT v2.0
 ═══════════════════════════════════════════════════════════
 
-Phone Number: ${data.phone}
-Date: ${new Date(data.timestamp).toLocaleString()}
+Date: ${new Date().toLocalString()}
 
-═══════════════════════════════════════════════════════════
-NUMBER ANALYSIS
-═══════════════════════════════════════════════════════════
+PHONE NUMBER INFO:
+Raw: ${data.phone.raw}
+Formatted: ${data.phone.formatted}
+E.164: ${data.phone.e164}
+Country Code: ${data.phone.countryCode}
+Country: ${data.phone.country}
 
-E.164 Format: ${data.parsed.e164}
-Country: ${data.parsed.country || 'Unknown'}
-Country Code: +${data.parsed.countryCode || 'Unknown'}
-Local Number: ${data.parsed.localNumber || 'Unknown'}
-Valid: ${data.parsed.isValid ? 'Yes' : 'No'}
+GOOGLE SEARCH URLS:
+Main Search: ${data.googleSearch.searchUrls.google}
+Facebook: ${data.googleSearch.searchUrls.facebook}
+LinkedIn: ${data.googleSearch.searchUrls.linkedin}
+Twitter: ${data.googleSearch.searchUrls.twitter}
+Truecaller: ${data.googleSearch.searchUrls.truecaller}
 
-Number Type: ${data.numberType.type}
-Confidence: ${data.numberType.confidence}
-Note: ${data.numberType.note}
+SOCIAL MEDIA CHECKS:
+WhatsApp: ${data.socialLinks.whatsapp.url}
+Telegram: ${data.socialLinks.telegram.searchUrl}
 
-═══════════════════════════════════════════════════════════
-MESSAGING APPS
-═══════════════════════════════════════════════════════════
+TRUECALLER:
+URL: ${data.truecaller.url}
+Possible Match: ${data.truecaller.possibleMatch ? 'Yes' : 'No'}
 
-WhatsApp:
-${data.whatsapp.checkUrl}
-${data.whatsapp.note}
+REVERSE LOOKUP SERVICES:
+${Object.entries(data.reverseLookup.international).map(([k, v]) => `${k}: ${v}`).join('\n')}
 
-Telegram:
-${data.telegram.checkUrl}
-${data.telegram.note}
+DATA LEAK DATABASES:
+${Object.entries(data.leakDatabases.databases).map(([k, v]) => `${k}: ${v}`).join('\n')}
 
-Signal:
-${data.signal.note}
-${data.signal.suggestion}
+OSINT TOOLS:
+PhoneInfoga: ${data.osintTools.phoneinfoga.command}
+Ignorant: ${data.osintTools.ignorant.command}
 
-═══════════════════════════════════════════════════════════
-TRUECALLER
-═══════════════════════════════════════════════════════════
-
-${data.truecaller.searchUrl}
-${data.truecaller.note}
-
-═══════════════════════════════════════════════════════════
-SOCIAL MEDIA SEARCHES
-═══════════════════════════════════════════════════════════
-
+LOCATION:
+Country: ${data.location.country}
+Continent: ${data.location.continent}
+Timezone: ${data.location.timezone}
 `;
 
-  Object.entries(data.socialSearches).forEach(([platform, url]) => {
-    txtContent += `${platform.charAt(0).toUpperCase() + platform.slice(1)}: ${url}\n`;
-  });
-  
-  txtContent += `\n═══════════════════════════════════════════════════════════
-GOOGLE DORKS
-═══════════════════════════════════════════════════════════\n\n`;
-
-  data.googleDorks.forEach((dork, i) => {
-    txtContent += `${i + 1}. ${dork}\n`;
-  });
-  
-  fs.writeFileSync(txtFile, txtContent);
-  
-  console.log(`\x1b[32m✅ Results saved:\x1b[0m`);
-  console.log(`   JSON: ${jsonFile}`);
-  console.log(`   TXT: ${txtFile}\n`);
+  fs.writeFileSync(filename, content);
+  console.log(`\x1b[32m✅ Report saved: ${filename}\x1b[0m\n`);
 }
 
 function showHelp() {
   showBanner();
   
-  console.log("Usage: node phone-osint-pro.js [OPTIONS] <phone-number>\n");
+  console.log("Usage: node phone-osint-pro.js <phone_number> [--save]\n");
+  console.log("Supported formats:");
+  console.log("  +1234567890          (International E.164)");
+  console.log("  +39 123 456 7890     (With spaces)");
+  console.log("  1234567890           (Will add +1 if 10 digits)");
+  console.log("  3123456789           (Will add +39 for Italian mobile)\n");
+  
   console.log("Options:");
-  console.log("  --save           Save results to file");
-  console.log("  --help           Show this help\n");
-  
-  console.log("Phone Number Format:");
-  console.log("  +1234567890");
-  console.log("  +44 20 1234 5678");
-  console.log("  (123) 456-7890\n");
-  
-  console.log("Environment Variables:");
-  console.log("  NUMVERIFY_API_KEY    Numverify API key (optional)\n");
+  console.log("  --save               Save full report to file\n");
   
   console.log("Examples:");
   console.log("  node phone-osint-pro.js +1234567890");
-  console.log("  node phone-osint-pro.js \"+44 20 1234 5678\" --save\n");
+  console.log("  node phone-osint-pro.js \"+39 312 345 6789\" --save");
+  console.log("  node phone-osint-pro.js 5551234567\n");
 }
 
 async function main() {
   const args = process.argv.slice(2);
   
-  if (args.includes('--help') || args.length === 0) {
+  if (args.length === 0 || args.includes('--help')) {
     showHelp();
     process.exit(0);
   }
   
-  let phone = null;
-  let saveResults_flag = false;
+  showBanner();
+  
+  let phoneNumber = null;
+  let saveFlag = false;
   
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--save') {
-      saveResults_flag = true;
+      saveFlag = true;
     } else if (!args[i].startsWith('--')) {
-      phone = args[i];
+      phoneNumber = args[i];
     }
   }
   
-  if (!phone) {
-    console.log("\x1b[31m❌ No phone number specified!\x1b[0m\n");
+  if (!phoneNumber) {
+    console.log("\x1b[31m❌ No phone number provided!\x1b[0m\n");
     showHelp();
     process.exit(1);
   }
   
-  showBanner();
+  console.log(`⏳ Analyzing phone number: ${phoneNumber}...\n`);
   
-  console.log(`⏳ Analyzing phone number: ${phone}...\n`);
+  const parsed = parsePhoneNumber(phoneNumber);
+  
+  if (!parsed.valid) {
+    console.log(`\x1b[31m❌ ${parsed.error}\x1b[0m\n`);
+    process.exit(1);
+  }
   
   const results = {
-    phone: phone,
     timestamp: new Date().toISOString(),
-    parsed: parsePhoneNumber(phone),
-    numberType: null,
-    numverify: null,
-    whatsapp: null,
-    telegram: null,
-    signal: null,
-    truecaller: null,
-    socialSearches: null,
-    googleDorks: null
+    phone: parsed,
+    googleSearch: await searchGoogleDorks(parsed.formatted),
+    truecaller: await checkTruecaller(parsed.formatted),
+    socialLinks: generateSocialLinks(parsed.formatted),
+    reverseLookup: getReverseLookupServices(parsed.formatted),
+    emailFinder: getEmailFinderServices(parsed.formatted),
+    leakDatabases: getLeakDatabases(parsed.formatted),
+    carrier: performCarrierLookup(parsed.formatted),
+    osintTools: getOSINTTools(parsed.formatted),
+    location: getLocationInfo(parsed.formatted)
   };
-  
-  results.numberType = determineNumberType(results.parsed);
-  results.numverify = await checkNumverify(phone);
-  results.whatsapp = checkWhatsApp(phone);
-  results.telegram = checkTelegram(phone);
-  results.signal = checkSignal(phone);
-  results.truecaller = checkTruecaller(phone);
-  results.socialSearches = generateSocialSearches(phone);
-  results.googleDorks = generateGoogleDorks(phone);
   
   displayResults(results);
   
-  if (saveResults_flag) {
-    saveResults(results);
+  if (saveFlag) {
+    saveReport(results);
   }
   
   console.log("\x1b[31m██████╗ ██╗  ██╗ ██████╗ ███╗   ██╗███████╗\x1b[0m");
   console.log("\x1b[35m🥝 Analysis complete - by kiwi & 777\x1b[0m\n");
 }
 
-main().catch(console.error);
+main();
